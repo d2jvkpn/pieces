@@ -1,0 +1,10 @@
+[remote_backup]
+name = "remote schedule daily backup"
+host = "hostname_or_ip"
+port = 22
+username = "rover"
+clock = "00:10"
+format = "zip"  # tar
+retries = 3     # retry times
+keep = 5        # auto delete old backup
+copy = {"src" = "/path/to/remote/src", "dst" = "/path/to/local/dst"}

@@ -1,0 +1,12 @@
+*.out
+*.log
+**/wk*/
+**/test/
+
+*.key
+*.pem
+.*/
+*.tar.gz
+*.tgz
+**/apps/*.zip
+**/target/

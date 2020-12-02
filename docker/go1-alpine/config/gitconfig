@@ -1,0 +1,8 @@
+[user]
+name = rover
+email = rover@server.local
+
+[credential]
+helper = store
+
+[push]
