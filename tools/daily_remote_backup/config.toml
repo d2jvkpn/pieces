@@ -3,6 +3,7 @@ name = "remote schedule daily backup"
 host = "hostname_or_ip"
 port = 22
 username = "rover"
+# password = "??????"
 clock = "00:10"
 format = "zip"  # tar
 retries = 3     # retry times

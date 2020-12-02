@@ -8,8 +8,12 @@ import toml, paramiko, scp, schedule
 def job(c):
     client = paramiko.SSHClient()
     client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    client.load_system_host_keys()
-    client.connect(c["host"], port=c["port"], username=c["username"])
+
+    if c.get("password", "") != "":
+        client.connect(c["host"], port=c["port"], username=c["username"], password=c["password"])
+    else:
+        client.load_system_host_keys()
+        client.connect(c["host"], port=c["port"], username=c["username"])
     # stdin, stdout, stderr = client.exec_command('ls -l')
     cp = scp.SCPClient(client.get_transport())
 
@@ -29,7 +33,7 @@ def job(c):
     shutil.make_archive(dst, c["format"], dst)
     shutil.rmtree(dst)
     logging.info("saved {}!".format(dst+"."+c["format"]))
-    
+
     n = c.get("keep", 0)
     if n <= 0: return
     fs = glob(c["copy"]["dst"] + "_*." + c["format"])
