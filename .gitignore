@@ -10,3 +10,5 @@
 *.tgz
 **/apps/*.zip
 **/target/
+.ipynb
+**/__pycache__/
