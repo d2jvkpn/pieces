@@ -1,4 +1,4 @@
-FROM centos:8e1
+FROM base
 
 RUN yum -y update
 ADD apps /apps

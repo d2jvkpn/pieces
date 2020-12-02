@@ -1,0 +1,4 @@
+ipython==7.16.1
+jupyter==1.0.0
+jupyterlab==1.1.4
+bash_kernel==0.7.2
