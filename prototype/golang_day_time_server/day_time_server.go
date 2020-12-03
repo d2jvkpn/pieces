@@ -1,5 +1,3 @@
-/* DaytimeServer
- */
 package main
 
 import (
