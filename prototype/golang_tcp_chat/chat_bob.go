@@ -30,7 +30,7 @@ func main() {
 	}
 	defer lis.Close()
 
-	fmt.Printf("=== Rover is online, please connect to %s!\n", addr)
+	fmt.Printf("=== Bob is online, please connect to %s!\n", addr)
 	if conn, err = lis.Accept(); err != nil {
 		log.Fatal(err)
 	}
@@ -39,7 +39,7 @@ func main() {
 	fmt.Println("=== accepted", conn.RemoteAddr())
 	wg.Add(2)
 	go func() {
-		conn.Write([]byte("Hello, This is Rover!\n"))
+		conn.Write([]byte("Hello, This is Bob!\n"))
 
 		for {
 			text, err := bufio.NewReader(os.Stdin).ReadString('\n')
