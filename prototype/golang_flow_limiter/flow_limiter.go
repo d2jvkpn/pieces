@@ -5,20 +5,6 @@ import (
 	"time"
 )
 
-func main() {
-	fl, _ := NewFlowLimiter(time.Second, 1e6)
-
-	fmt.Println(fl.Len())
-	fmt.Println(fl.Get())
-	fmt.Println(fl.Get())
-
-	fmt.Println(fl.Len())
-	time.Sleep(500 * time.Millisecond)
-	fmt.Println(fl.Len())
-
-	fl.Close()
-}
-
 type FlowLimiter struct {
 	dur    time.Duration
 	num    int64
@@ -43,11 +29,17 @@ func NewFlowLimiter(dur time.Duration, num int64) (fl *FlowLimiter, err error) {
 	}
 
 	go func() {
+		defer func() {
+			if v := recover(); v != nil {
+				fmt.Println("!!!", v) // send on closed channel
+			}
+		}()
+
 		for _ = range fl.ticker.C {
 			nl := len(fl.ch)
 			fmt.Printf(">>> tick start: %s, len(chan): %d\n", rfc999ms(), nl)
 			for i := nl; i < cap(fl.ch); i++ {
-				fl.ch <- true
+				fl.ch <- true // panic if fl.ch was closed
 			}
 			fmt.Printf("    tick end: %s, len(chan): %d\n", rfc999ms(), nl)
 		}
