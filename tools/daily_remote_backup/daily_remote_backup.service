@@ -5,7 +5,7 @@ After=network.target
 [Service]
 Type=simple
 User={{Username}}
-WorkingDirectory={{Path/to/backup}}
+WorkingDirectory={{/Path/to/backup}}
 ExecStart=python3 daily_remote_backup.py -toml config.toml
 Restart=always
 Environment=
