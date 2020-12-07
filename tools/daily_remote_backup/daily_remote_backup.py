@@ -17,26 +17,30 @@ def job(c):
     # stdin, stdout, stderr = client.exec_command('ls -l')
     cp = scp.SCPClient(client.get_transport())
 
-    p = os.path.dirname(os.path.abspath(c["copy"]["dst"]))
-    os.makedirs(p, mode=511, exist_ok=True)
-
     logging.info(c.get("name", "connecting to server..."))
     local_time = datetime.now(timezone.utc).replace(microsecond=0).astimezone()
     now = local_time.isoformat()
 
-    dst = c["copy"]["dst"] + "_" + now
-    cp.get(c["copy"]["src"], local_path=dst, recursive=True)
+    parent = os.path.dirname(os.path.abspath(c["dst"]))
+    basename = os.path.basename(c["dst"]) + "_" + now
+    dst = os.path.join(parent, basename)
+    os.makedirs(dst, mode=511, exist_ok=True)
+
+    for src in c["srcList"]:
+        tmp = os.path.join(dst, os.path.basename(src))
+        cp.get(src, local_path=tmp, recursive=True)
+
     cp.close()
     client.close()
 
     if c.get("format", "") == "": return
-    shutil.make_archive(dst, c["format"], dst)
+    shutil.make_archive(dst, c["format"], parent, basename)
     shutil.rmtree(dst)
     logging.info("saved {}!".format(dst+"."+c["format"]))
 
     n = c.get("keep", 0)
     if n <= 0: return
-    fs = glob(c["copy"]["dst"] + "_*." + c["format"])
+    fs = glob(c["dst"] + "_*." + c["format"])
     fs = sorted(fs, key=os.path.getctime, reverse=True)
 
     for f in fs[n:]:

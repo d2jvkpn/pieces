@@ -1,0 +1,19 @@
+Description=remote backup program
+After=syslog.target
+After=network.target
+
+[Service]
+Type=simple
+User={{Username}}
+WorkingDirectory={{Path/to/backup}}
+ExecStart=python3 daily_remote_backup.py -toml config.toml
+Restart=always
+Environment=
+
+ProtectSystem=full
+PrivateDevices=yes
+PrivateTmp=yes
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target
