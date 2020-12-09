@@ -12,6 +12,8 @@ curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.c
 git clone https://github.com/fatih/vim-go.git ~/.vim/pack/plugins/start/vim-go
 git clone https://github.com/fatih/molokai.git ~/.vim/pack/plugins/start/molokai
 
+git clone https://github.com/rust-lang/rust.vim ~/.vim/pack/plugins/start/rust.vim
+
 # colorscheme: default, blue, darkblue, delek, desert, elford, evening, industry, koehler, morning,
 #              murphy, pablo, peachpuff, ron, shine, slate, torte, zellner
 
@@ -55,5 +57,6 @@ let g:go_highlight_types = 1
 let g:go_highlight_extra_types = 1
 let g:rehash256 = 1
 let g:molokai_original = 1
+let g:rust_clip_command = 'xclip -selection clipboard'
 call plug#end()
 EOF

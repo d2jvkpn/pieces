@@ -1,10 +1,23 @@
-[remote_backup]
-name = "remote schedule daily backup"
+[[remote_backup]]
+name = "Task1"
 host = "hostname_or_ip"
 port = 22
 username = "rover"
 # password = "??????"
-clock = "00:10"
+clocks = ["12:30", "00:10"]
+format = "zip"  # tar
+retries = 3     # retry times
+keep = 5        # auto delete old backup
+srcList = ["/path/to/remote/src"]
+dst = "/path/to/local/dst"
+
+[[remote_backup]]
+name = "Task2"
+host = "hostname_or_ip"
+port = 22
+username = "rover"
+# password = "??????"
+clocks = ["12:30", "00:10"]
 format = "zip"  # tar
 retries = 3     # retry times
 keep = 5        # auto delete old backup

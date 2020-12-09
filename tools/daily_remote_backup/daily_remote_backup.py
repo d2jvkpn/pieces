@@ -5,7 +5,7 @@ from glob import glob
 import toml, paramiko, scp, schedule
 
 
-def job(c):
+def scpJob(c):
     client = paramiko.SSHClient()
     client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
@@ -74,14 +74,19 @@ parser.add_argument('-once', type=bool, required=False, default=False, help='run
 args = parser.parse_args()
 
 conf = toml.load(args.toml)
-remote = conf["remote_backup"]
-if args.once:
-    retry(job, remote.get("retries", 1))(remote)
-    sys.exit(1)
+remotes = conf["remote_backup"]
 
-schedule.every().day.at(remote["clock"]).do(retry(job, remote.get("retries", 1)), remote)
-# schedule.every().hour.do(job, remote)
-# schedule.every(10).minutes.do(job, remote)
+if args.once:
+    for remote in remotes:
+        retry(scpJob, remote.get("retries", 1))(remote)
+        sys.exit(1)
+
+for remote in remotes:
+    for clock in remote["clocks"]:
+        print("add corn job to schedule: {} at {}".format(remote["name"], clock))
+        schedule.every().day.at(clock).do(retry(scpJob, remote.get("retries", 1)), remote)
+# schedule.every().hour.do(scpJob, remote)
+# schedule.every(10).minutes.do(scpJob, remote)
 
 while True:
     schedule.run_pending()
