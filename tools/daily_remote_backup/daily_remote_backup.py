@@ -85,7 +85,7 @@ if args.once:
 for remote in remotes:
     for clock in remote["clocks"]:
         print("add corn job to schedule: {} at {}".format(remote["name"], clock))
-        retry(scpJob, remote.get("retries", 1))
+        do = retry(scpJob, remote.get("retries", 1))
         schedule.every().day.at(clock).do(do, remote)
 # schedule.every().hour.do(scpJob, remote)
 # schedule.every(10).minutes.do(scpJob, remote)
