@@ -61,7 +61,7 @@ def retry(fn, n):
 
 
 logging.basicConfig(
-    level = logging.INFO,          
+    level = logging.INFO,
     format = '%(asctime)s %(levelname)s %(filename)s %(funcName)s[%(lineno)d]: %(message)s',
     datefmt = '%Y-%m-%dT%H:%M:%S%z',
     # filename = logFilename, filemode = 'w',
@@ -78,13 +78,15 @@ remotes = conf["remote_backup"]
 
 if args.once:
     for remote in remotes:
-        retry(scpJob, remote.get("retries", 1))(remote)
-        sys.exit(1)
+        do = retry(scpJob, remote.get("retries", 1))
+        do(remote)
+    sys.exit(0)
 
 for remote in remotes:
     for clock in remote["clocks"]:
         print("add corn job to schedule: {} at {}".format(remote["name"], clock))
-        schedule.every().day.at(clock).do(retry(scpJob, remote.get("retries", 1)), remote)
+        retry(scpJob, remote.get("retries", 1))
+        schedule.every().day.at(clock).do(do, remote)
 # schedule.every().hour.do(scpJob, remote)
 # schedule.every(10).minutes.do(scpJob, remote)
 

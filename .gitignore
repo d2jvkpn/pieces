@@ -12,3 +12,7 @@
 **/target/
 .ipynb
 **/__pycache__/
+
+*.zip
+sub*/
+wk*/

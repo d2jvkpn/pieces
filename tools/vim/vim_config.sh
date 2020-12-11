@@ -9,10 +9,12 @@ set -eu -o pipefail
 
 mkdir -p ~/.vim/autoload/
 curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-git clone https://github.com/fatih/vim-go.git ~/.vim/pack/plugins/start/vim-go
-git clone https://github.com/fatih/molokai.git ~/.vim/pack/plugins/start/molokai
+git clone https://github.com/fatih/vim-go.git  ~/.vim/pack/plugins/start/vim-go
+git clone https://github.com/fatih/molokai.git  ~/.vim/pack/plugins/start/molokai
 
-git clone https://github.com/rust-lang/rust.vim ~/.vim/pack/plugins/start/rust.vim
+git clone https://github.com/rust-lang/rust.vim  ~/.vim/pack/plugins/start/rust.vim
+
+git clone --recurse-submodules https://github.com/python-mode/python-mode ~/.vim/pack/plugins/start/python-mode
 
 # colorscheme: default, blue, darkblue, delek, desert, elford, evening, industry, koehler, morning,
 #              murphy, pablo, peachpuff, ron, shine, slate, torte, zellner
