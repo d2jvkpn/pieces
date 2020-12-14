@@ -1,4 +1,4 @@
-import os, sys, time, shutil, logging, argparse
+import os, sys, time, argparse, shutil, logging
 from datetime import datetime, timezone
 from glob import glob
 
@@ -34,7 +34,11 @@ def scpJob(c):
     client.close()
 
     if c.get("format", "") == "": return
-    shutil.make_archive(dst, c["format"], parent, basename)
+    if c["format"] == "tar.gz":
+        shutil.make_archive(dst, "gztar", parent, basename)
+    else:
+        shutil.make_archive(dst, c["format"], parent, basename)
+
     shutil.rmtree(dst)
     logging.info("saved {}!".format(dst+"."+c["format"]))
 
@@ -66,7 +70,6 @@ logging.basicConfig(
     datefmt = '%Y-%m-%dT%H:%M:%S%z',
     # filename = logFilename, filemode = 'w',
 )
-
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-toml', required=True, help='toml file')
