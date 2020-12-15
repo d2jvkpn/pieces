@@ -5,7 +5,7 @@ ADD configs /root/configs
 RUN cp /etc/apk/repositories /etc/apk/repositories.bk && \
   sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
 
-RUN apk update && apk upgrade && apk add git tzdata
+RUN apk --no-cache update && apk --no-cache upgrade && apk add git tzdata wget libc6-compat
 
 # set TZ(timezone) and GOPROXY for golang GOPROXY="https://goproxy.cn,direct"
 ENV TZ="Asia/Shanghai" 
