@@ -12,10 +12,15 @@ docker build --squash              \
   --build-arg BRANCH="main"        \
   --build-arg PORT=$PORT           \
   --build-arg GO_VERSION="1.15.6"  \
-  -t $PROG:${TAG} .
+  -t $PROG:$TAG .
 # --no-cache
 
-docker run --detach --publish=$PORT:$PORT --name=${PROG} $PROG:$TAG
+docker inspect $PROG:$TAG                    |
+    jq -r ".[0].Comment"                     |
+    awk '{sub("sha256:", "", $2); print $2}' |
+    xargs -i docker rmi {}
+
+docker run --detach --publish=$PORT:$PORT --name=$PROG $PROG:$TAG
 
 curl localhost:$PORT/rover
 
