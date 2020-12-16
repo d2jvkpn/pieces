@@ -24,7 +24,7 @@ docker run --detach --publish=$PORT:$PORT --name=$PROG $PROG:$TAG
 
 curl localhost:$PORT/rover
 
-exit
+exit 0
 #### docker support --squash
 cat > /etc/docker/daemon.json << 'EOF'
 {
