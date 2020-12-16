@@ -1,7 +1,7 @@
 #! /usr/bin/env bash
 set -eu -o pipefail
 
-docker build --squash -t jupyter:latest .
+docker build --squash --build-arg TZ="Asia/Shanghai" -t jupyter:latest .
 
 docker inspect jupyter:latest                |
     jq -r ".[0].Comment"                     |

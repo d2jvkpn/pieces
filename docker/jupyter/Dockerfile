@@ -11,7 +11,7 @@ COPY configs/bashrc /opt/bashrc
 RUN echo "test -s /opt/bashrc && source /opt/bashrc" >> /etc/bashrc && \
     echo "test -s /opt/bashrc && source /opt/bashrc" >> /etc/profile
 
-RUN test -z ${TZ} || ln -s /usr/share/zoneinfo/${TZ} /etc/localtime || true
+RUN test -z ${TZ} || ln -f -s /usr/share/zoneinfo/${TZ} /etc/localtime || true
 
 #### install programs
 RUN yum -y update                              && \
