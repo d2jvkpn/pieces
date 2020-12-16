@@ -1,14 +1,16 @@
 # go1-alpine
 
-#### 1 Description
-Build golang docker image which has git account credential inside.
+
+build golang server program with docker image alpine
 
 
-#### 2 Buid image and run container
-    docker build -t go1:alpine ./
+#### 1. Enable docker build --squash to minimize image size
+``` bash
+cat > /etc/docker/daemon.json << 'EOF'
+{
+  "experimental": true
+}
+EOF
 
-    docker run --rm -it -u=rover go1:alpine sh
-
-#### 3 Test
-Git clone a private repo which imports golang package(s) from another private repo and compile it
-(go build).
+systemctl restart docker
+```

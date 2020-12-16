@@ -1,34 +1,42 @@
-FROM golang:alpine
+FROM alpine:3.12
 
-ADD configs /root/configs
+#### config
+ARG GIT_REPO=${GIT_REPO}
+ARG PROG=${PROG}
+ARG BRANCH=master
+ARG PORT=8080
+ARG ARGS=""
+ARG GO_VERSION=${GO_VERSION}
 
-RUN cp /etc/apk/repositories /etc/apk/repositories.bk && \
-  sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
+ENV PORT=${PORT}        ARGS=${ARGS}
+ENV TZ="Asia/Shanghai"  GIT_TERMINAL_PROMPT="1"
+COPY configs/gitconfig       /root/.gitconfig
+COPY configs/git-credentials /root/.git-credentials
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
 
+#### maintains
 RUN apk --no-cache update && apk --no-cache upgrade && apk add git tzdata wget libc6-compat
 
-# set TZ(timezone) and GOPROXY for golang GOPROXY="https://goproxy.cn,direct"
-ENV TZ="Asia/Shanghai" 
+# https://dl.google.com/go/go1.15.6.linux-amd64.tar.gz
+RUN tgz=go${GO_VERSION}.linux-amd64.tar.gz        && \
+    wget --quiet https://golang.google.cn/dl/$tgz && \
+    tar -xf $tgz -C /opt                          && \
+    rm $tgz
 
+ENV PATH=/opt/go/bin:$PATH
 RUN go env -w GOPROXY="https://goproxy.cn,direct"
 
-# set timezone for alpine
-RUN test -f /etc/localtime && cp /etc/localtime /etc/localtime.bk && \
-    test -f /etc/timezone && cp /etc/timezone /etc/timezone.bk && \
-    cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
-    echo "Asia/Shanghai" > /etc/timezone
+#### install program
+RUN git clone ${GIT_REPO}.git /app/${PROG}
+WORKDIR /app/${PROG}
 
-# add user rover
-RUN adduser -D rover
+# go clean -x
+RUN git checkout -f ${BRANCH}            && \
+    go build -o main ./                  && \
+    go clean -cache -testcache -modcache && \
+    rm -r /opt/go /root/go               && \
+    apk del git wget
 
-# copy git configs and credential
-ENV GIT_TERMINAL_PROMPT=1
-
-RUN cp /root/configs/gitconfig /root/.gitconfig && \
-    cp /root/configs/git-credentials /root/.git-credentials
-
-RUN cp /root/configs/gitconfig /home/rover/.gitconfig && \
-    cp /root/configs/git-credentials /home/rover/.git-credentials && \
-    chown rover:rover /home/rover/.gitconfig /home/rover/.git-credentials
-
-WORKDIR /home/rover
+#### setup service
+EXPOSE ${PORT}
+CMD ["sh", "-c", "./main -port ${PORT} ${ARGS}"]
