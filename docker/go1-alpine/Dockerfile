@@ -28,6 +28,7 @@ RUN go env -w GOPROXY="https://goproxy.cn,direct"
 
 #### install program
 RUN git clone ${GIT_REPO}.git /app/${PROG}
+COPY Dockerfile               /app/${PROG}/Dockerfile
 WORKDIR /app/${PROG}
 
 # go clean -x
