@@ -16,34 +16,34 @@ import (
 
   get profiles and view in browser
   ```bash
-  $ go tool pprof http://localhost:8080/debug/pprof/allocs?seconds=30
-  $ go tool pprof http://localhost:8080/debug/pprof/block?seconds=30
-  $ go tool pprof http://localhost:8080/debug/pprof/goroutine?seconds=30
-  $ go tool pprof http://localhost:8080/debug/pprof/heap?seconds=30
-  $ go tool pprof http://localhost:8080/debug/pprof/mutex?seconds=30
-  $ go tool pprof http://localhost:8080/debug/pprof/profile?seconds=30
-  $ go tool pprof http://localhost:8080/debug/pprof/threadcreate?seconds=30
+  go tool pprof http://localhost:8080/debug/pprof/allocs?seconds=30
+  go tool pprof http://localhost:8080/debug/pprof/block?seconds=30
+  go tool pprof http://localhost:8080/debug/pprof/goroutine?seconds=30
+  go tool pprof http://localhost:8080/debug/pprof/heap?seconds=30
+  go tool pprof http://localhost:8080/debug/pprof/mutex?seconds=30
+  go tool pprof http://localhost:8080/debug/pprof/profile?seconds=30
+  go tool pprof http://localhost:8080/debug/pprof/threadcreate?seconds=30
   ```
 
   download profile file and convert to svg image
   ```bash
-  $ wget -O profile.out localhost:8080/debug/pprof/profile?seconds=30
-  $ go tool pprof  -svg profile.out > profile.svg
+  wget -O profile.out localhost:8080/debug/pprof/profile?seconds=30
+  go tool pprof  -svg profile.out > profile.svg
   ```
 
   get pprof in 3o0 seconds svg image
-  $ go tool pprof -svg http://localhost:8080/debug/pprof/allocs?seconds=30 > allocs.svg
+  go tool pprof -svg http://localhost:8080/debug/pprof/allocs?seconds=30 > allocs.svg
 
   get trace in 5 seconds
   ```bash
-  $ wget -O trace.out http://localhost:8080/debug/pprof/trace?seconds=5
-  $ go tool trace trace.out
+  wget -O trace.out http://localhost:8080/debug/pprof/trace?seconds=5
+  go tool trace trace.out
   ```
 
   get cmdline and symbo binary data
   ```bash
-  $ wget -O cmdline.out http://localhost:8080/debug/pprof/cmdline
-  $ wget -O symbol.out http://localhost:8080/debug/pprof/symbol
+  wget -O cmdline.out http://localhost:8080/debug/pprof/cmdline
+  wget -O symbol.out http://localhost:8080/debug/pprof/symbol
   ```
 */
 type Pprof struct {
