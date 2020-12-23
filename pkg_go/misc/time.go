@@ -6,7 +6,7 @@ import (
 )
 
 /*
-  ceil time, e.g. TimeCeil('2020-12-01T17:39:07.123+08:00', "M") -> '2020-12-01T17:00:00+08:00'
+  ceil time, e.g. TimeCeil('2020-12-01T17:39:07.123+08:00', "M") -> '2020-12-01T17:40:00+08:00'
     valid unit(key or value)
     H: hour, M: minute, S: second
     y: year, s: season, m: month, w: week, d: day
@@ -26,7 +26,7 @@ func TimeCeil(at time.Time, tu string) (out time.Time, err error) {
 	switch tu {
 	case "second", "S":
 		out = time.Date(year, month, day, hour, minute, second, 0, location)
-		if at.Sub(out) > time.Millisecond {
+		if at.Sub(out) > time.Millisecond { //!
 			out = out.Add(time.Second)
 		}
 	case "minute", "M":
@@ -78,7 +78,7 @@ func TimeCeil(at time.Time, tu string) (out time.Time, err error) {
 }
 
 /*
-  floor time, e.g. TimeFloor('2020-12-01T17:39:07.123+08:00', "M") -> '2020-12-01T17:40:00+08:00'
+  floor time, e.g. TimeFloor('2020-12-01T17:39:07.123+08:00', "M") -> '2020-12-01T17:39:00+08:00'
     valid unit(key or value)
     H: hour, M: minute, S: second
     y: year, s: season, m: month, w: week, d: day
