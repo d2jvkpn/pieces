@@ -1,4 +1,4 @@
-import os, sys, time, argparse, shutil, logging
+import os, sys, time, argparse, shutil, logging, json
 from datetime import datetime, timezone
 from glob import glob
 
@@ -64,11 +64,14 @@ def retry(fn, n):
     return do
 
 
+prog = os.path.basename(sys.argv[0]).strip(".py")
+logfile = "{}.log".format(prog) # "{}.{}.log".format(prog, int(time.time()))
+
 logging.basicConfig(
     level = logging.INFO,
-    format = '%(asctime)s %(levelname)s %(filename)s %(funcName)s[%(lineno)d]: %(message)s',
+    format = '%(asctime)s\t%(levelname)s\t%(filename)s %(funcName)s[%(lineno)d]\t%(message)s',
     datefmt = '%Y-%m-%dT%H:%M:%S%z',
-    # filename = logFilename, filemode = 'w',
+    filename = logfile, filemode = 'a',
 )
 
 parser = argparse.ArgumentParser()
@@ -78,6 +81,7 @@ args = parser.parse_args()
 
 conf = toml.load(args.toml)
 remotes = conf["remote_backup"]
+logging.info(json.dumps(conf))
 
 if args.once:
     for remote in remotes:
