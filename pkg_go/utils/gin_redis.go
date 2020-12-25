@@ -32,7 +32,7 @@ func (rd *ResData) Error() string { // implememt error interface
 	return rd.Message // in general, message is ok when code == 0
 }
 
-func GinWithRedis(hdl GinHandler, client *redis.Client) func(*gin.Context) {
+func GinWithRedis(hdl *GinHandler, client *redis.Client) func(*gin.Context) {
 	return func(c *gin.Context) {
 		var (
 			key  string
@@ -56,13 +56,13 @@ func GinWithRedis(hdl GinHandler, client *redis.Client) func(*gin.Context) {
 		}
 
 		cmd = client.Get(key)
-		if err = cmd.Err(); err == nil { // got result from redis cache
+		if err = cmd.Err(); err == nil { // get result from redis cache
 			bts, _ = cmd.Bytes()
 			respBytes(bts)
 			return
 		}
 
-		if data, err = hdl.Do(c); err != nil { // get data failed
+		if data, err = hdl.Do(c); err != nil { // process failed
 			bts, _ = json.Marshal(err)
 			if hdl.AlwayCache && hdl.Duration > 0 {
 				client.Set(key, bts, hdl.Duration) // avoid cache penetration
