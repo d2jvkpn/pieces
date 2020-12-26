@@ -8,7 +8,7 @@ func ts2utc(ts)-> str:
     return datetime.datetime.fromtimestamp(ts).replace(tzinfo=pytz.UTC).isoformat()
 
 
-def obj2marshal(obj, pretty=True) -> str:
+def objMarshal(obj, pretty=True) -> str:
     if pretty:
         bts = json.dumps(obj, ensure_ascii=False, indent="  ").encode('utf8')
         return bts.decode() + "\n"
