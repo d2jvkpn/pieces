@@ -21,14 +21,21 @@ type GinHandler struct {
 type ResData struct {
 	Code    int         `json:"code"`
 	Message string      `json:"message"`
+	Err     error       `json:"err"`
 	Data    interface{} `json:"data,omitempty"`
 }
 
-func NewResData(code int, message string) (rd *ResData) {
-	return &ResData{Code: code, Message: message}
+func NewResData(code int, message string, err error) (rd *ResData) {
+	if message == "" && err != nil {
+		message == err.Err.Error()
+	}
+	return &ResData{Code: code, Message: message, Err: err}
 }
 
 func (rd *ResData) Error() string { // implememt error interface
+	if rd.Err != nil {
+		return rd.Err.Error()
+	}
 	return rd.Message // in general, message is ok when code == 0
 }
 
