@@ -10,13 +10,13 @@ def ts2time(ts)-> str:
     return datetime.datetime.fromtimestamp(ts).isoformat(timespec="milliseconds")
 
 
-def objMarshal(obj, pretty=True) -> str:
+def objMarshal(obj, pretty=True) -> bytes:
     if pretty:
         bts = json.dumps(obj, ensure_ascii=False, indent="  ").encode('utf8')
-        return bts.decode() + "\n"
+        return bts
     
     bts = json.dumps(obj, ensure_ascii=False).encode('utf8')
-    return bts.decode()
+    return bts
 
     
 def logStderr(msg, *a):
