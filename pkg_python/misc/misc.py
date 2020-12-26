@@ -1,8 +1,10 @@
-import os, json, pytz, datetime
+import os, json, datetime
 
 def datetime2rfc3339(dt: datetime.datetime) -> str:
-    return pytz.UTC.localize(dt).isoformat()
+    return dt.astimezone().isoformat()
 
+def nowRFC3339() -> str:
+    return datetime.datetime.now().astimezone().isoformat()
 
 func ts2utc(ts)-> str:
     return datetime.datetime.fromtimestamp(ts).replace(tzinfo=pytz.UTC).isoformat()
