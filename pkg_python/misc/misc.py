@@ -1,13 +1,13 @@
 import os, json, datetime
 
 def datetime2rfc3339(dt: datetime.datetime) -> str:
-    return dt.astimezone().isoformat()
+    return dt.astimezone().isoformat(timespec="milliseconds")
 
-def nowRFC3339() -> str:
-    return datetime.datetime.now().astimezone().isoformat()
+def now() -> str:
+    return datetime.datetime.now().astimezone().isoformat(timespec="milliseconds")
 
-func ts2utc(ts)-> str:
-    return datetime.datetime.fromtimestamp(ts).replace(tzinfo=pytz.UTC).isoformat()
+def ts2time(ts)-> str:
+    return datetime.datetime.fromtimestamp(ts).isoformat(timespec="milliseconds")
 
 
 def objMarshal(obj, pretty=True) -> str:
