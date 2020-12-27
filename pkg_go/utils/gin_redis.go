@@ -21,14 +21,21 @@ type GinHandler struct {
 type ResData struct {
 	Code    int         `json:"code"`
 	Message string      `json:"message"`
-	Err     error       `json:"err"`
+	Err     error       `json:"-"`
 	Data    interface{} `json:"data,omitempty"`
 }
 
-func NewResData(code int, message string, err error) (rd *ResData) {
-	if message == "" && err != nil {
-		message == err.Err.Error()
+func NewResData(code int, message string, errs ...error) (rd *ResData) {
+	var err error
+
+	if len(errs) > 0 {
+		err = errs[0]
 	}
+
+	if message == "" && err != nil {
+		message = err.Error()
+	}
+
 	return &ResData{Code: code, Message: message, Err: err}
 }
 
@@ -36,10 +43,10 @@ func (rd *ResData) Error() string { // implememt error interface
 	if rd.Err != nil {
 		return rd.Err.Error()
 	}
-	return rd.Message // in general, message is ok when code == 0
+	return "<nil>"
 }
 
-func GinWithRedis(hdl *GinHandler, client *redis.Client) func(*gin.Context) {
+func (hdl *GinHandler) WithRedis(client *redis.Client) func(*gin.Context) {
 	return func(c *gin.Context) {
 		var (
 			key  string
@@ -86,4 +93,17 @@ func GinWithRedis(hdl *GinHandler, client *redis.Client) func(*gin.Context) {
 		respBytes(bts)
 		return
 	}
+}
+
+func DefaultRedisClient() (client *redis.Client, err error) {
+	client = redis.NewClient(
+		&redis.Options{Addr: "127.0.0.1:6379", Password: "", DB: 0},
+	)
+
+	statusCmd := client.Ping()
+	if err := statusCmd.Err(); err != nil {
+		return nil, err
+	}
+
+	return client, nil
 }

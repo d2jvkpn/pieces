@@ -5,25 +5,13 @@ import (
 	"fmt"
 	"testing"
 	"time"
-
-	"github.com/go-redis/redis"
 )
 
-func defaultRedisClient(t *testing.T) (client *redis.Client) {
-	client = redis.NewClient(
-		&redis.Options{Addr: "127.0.0.1:6379", Password: "", DB: 0},
-	)
-
-	statusCmd := client.Ping()
-	if err := statusCmd.Err(); err != nil {
+func TestRedisClient(t *testing.T) {
+	client, err := DefaultRedisClient()
+	if err != nil {
 		t.Fatal(err)
 	}
-
-	return
-}
-
-func TestRedisClient(t *testing.T) {
-	client := defaultRedisClient(t)
 
 	rd := NewResData(1, "something wrong")
 	bts, _ := json.Marshal(rd)
@@ -47,4 +35,11 @@ func TestResData(t *testing.T) {
 	fmt.Println("!!!", err)
 	bts, _ := json.Marshal(err)
 	fmt.Printf(">>> %s\n", bts)
+}
+
+func TestDemo1(t *testing.T) {
+	err := Demo1(":8080")
+	if err != nil {
+		t.Fatal(err)
+	}
 }
