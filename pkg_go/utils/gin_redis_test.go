@@ -43,3 +43,10 @@ func TestDemo1(t *testing.T) {
 		t.Fatal(err)
 	}
 }
+
+func TestDemo2(t *testing.T) {
+	err := Demo2(":8080")
+	if err != nil {
+		t.Fatal(err)
+	}
+}
