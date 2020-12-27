@@ -15,7 +15,7 @@ type GinHandler struct {
 	Do       func(*gin.Context) (interface{}, error) // key, data, error
 	Duration time.Duration
 
-	AlwayCache bool // avoid cache penetration
+	AlwaysCache bool // avoid cache penetration
 }
 
 func DefaultRedisClient() (client *redis.Client, err error) {
@@ -63,7 +63,7 @@ func (hdl *GinHandler) WithRedis(client *redis.Client) func(*gin.Context) {
 
 		if data, err = hdl.Do(c); err != nil { // process failed
 			bts, _ = json.Marshal(err)
-			if hdl.AlwayCache && hdl.Duration > 0 {
+			if hdl.AlwaysCache && hdl.Duration > 0 {
 				client.Set(key, bts, hdl.Duration) // avoid cache penetration
 			}
 			respBytes(bts)
