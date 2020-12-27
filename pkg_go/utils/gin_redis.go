@@ -85,7 +85,7 @@ func GinWithRedis(
 	client *redis.Client, duration time.Duration,
 	alwaysCache ...bool) func(*gin.Context) {
 
-	if duration <= 0 { // don't allow no cache
+	if duration <= 0 { // don't allow no cache or never expire
 		return nil
 	}
 
