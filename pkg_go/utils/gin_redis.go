@@ -84,6 +84,11 @@ func GinWithRedis(
 	do func(*gin.Context, bool) (string, interface{}, error),
 	client *redis.Client, duration time.Duration,
 	alwaysCache ...bool) func(*gin.Context) {
+
+	if duration <= 0 { // don't allow no cache
+		return nil
+	}
+
 	return func(c *gin.Context) {
 		var (
 			key  string
@@ -98,35 +103,30 @@ func GinWithRedis(
 			return
 		}
 
-		respBytes := func(bts []byte) {
+		defer func(bts []byte) {
 			c.Header("StatusCode", strconv.Itoa(http.StatusOK))
 			c.Header("Status", http.StatusText(http.StatusOK))
 			c.Header("Content-Type", "application/json; charset=utf-8")
 			c.Writer.Write(bts)
 			return
-		}
+		}()
 
 		cmd = client.Get(key)
 		if err = cmd.Err(); err == nil { // get result from redis cache
 			bts, _ = cmd.Bytes()
-			respBytes(bts)
 			return
 		}
 
 		if _, data, err = do(c, true); err != nil { // process failed
 			bts, _ = json.Marshal(err)
-			if len(alwaysCache) > 0 && alwaysCache[0] && duration > 0 {
+			if len(alwaysCache) > 0 && alwaysCache[0] {
 				client.Set(key, bts, duration) // avoid cache penetration
 			}
-			respBytes(bts)
 			return
 		}
 
 		bts, _ = json.Marshal(data)
-		if duration > 0 {
-			client.Set(key, bts, duration)
-		}
-		respBytes(bts)
+		client.Set(key, bts, duration)
 		return
 	}
 }
