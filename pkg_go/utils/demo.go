@@ -84,9 +84,11 @@ func demo2Do(c *gin.Context, process bool) (key string, data interface{}, err er
 	key = "Demo2:" + key
 
 	if !process {
+		// c.Set("Demo2:post_data", postData) // read data from body
 		return key, nil, nil
 	}
 
+	// postData, _ = c.Get("Demo2:post_data")
 	var year int
 	yearStr, ok := c.GetQuery("year")
 	if !ok {
