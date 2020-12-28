@@ -103,7 +103,7 @@ func GinWithRedis(
 			return
 		}
 
-		defer func(bts []byte) {
+		defer func() {
 			c.Header("StatusCode", strconv.Itoa(http.StatusOK))
 			c.Header("Status", http.StatusText(http.StatusOK))
 			c.Header("Content-Type", "application/json; charset=utf-8")
@@ -117,7 +117,7 @@ func GinWithRedis(
 			return
 		}
 
-		if _, data, err = do(c, true); err != nil { // process failed
+		if _, data, err = do(c, true); err != nil { // proccess failed
 			bts, _ = json.Marshal(err)
 			if len(alwaysCache) > 0 && alwaysCache[0] {
 				client.Set(key, bts, duration) // avoid cache penetration

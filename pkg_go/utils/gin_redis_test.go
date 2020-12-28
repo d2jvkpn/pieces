@@ -2,6 +2,7 @@ package utils
 
 import (
 	"encoding/json"
+	"flag"
 	"fmt"
 	"testing"
 	"time"
@@ -31,22 +32,31 @@ func TestResData(t *testing.T) {
 	}
 
 	err := newError()
-
 	fmt.Println("!!!", err)
 	bts, _ := json.Marshal(err)
 	fmt.Printf(">>> %s\n", bts)
 }
 
 func TestDemo1(t *testing.T) {
-	err := Demo1(":8080")
-	if err != nil {
+	if err := Demo1(":8080"); err != nil {
 		t.Fatal(err)
 	}
 }
 
+// $ go test -run=TestDemo2 -args ":8080"
 func TestDemo2(t *testing.T) {
-	err := Demo2(":8080")
-	if err != nil {
+	var (
+		addr string
+		err  error
+	)
+
+	if flag.NArg() > 0 {
+		addr = flag.Args()[0]
+	} else {
+		addr = ":8080"
+	}
+
+	if err = Demo2(addr); err != nil {
 		t.Fatal(err)
 	}
 }

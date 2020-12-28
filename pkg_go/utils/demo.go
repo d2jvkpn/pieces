@@ -77,18 +77,19 @@ func Demo2(addr string) (err error) {
 }
 
 func demo2Do(c *gin.Context, process bool) (key string, data interface{}, err error) {
-	key = c.Param("name")
-	if key == "" {
-		return "", nil, fmt.Errorf("no name provided")
-	}
-	key = "Demo2:" + key
-
 	if !process {
-		// c.Set("Demo2:post_data", postData) // read data from body
+		key = c.Param("name")
+		if key == "" {
+			return "", nil, fmt.Errorf("no name provided")
+		}
+		key = "Demo2:" + key
+		c.Set("key", key)
 		return key, nil, nil
 	}
 
-	// postData, _ = c.Get("Demo2:post_data")
+	intf, _ := c.Get("key")
+	key, _ = intf.(string)
+
 	var year int
 	yearStr, ok := c.GetQuery("year")
 	if !ok {
