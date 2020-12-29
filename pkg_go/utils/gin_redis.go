@@ -10,12 +10,32 @@ import (
 	"github.com/go-redis/redis"
 )
 
-type GinHandler struct {
-	Key      func(*gin.Context) (string, error)
-	Do       func(*gin.Context) (interface{}, error) // key, data, error
-	Duration time.Duration
+type ResData struct {
+	Code    int         `json:"code"`
+	Message string      `json:"message"`
+	Err     error       `json:"-"`
+	Data    interface{} `json:"data,omitempty"`
+}
 
-	AlwaysCache bool // avoid cache penetration
+func NewResData(code int, message string, errs ...error) (rd *ResData) {
+	var err error
+
+	if len(errs) > 0 {
+		err = errs[0]
+	}
+
+	if message == "" && err != nil {
+		message = err.Error()
+	}
+
+	return &ResData{Code: code, Message: message, Err: err}
+}
+
+func (rd *ResData) Error() string { // implememt error interface
+	if rd.Err != nil {
+		return rd.Err.Error()
+	}
+	return "<nil>"
 }
 
 func DefaultRedisClient() (client *redis.Client, err error) {
@@ -31,61 +51,12 @@ func DefaultRedisClient() (client *redis.Client, err error) {
 	return client, nil
 }
 
-func (hdl *GinHandler) WithRedis(client *redis.Client) func(*gin.Context) {
-	return func(c *gin.Context) {
-		var (
-			key  string
-			err  error
-			bts  []byte
-			cmd  *redis.StringCmd
-			data interface{}
-		)
-
-		if key, err = hdl.Key(c); err != nil {
-			c.JSON(http.StatusOK, err)
-			return
-		}
-
-		respBytes := func(bts []byte) {
-			c.Header("StatusCode", strconv.Itoa(http.StatusOK))
-			c.Header("Status", http.StatusText(http.StatusOK))
-			c.Header("Content-Type", "application/json; charset=utf-8")
-			c.Writer.Write(bts)
-			return
-		}
-
-		cmd = client.Get(key)
-		if err = cmd.Err(); err == nil { // get result from redis cache
-			bts, _ = cmd.Bytes()
-			respBytes(bts)
-			return
-		}
-
-		if data, err = hdl.Do(c); err != nil { // process failed
-			bts, _ = json.Marshal(err)
-			if hdl.AlwaysCache && hdl.Duration > 0 {
-				client.Set(key, bts, hdl.Duration) // avoid cache penetration
-			}
-			respBytes(bts)
-			return
-		}
-
-		bts, _ = json.Marshal(data)
-		if hdl.Duration > 0 {
-			client.Set(key, bts, hdl.Duration)
-		}
-
-		respBytes(bts)
-		return
-	}
-}
-
 func GinWithRedis(
 	do func(*gin.Context, bool) (string, interface{}, error),
 	client *redis.Client, duration time.Duration,
 	alwaysCache ...bool) func(*gin.Context) {
 
-	if duration <= 0 { // don't allow no cache or never expire
+	if duration < 0 { // don't allow no cache or never expire
 		return nil
 	}
 

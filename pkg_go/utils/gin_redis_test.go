@@ -37,14 +37,14 @@ func TestResData(t *testing.T) {
 	fmt.Printf(">>> %s\n", bts)
 }
 
-func TestDemo1(t *testing.T) {
-	if err := Demo1(":8080"); err != nil {
+func TestDemo_t1(t *testing.T) {
+	if err := Demo(":8080"); err != nil {
 		t.Fatal(err)
 	}
 }
 
-// $ go test -run=TestDemo2 -args ":8080"
-func TestDemo2(t *testing.T) {
+// $ go test -run=TestDemo_t2 -args ":8080"
+func TestDemo_t2(t *testing.T) {
 	var (
 		addr string
 		err  error
@@ -56,7 +56,7 @@ func TestDemo2(t *testing.T) {
 		addr = ":8080"
 	}
 
-	if err = Demo2(addr); err != nil {
+	if err = Demo(addr); err != nil {
 		t.Fatal(err)
 	}
 }
