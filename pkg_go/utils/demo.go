@@ -2,6 +2,7 @@ package utils
 
 import (
 	"fmt"
+	"net/http"
 	"strconv"
 	"time"
 
@@ -22,38 +23,38 @@ func Demo(addr string) (err error) {
 	return router.Run(addr)
 }
 
-func demoDo(c *gin.Context, process bool) (key string, data interface{}, err error) {
+func demoDo(c *gin.Context, process bool) (res Res) {
+	var (
+		name string
+		err  error
+	)
+
+	//// get key
 	if !process {
-		key = c.Param("name")
-		if key == "" {
-			return "", nil, fmt.Errorf("no name provided")
-		}
-		key = "Demo2:" + key
-		c.Set("key", key)
-		return key, nil, nil
+		name = c.Param("name")
+		res.Key = "Demo:" + name
+		c.Set("name", name)
+		return res
 	}
 
-	intf, _ := c.Get("key")
-	key, _ = intf.(string)
-
+	////
 	var year int
-	yearStr, ok := c.GetQuery("year")
-	if !ok {
-		err = NewResData(-1, "year not provided", fmt.Errorf("parameter year not available"))
-		return key, nil, err
-	}
+	name = c.GetString("name")
 
-	if year, err = strconv.Atoi(yearStr); err != nil {
-		return key, nil, NewResData(-2, "year is invalid", err)
+	if year, err = strconv.Atoi(c.DefaultQuery("year", "")); err != nil {
+		res = NewRes(-1, "year is invalid", err)
+		res.Status = http.StatusBadRequest
+		return res
 	}
 
 	age := time.Now().Year() - year
-	if year <= 0 || age < 0 {
-		err = NewResData(-3, "imporper year", fmt.Errorf("invalid parameter year: %d", year))
-		return key, nil, err
+	if age < 0 {
+		res = NewRes(-2, "imporper year", fmt.Errorf("invalid parameter year: %d", year))
+		res.Status = http.StatusBadRequest
+		return res
 	}
 
-	resp := NewResData(0, "OK")
-	resp.Data = gin.H{"name": key, "age": age}
-	return key, resp, nil
+	res = NewRes(0, "OK")
+	res.Data = gin.H{"name": name, "age": age}
+	return res
 }

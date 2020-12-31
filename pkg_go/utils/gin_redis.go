@@ -10,28 +10,35 @@ import (
 	"github.com/go-redis/redis"
 )
 
+type Res struct {
+	Key    string `json:"key"`    // redis cacke key
+	Status int    `json:"status"` // http response StatueCode
+	Err    error  `json:"-"`
+
+	ResData
+}
+
 type ResData struct {
 	Code    int         `json:"code"`
 	Message string      `json:"message"`
-	Err     error       `json:"-"`
 	Data    interface{} `json:"data,omitempty"`
 }
 
-func NewResData(code int, message string, errs ...error) (rd *ResData) {
-	var err error
+func NewRes(code int, message string, errs ...error) (rd Res) {
+	rd.Status = http.StatusOK
 
 	if len(errs) > 0 {
-		err = errs[0]
+		rd.Err = errs[0]
+	}
+	if message == "" && rd.Err != nil {
+		message = rd.Err.Error()
 	}
 
-	if message == "" && err != nil {
-		message = err.Error()
-	}
-
-	return &ResData{Code: code, Message: message, Err: err}
+	rd.Code, rd.Message = code, message
+	return rd
 }
 
-func (rd *ResData) Error() string { // implememt error interface
+func (rd *Res) Error() string { // implememt error interface
 	if rd.Err != nil {
 		return rd.Err.Error()
 	}
@@ -51,53 +58,69 @@ func DefaultRedisClient() (client *redis.Client, err error) {
 	return client, nil
 }
 
-func GinWithRedis(
-	do func(*gin.Context, bool) (string, interface{}, error),
+func GinWithRedis(do func(*gin.Context, bool) Res,
 	client *redis.Client, duration time.Duration,
 	alwaysCache ...bool) func(*gin.Context) {
 
-	if duration < 0 { // don't allow no cache or never expire
+	if duration < 0 { // no cache never expire
 		return nil
 	}
 
 	return func(c *gin.Context) {
 		var (
-			key  string
-			err  error
-			bts  []byte
-			cmd  *redis.StringCmd
-			data interface{}
+			key string
+			bts []byte
+			err error
+			mp  map[string]string
+			cmd *redis.StringStringMapCmd
+			rd  Res
 		)
 
-		if key, _, err = do(c, false); err != nil {
-			c.JSON(http.StatusOK, err)
+		if rd = do(c, false); rd.Err != nil {
+			c.JSON(rd.Status, rd.ResData) // http.StatusBadRequest
 			return
 		}
+		key = rd.Key //! important
 
 		defer func() {
-			c.Header("StatusCode", strconv.Itoa(http.StatusOK))
-			c.Header("Status", http.StatusText(http.StatusOK))
+			c.Header("StatusCode", strconv.Itoa(rd.Status)) // strconv.Itoa(http.StatusOK)
+			// c.Header("Status", http.StatusText(http.StatusOK))
 			c.Header("Content-Type", "application/json; charset=utf-8")
 			c.Writer.Write(bts)
 			return
 		}()
 
-		cmd = client.Get(key)
-		if err = cmd.Err(); err == nil { // get result from redis cache
-			bts, _ = cmd.Bytes()
-			return
+		// *redis.StringStringMapCmd
+		cmd = client.HGetAll(rd.Key)
+		if err = cmd.Err(); err == nil {
+			if mp, err = cmd.Result(); len(mp) > 0 && err == nil {
+				// println(">>> cache")
+				rd.Status, _ = strconv.Atoi(mp["status"])
+				bts = []byte(mp["resdata"])
+				return
+			}
 		}
 
-		if _, data, err = do(c, true); err != nil { // proccess failed
-			bts, _ = json.Marshal(err)
+		hmset := func() {
+			bts, _ = json.Marshal(rd.ResData)
+			client.HMSet(key, map[string]interface{}{
+				"status":  rd.Status,
+				"resdata": bts,
+			})
+
+			client.Expire(key, duration)
+		}
+
+		// println(">>> process")
+		if rd = do(c, true); rd.Err != nil { // proccess failed
+			bts, _ = json.Marshal(rd.ResData)
 			if len(alwaysCache) > 0 && alwaysCache[0] {
-				client.Set(key, bts, duration) // avoid cache penetration
+				hmset() // avoid cache penetration
 			}
 			return
 		}
 
-		bts, _ = json.Marshal(data)
-		client.Set(key, bts, duration)
+		hmset()
 		return
 	}
 }

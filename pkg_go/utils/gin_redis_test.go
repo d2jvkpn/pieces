@@ -14,8 +14,8 @@ func TestRedisClient(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	rd := NewResData(1, "something wrong")
-	bts, _ := json.Marshal(rd)
+	rd := NewRes(1, "something wrong")
+	bts, _ := json.Marshal(rd.ResData)
 
 	statusCmd := client.Set("--aaa", bts, 10*time.Second)
 	if err := statusCmd.Err(); err != nil {
@@ -25,26 +25,8 @@ func TestRedisClient(t *testing.T) {
 	fmt.Println(">>>\n", client.Get("--aaa").String())
 }
 
-// treat ResData as err, and mashal the error
-func TestResData(t *testing.T) {
-	newError := func() error {
-		return NewResData(1, "something wrong")
-	}
-
-	err := newError()
-	fmt.Println("!!!", err)
-	bts, _ := json.Marshal(err)
-	fmt.Printf(">>> %s\n", bts)
-}
-
+// $ go test -run=TestDemo_t1 -args ":8080"
 func TestDemo_t1(t *testing.T) {
-	if err := Demo(":8080"); err != nil {
-		t.Fatal(err)
-	}
-}
-
-// $ go test -run=TestDemo_t2 -args ":8080"
-func TestDemo_t2(t *testing.T) {
 	var (
 		addr string
 		err  error
