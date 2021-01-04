@@ -12,7 +12,7 @@ type FlowLimiter struct {
 	ticker *time.Ticker
 }
 
-func rfc999ms() string {
+func rfc3339ms() string {
 	return time.Now().Format("2006-01-02T15:04:05.000Z07:00")
 }
 
@@ -37,15 +37,15 @@ func NewFlowLimiter(dur time.Duration, num int64) (fl *FlowLimiter, err error) {
 
 		for _ = range fl.ticker.C {
 			nl := len(fl.ch)
-			fmt.Printf(">>> tick start: %s, len(chan): %d\n", rfc999ms(), nl)
+			fmt.Printf(">>> tick start: %s, len(chan): %d\n", rfc3339ms(), nl)
 			for i := nl; i < cap(fl.ch); i++ {
 				fl.ch <- true // panic if fl.ch was closed
 			}
-			fmt.Printf("    tick end: %s, len(chan): %d\n", rfc999ms(), nl)
+			fmt.Printf("    tick end: %s, len(chan): %d\n", rfc3339ms(), nl)
 		}
 
 		nl := len(fl.ch)
-		fmt.Printf("=== tick stop: %s, len(chan): %d\n", rfc999ms(), nl)
+		fmt.Printf("=== tick stop: %s, len(chan): %d\n", rfc3339ms(), nl)
 	}()
 
 	return
