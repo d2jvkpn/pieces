@@ -9,42 +9,32 @@ import (
 )
 
 /*
+web browser address
+  http://localhost:8080/debug/pprof/
 
-  web browser address
-    http://localhost:8080/debug/pprof/
+get profiles and view in browser
+  $ go tool pprof http://localhost:8080/debug/pprof/allocs?seconds=30
+  $ go tool pprof http://localhost:8080/debug/pprof/block?seconds=30
+  $ go tool pprof http://localhost:8080/debug/pprof/goroutine?seconds=30
+  $ go tool pprof http://localhost:8080/debug/pprof/heap?seconds=30
+  $ go tool pprof http://localhost:8080/debug/pprof/mutex?seconds=30
+  $ go tool pprof http://localhost:8080/debug/pprof/profile?seconds=30
+  $ go tool pprof http://localhost:8080/debug/pprof/threadcreate?seconds=30
 
+download profile file and convert to svg image
+  $ wget -O profile.out localhost:8080/debug/pprof/profile?seconds=30
+  $ go tool pprof  -svg profile.out > profile.svg
 
-  get profiles and view in browser
-  ```bash
-  go tool pprof http://localhost:8080/debug/pprof/allocs?seconds=30
-  go tool pprof http://localhost:8080/debug/pprof/block?seconds=30
-  go tool pprof http://localhost:8080/debug/pprof/goroutine?seconds=30
-  go tool pprof http://localhost:8080/debug/pprof/heap?seconds=30
-  go tool pprof http://localhost:8080/debug/pprof/mutex?seconds=30
-  go tool pprof http://localhost:8080/debug/pprof/profile?seconds=30
-  go tool pprof http://localhost:8080/debug/pprof/threadcreate?seconds=30
-  ```
+get pprof in 3o0 seconds svg image
+  $ go tool pprof -svg http://localhost:8080/debug/pprof/allocs?seconds=30 > allocs.svg
 
-  download profile file and convert to svg image
-  ```bash
-  wget -O profile.out localhost:8080/debug/pprof/profile?seconds=30
-  go tool pprof  -svg profile.out > profile.svg
-  ```
+get trace in 5 seconds
+  $ wget -O trace.out http://localhost:8080/debug/pprof/trace?seconds=5
+  $ go tool trace trace.out
 
-  get pprof in 3o0 seconds svg image
-  go tool pprof -svg http://localhost:8080/debug/pprof/allocs?seconds=30 > allocs.svg
-
-  get trace in 5 seconds
-  ```bash
-  wget -O trace.out http://localhost:8080/debug/pprof/trace?seconds=5
-  go tool trace trace.out
-  ```
-
-  get cmdline and symbo binary data
-  ```bash
-  wget -O cmdline.out http://localhost:8080/debug/pprof/cmdline
-  wget -O symbol.out http://localhost:8080/debug/pprof/symbol
-  ```
+get cmdline and symbol binary data
+  $ wget -O cmdline.out http://localhost:8080/debug/pprof/cmdline
+  $ wget -O symbol.out http://localhost:8080/debug/pprof/symbol
 */
 type Pprof struct {
 	addr   string
@@ -56,17 +46,16 @@ type Pprof struct {
 // create new Pprof and run server
 func NewPprof(addr string) (pp *Pprof) {
 	mux := http.NewServeMux()
+
 	mux.HandleFunc("/debug/pprof/", pprof.Index)
-	mux.HandleFunc("/debug/pprof/cmdline", pprof.Cmdline)
 	mux.HandleFunc("/debug/pprof/profile", pprof.Profile)
-	mux.HandleFunc("/debug/pprof/symbol", pprof.Symbol)
+
 	mux.HandleFunc("/debug/pprof/trace", pprof.Trace)
 
-	pp = &Pprof{
-		addr:   addr,
-		status: "running",
-	}
+	mux.HandleFunc("/debug/pprof/cmdline", pprof.Cmdline)
+	mux.HandleFunc("/debug/pprof/symbol", pprof.Symbol)
 
+	pp = &Pprof{addr: addr, status: "running"}
 	pp.server = &http.Server{
 		Addr:        addr,
 		Handler:     mux,
@@ -77,7 +66,6 @@ func NewPprof(addr string) (pp *Pprof) {
 
 	go func() {
 		pp.err = pp.server.ListenAndServe()
-
 		if pp.err != http.ErrServerClosed {
 			pp.status = "failed"
 		} else {

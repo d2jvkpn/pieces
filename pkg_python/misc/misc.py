@@ -9,6 +9,9 @@ def now() -> str:
 def ts2time(ts)-> str:
     return datetime.datetime.fromtimestamp(ts).isoformat(timespec="milliseconds")
 
+def marshalDatetime(t): # json.dumps(dt, default=marshalDatetime)
+    if isinstance(t, datetime.datetime):
+        return t.isoformat(timespec="milliseconds")
 
 def objMarshal(obj, pretty=True) -> bytes:
     if pretty:
