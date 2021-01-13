@@ -1,13 +1,14 @@
 package utils
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/go-redis/redis"
+	redis "github.com/go-redis/redis/v8"
 )
 
 type Res struct {
@@ -50,7 +51,7 @@ func DefaultRedisClient() (client *redis.Client, err error) {
 		&redis.Options{Addr: "127.0.0.1:6379", Password: "", DB: 0},
 	)
 
-	statusCmd := client.Ping()
+	statusCmd := client.Ping(context.TODO())
 	if err := statusCmd.Err(); err != nil {
 		return nil, err
 	}
@@ -91,7 +92,7 @@ func GinWithRedis(do func(*gin.Context, bool) Res,
 		}()
 
 		// *redis.StringStringMapCmd
-		cmd = client.HGetAll(rd.Key)
+		cmd = client.HGetAll(context.TODO(), rd.Key)
 		if err = cmd.Err(); err == nil {
 			if mp, err = cmd.Result(); len(mp) > 0 && err == nil {
 				// println(">>> cache")
@@ -103,12 +104,12 @@ func GinWithRedis(do func(*gin.Context, bool) Res,
 
 		hmset := func() {
 			bts, _ = json.Marshal(rd.ResData)
-			client.HMSet(key, map[string]interface{}{
+			client.HMSet(context.TODO(), key, map[string]interface{}{
 				"status":  rd.Status,
 				"resdata": bts,
 			})
 
-			client.Expire(key, duration)
+			client.Expire(context.TODO(), key, duration)
 		}
 
 		// println(">>> process")
