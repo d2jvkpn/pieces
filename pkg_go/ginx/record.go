@@ -37,8 +37,8 @@ type RecordData struct {
 	Status    int           `json:"status"`
 	BytesSent int           `json:"bytes_sent"`
 	Latency   time.Duration `json:"latency"` // ms
-	Level     string        `json:"level"`
-	Code      string        `json:"code"` // NA, NaN, number
+	Level     string        `json:"level"`   // INFO, ERROR, PANIC
+	Code      string        `json:"code"`    // NA, NaN, a number
 	Message   string        `json:"message"`
 	Error     string        `json:"error"`
 }
@@ -50,7 +50,8 @@ func NewRespData() *RecordData {
 	}
 }
 
-//  time, ip, user_id, method, uri, query, referer, user_agent, bytes_sent, status, level, latency, code, message, error
+// time, ip, user_id, method, uri, query, referer, user_agent, bytes_sent, status,
+// level, latency, code, message, error
 func NewRecord(achive func(*RecordData)) (hf gin.HandlerFunc) {
 
 	hf = func(c *gin.Context) {
@@ -113,20 +114,18 @@ func NewRecord(achive func(*RecordData)) (hf gin.HandlerFunc) {
 }
 
 // print RecordData to stdout in json format
-func PrintRecordData(rd *RecordData, levels ...string) {
-	if rd == nil {
-		return
-	}
-
+func PrintRecordData(rd *RecordData, levels ...string) func(*RecordData) {
 	mp := make(map[string]bool, len(levels))
 	for i := range levels {
 		mp[levels[i]] = true
 	}
 
-	if !mp[rd.Level] {
-		return
-	}
+	return func(rd *RecordData) {
+		if rd == nil || !mp[rd.Level] {
+			return
+		}
 
-	bts, _ := json.Marshal(rd)
-	fmt.Printf("%s\n", bts)
+		bts, _ := json.Marshal(rd)
+		fmt.Printf("%s\n", bts)
+	}
 }
