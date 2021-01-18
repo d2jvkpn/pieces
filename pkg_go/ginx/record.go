@@ -29,7 +29,7 @@ type RecordData struct {
 	UserId string    `json:"user_id"`
 
 	Method    string `json:"method"`
-	Uri       string `json:"uri"`
+	Path      string `json:"path"`
 	Query     string `json:"query"`
 	Referer   string `json:"referer"`
 	UserAgent string `json:"user_agent"`
@@ -54,13 +54,14 @@ func NewRespData() *RecordData {
 func NewRecord(achive func(*RecordData)) (hf gin.HandlerFunc) {
 
 	hf = func(c *gin.Context) {
-		rd := NewRespData()
-		r := c.Request
-		rd.Ip = c.ClientIP()
-		rd.Method, rd.Uri, rd.Query = r.Method, r.URL.Path, r.URL.RawQuery
-		rd.Referer, rd.UserAgent = c.GetHeader("Referer"), c.GetHeader("User-Agent")
-		rd.UserId = c.GetString("user_id")
+		rd, r := NewRespData(), c.Request
 
+		rd.Ip, rd.Method = c.ClientIP(), r.Method
+		rd.Path, rd.Query = r.URL.Path, r.URL.RawQuery
+		rd.Referer, rd.UserAgent = c.GetHeader("Referer"), c.GetHeader("User-Agent")
+		rd.UserId = c.GetString(RESPONSE_User_Key)
+
+		//// achive and recover from panic
 		defer func() { achive(rd) }()
 
 		defer func() {
@@ -76,13 +77,15 @@ func NewRecord(achive func(*RecordData)) (hf gin.HandlerFunc) {
 			rd.Level, rd.Code = "PANIC", "NaN"
 		}()
 
+		//// handle *gin.Context
+		c.Next()
+
+		//// process
 		var (
 			ok  bool
 			err error
 			ri  RecordIntf
 		)
-
-		c.Next()
 
 		w := c.Writer
 		if user_id := c.GetString(RESPONSE_User_Key); user_id != "" {
@@ -109,6 +112,7 @@ func NewRecord(achive func(*RecordData)) (hf gin.HandlerFunc) {
 	return hf
 }
 
+// print RecordData to stdout in json format
 func PrintRecordData(rd *RecordData, levels ...string) {
 	if rd == nil {
 		return
