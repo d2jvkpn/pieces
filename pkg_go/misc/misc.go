@@ -13,7 +13,13 @@ import (
 )
 
 //
-var Rand *rand.Rand
+var (
+	Rand *rand.Rand
+)
+
+const (
+	RFC3339ms = "2006-01-02T15:04:05.000Z07:00"
+)
 
 func init() {
 	Rand = rand.New(rand.NewSource(time.Now().UnixNano()))
@@ -50,7 +56,7 @@ func AddHttpsScheme(a string) string {
 }
 
 //
-func ListenOSIntr(do func(), ch chan<- error, sgs ...os.Signal) {
+func ListenOSIntr(do func(), errch chan<- error, sgs ...os.Signal) {
 	// linux support syscall.SIGUSR2
 	quit := make(chan os.Signal)
 
@@ -59,15 +65,13 @@ func ListenOSIntr(do func(), ch chan<- error, sgs ...os.Signal) {
 	} else {
 		signal.Notify(quit, sgs...)
 	}
-
 	<-quit
 
 	if do != nil {
 		do()
 	}
-
-	if ch != nil { //! ch == nil means doesn't need send an nil to channel
-		ch <- nil
+	if errch != nil { //! errch == nil means doesn't need send an nil to channel
+		errch <- nil
 	}
 
 	return
@@ -94,5 +98,5 @@ type logWriter struct{}
 
 func (writer *logWriter) Write(bts []byte) (int, error) {
 	// time.RFC3339
-	return fmt.Print(time.Now().Format("2006-01-02T15:04:05.000Z07:00") + "  " + string(bts))
+	return fmt.Print(time.Now().Format(RFC3339ms) + "  " + string(bts))
 }
