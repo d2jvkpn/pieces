@@ -40,7 +40,7 @@ type RecordData struct {
 	Level     string        `json:"level"`   // INFO, ERROR, PANIC
 	Code      string        `json:"code"`    // NA, NaN, a number
 	Message   string        `json:"message"`
-	Error     string        `json:"error"`
+	Errorx    error         `json:"errorx"`
 }
 
 func NewRespData() *RecordData {
@@ -70,7 +70,7 @@ func NewRecord(achive func(*RecordData)) (hf gin.HandlerFunc) {
 				return
 			} else {
 				bts, _ := json.Marshal(intf)
-				rd.Error = string(bts)
+				rd.Errorx = NewErrorx("!!! panic", string(bts))
 			}
 
 			rd.Status = http.StatusInternalServerError
@@ -104,7 +104,7 @@ func NewRecord(achive func(*RecordData)) (hf gin.HandlerFunc) {
 
 		rd.Code, rd.Message = strconv.Itoa(ri.GetCode()), ri.GetMessage()
 		if err = ri.GetError(); err != nil {
-			rd.Level, rd.Error = "ERROR", err.Error()
+			rd.Level, rd.Errorx = "ERROR", err
 		} else {
 			rd.Level = "INFO"
 		}
@@ -124,7 +124,6 @@ func PrintRecordData(rd *RecordData, levels ...string) func(*RecordData) {
 		if rd == nil || !mp[rd.Level] {
 			return
 		}
-
 		bts, _ := json.Marshal(rd)
 		fmt.Printf("%s\n", bts)
 	}
