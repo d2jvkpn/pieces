@@ -1,4 +1,4 @@
-package utils
+package ginx
 
 import (
 	"context"
@@ -80,7 +80,6 @@ func TestRedisHash(t *testing.T) {
 	}
 
 	fmt.Println(result)
-
 
 	ssm = client.HGetAll(context.TODO(), "~)(JK)(j`op1mn`0po1jm`m1po`1iopjasoias")
 	result, err = ssm.Result()

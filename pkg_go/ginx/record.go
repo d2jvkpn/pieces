@@ -1,0 +1,128 @@
+package ginx
+
+import (
+	"encoding/json"
+	"fmt"
+	"net/http"
+	"strconv"
+	"time"
+
+	"github.com/gin-gonic/gin"
+)
+
+const (
+	RFC3339ms = "2006-01-02T15:04:05.000Z07:00"
+
+	RESPONSE_User_Key = "user_id"
+	RESPONSE_Data_Key = "response_data"
+)
+
+type RecordIntf interface {
+	GetCode() int
+	GetMessage() string
+	GetError() error
+}
+
+type RecordData struct {
+	Time   time.Time `json:"time"`
+	Ip     string    `json:"ip"`
+	UserId string    `json:"user_id"`
+
+	Method    string `json:"method"`
+	Uri       string `json:"uri"`
+	Query     string `json:"query"`
+	Referer   string `json:"referer"`
+	UserAgent string `json:"user_agent"`
+
+	Status    int           `json:"status"`
+	BytesSent int           `json:"bytes_sent"`
+	Latency   time.Duration `json:"latency"` // ms
+	Level     string        `json:"level"`
+	Code      string        `json:"code"` // NA, NaN, number
+	Message   string        `json:"message"`
+	Error     string        `json:"error"`
+}
+
+func NewRespData() *RecordData {
+	return &RecordData{
+		Time: time.Now(),
+		Code: "NA",
+	}
+}
+
+//  time, ip, user_id, method, uri, query, referer, user_agent, bytes_sent, status, level, latency, code, message, error
+func NewRecord(achive func(*RecordData)) (hf gin.HandlerFunc) {
+
+	hf = func(c *gin.Context) {
+		rd := NewRespData()
+		r := c.Request
+		rd.Ip = c.ClientIP()
+		rd.Method, rd.Uri, rd.Query = r.Method, r.URL.Path, r.URL.RawQuery
+		rd.Referer, rd.UserAgent = c.GetHeader("Referer"), c.GetHeader("User-Agent")
+		rd.UserId = c.GetString("user_id")
+
+		defer func() { achive(rd) }()
+
+		defer func() {
+			if intf := recover(); intf == nil {
+				return
+			} else {
+				bts, _ := json.Marshal(intf)
+				rd.Error = string(bts)
+			}
+
+			rd.Status = http.StatusInternalServerError
+			rd.Latency = time.Since(time.Time(rd.Time)) / time.Duration(1_000_000)
+			rd.Level, rd.Code = "PANIC", "NaN"
+		}()
+
+		var (
+			ok  bool
+			err error
+			ri  RecordIntf
+		)
+
+		c.Next()
+
+		w := c.Writer
+		if user_id := c.GetString(RESPONSE_User_Key); user_id != "" {
+			rd.UserId = user_id
+		}
+
+		rd.Status, rd.BytesSent = w.Status(), w.Size()
+		rd.Latency = time.Since(time.Time(rd.Time)) / time.Duration(1_000_000)
+
+		if rr, _ := c.Get(RESPONSE_Data_Key); rr == nil {
+			return
+		} else if ri, ok = rr.(RecordIntf); !ok {
+			return
+		}
+
+		rd.Code, rd.Message = strconv.Itoa(ri.GetCode()), ri.GetMessage()
+		if err = ri.GetError(); err != nil {
+			rd.Level, rd.Error = "ERROR", err.Error()
+		} else {
+			rd.Level = "INFO"
+		}
+	}
+
+	return hf
+}
+
+func PrintRecordData(rd *RecordData, levels ...string) {
+	if rd == nil {
+		return
+	}
+
+	mp := make(map[string]bool, len(levels))
+	for i := range levels {
+		mp[levels[i]] = true
+	}
+
+	if !mp[rd.Level] {
+		return
+	}
+
+	bts, _ := json.Marshal(rd)
+	fmt.Printf("%s\n", bts)
+}
