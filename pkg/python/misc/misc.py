@@ -1,16 +1,21 @@
-import os, json, datetime
+import os, json
+from datetime import datetime
 
-def datetime2rfc3339(dt: datetime.datetime) -> str:
+def getTimeTag():
+    now = datetime.now()
+    return "{}_{}".format(now.strftime("%F"), int(datetime.timestamp(now)))
+
+def datetime2rfc3339(dt: datetime) -> str:
     return dt.astimezone().isoformat(timespec="milliseconds")
 
 def now() -> str:
-    return datetime.datetime.now().astimezone().isoformat(timespec="milliseconds")
+    return datetime.now().astimezone().isoformat(timespec="milliseconds")
 
 def ts2time(ts)-> str:
-    return datetime.datetime.fromtimestamp(ts).isoformat(timespec="milliseconds")
+    return datetime.fromtimestamp(ts).isoformat(timespec="milliseconds")
 
 def marshalDatetime(t): # json.dumps(dt, default=marshalDatetime)
-    if isinstance(t, datetime.datetime):
+    if isinstance(t, datetime):
         return t.isoformat(timespec="milliseconds")
 
 def objMarshal(obj, pretty=True) -> bytes:

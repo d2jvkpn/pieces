@@ -15,6 +15,10 @@ const (
 
 	RESPONSE_User_Key = "user_id"
 	RESPONSE_Data_Key = "response_data"
+
+	LOGLEVEL_Info  = "INFO"
+	LOGLEVEL_Error = "ERROR"
+	LOGLEVEL_Panic = "PANIC"
 )
 
 type RecordIntf interface {
@@ -75,7 +79,7 @@ func NewRecord(achive func(*RecordData)) (hf gin.HandlerFunc) {
 
 			rd.Status = http.StatusInternalServerError
 			rd.Latency = time.Since(time.Time(rd.Time)) / time.Duration(1_000_000)
-			rd.Level, rd.Code = "PANIC", "NaN"
+			rd.Level, rd.Code = LOGLEVEL_Panic, "NaN"
 		}()
 
 		//// handle *gin.Context
@@ -104,9 +108,9 @@ func NewRecord(achive func(*RecordData)) (hf gin.HandlerFunc) {
 
 		rd.Code, rd.Message = strconv.Itoa(ri.GetCode()), ri.GetMessage()
 		if err = ri.GetError(); err != nil {
-			rd.Level, rd.Errorx = "ERROR", err
+			rd.Level, rd.Errorx = LOGLEVEL_Error, err
 		} else {
-			rd.Level = "INFO"
+			rd.Level = LOGLEVEL_Info
 		}
 	}
 

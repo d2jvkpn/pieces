@@ -1,4 +1,4 @@
-module github.com/d2jvkpn/pieces/pkg_go/ginx
+module github.com/d2jvkpn/pieces/pkg/go/ginx
 
 go 1.15
 
