@@ -86,8 +86,8 @@ fi
 img=$(echo $IMGAGE | awk '{print $1}')
 
 ###
-test -z $HostPath && HostPath=$(pwd)
-test -d $HostPath && HostPath=$(readlink -f $HostPath) ||
+test -z "$HostPath" && HostPath="$(pwd)"
+test -d "$HostPath" && HostPath=$(readlink -f "$HostPath") ||
 { echo "Error: directory \"$HostPath\" not exists."; exit; }
 
 mountdir=$(for i in $mdir; do echo $i; done | sed 's/:/ /g' |
@@ -151,8 +151,8 @@ else
 fi
 
 docker run $dkopts --name=$CONTAINER --rm -it $SetMemory $SetCPU $mountdir \
--v $HostPath:/mnt/HostPath -e StartTime="$StartTime" \
--e PoweredBy=dksh -e CONTAINER=$CONTAINER -e HostPath=$HostPath \
+-v "$HostPath":/mnt/HostPath -e StartTime="$StartTime" \
+-e PoweredBy=dksh -e CONTAINER=$CONTAINER -e HostPath="$HostPath" \
 -e IMAGE="$IMGAGE" $img /bin/sh -c "$cmd"
 
 ## "su $user -s $Shell" will make sure user environment loaded without -l,
