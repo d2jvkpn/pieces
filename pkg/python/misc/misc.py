@@ -14,6 +14,15 @@ def now() -> str:
 def ts2time(ts)-> str:
     return datetime.fromtimestamp(ts).isoformat(timespec="milliseconds")
 
+def utctime2Local(x):
+    return x.replace(tzinfo=tzutc()).astimezone(tzlocal())
+
+def utctime2mysql(x):
+    return mongoTime2Local(x).strftime('%Y-%m-%d %H:%M:%S')
+
+def utctime2rfc33339(x):
+    return mongoTime2Local(x).strftime('%Y-%m-%dT%H:%M:%S%z')
+
 def marshalDatetime(t): # json.dumps(dt, default=marshalDatetime)
     if isinstance(t, datetime):
         return t.isoformat(timespec="milliseconds")
