@@ -70,7 +70,7 @@ logfile = "{}.log".format(prog) # "{}.{}.log".format(prog, int(time.time()))
 logging.basicConfig(
     level = logging.INFO,
     format = '%(asctime)s\t%(levelname)s\t%(filename)s %(funcName)s[%(lineno)d]\t%(message)s',
-    datefmt = '%Y-%m-%dT%H:%M:%S%z',
+    datefmt = '%Y-%m-%d_%H%M_%s', ## '%Y-%m-%dT%H:%M:%S%z'
     filename = logfile, filemode = 'a',
 )
 
