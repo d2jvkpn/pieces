@@ -19,7 +19,8 @@ def scpJob(c):
 
     logging.info(c.get("name", "connecting to server..."))
     local_time = datetime.now(timezone.utc).replace(microsecond=0).astimezone()
-    now = local_time.isoformat()
+    # now = local_time.isoformat()
+    now = local_time.strformat("%Y-%m-%d_%H%M_%s")
 
     parent = os.path.dirname(os.path.abspath(c["dst"]))
     basename = os.path.basename(c["dst"]) + "_" + now
@@ -70,7 +71,7 @@ logfile = "{}.log".format(prog) # "{}.{}.log".format(prog, int(time.time()))
 logging.basicConfig(
     level = logging.INFO,
     format = '%(asctime)s\t%(levelname)s\t%(filename)s %(funcName)s[%(lineno)d]\t%(message)s',
-    datefmt = '%Y-%m-%d_%H%M_%s', ## '%Y-%m-%dT%H:%M:%S%z'
+    datefmt = '%Y-%m-%dT%H:%M:%S%z',
     filename = logfile, filemode = 'a',
 )
 
