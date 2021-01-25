@@ -20,7 +20,7 @@ def scpJob(c):
     logging.info(c.get("name", "connecting to server..."))
     local_time = datetime.now(timezone.utc).replace(microsecond=0).astimezone()
     # now = local_time.isoformat()
-    now = local_time.strformat("%Y-%m-%d_%H%M_%s")
+    now = local_time.strftime("%Y-%m-%d_%H%M_%s")
 
     parent = os.path.dirname(os.path.abspath(c["dst"]))
     basename = os.path.basename(c["dst"]) + "_" + now
