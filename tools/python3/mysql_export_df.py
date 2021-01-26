@@ -1,3 +1,5 @@
+#! /usr/bin/env python3
+
 import os, sys, datetime
 
 import pandas as pd
