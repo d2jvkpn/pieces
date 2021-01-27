@@ -27,6 +27,9 @@ def marshalDatetime(t): # json.dumps(dt, default=marshalDatetime)
     if isinstance(t, datetime):
         return t.isoformat(timespec="milliseconds")
 
+def time2filetag(at) -> str:
+    return "{}_{}".format(at.strftime("%FT%H%M"), int(at.timestamp()))
+
 def objMarshal(obj, pretty=True) -> bytes:
     if pretty:
         bts = json.dumps(obj, ensure_ascii=False, indent="  ").encode('utf8')
