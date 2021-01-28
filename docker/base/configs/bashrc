@@ -1,7 +1,9 @@
 echo "## $(date +"%Y-%m-%d %H:%M:%S %z")"
 
+export HISTTIMEFORMAT="%FT%T%z "
+
 for d in $(ls -d /opt/*/ 2> /dev/null); do
-    test -d $d/bin && d=$d/bin
+    test -d ${d%/}/bin && d=$d/bin
     export PATH=$d:$PATH
 done
 
