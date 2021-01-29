@@ -9,7 +9,7 @@ import pymongo, toml
 
 def getTimeTag():
     now = datetime.now()
-    return "{}_{}".format(now.strftime("%F"), int(datetime.timestamp(now)))
+    return "{}_{}".format(now.strftime("%FT%H%M"), int(datetime.timestamp(now)))
 
 
 def df2tsv(df, name, gz=False, index=False):
