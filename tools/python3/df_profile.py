@@ -6,7 +6,7 @@ import pandas as pd
 from pandas_profiling import ProfileReport
 
 
-parser = argparse.ArgumentParser()
+parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 parser.add_argument("-file", required=True, help="dataframe file")
 parser.add_argument("-out", default="", help="output file, default is html")
 parser.add_argument("-sep", default="\t", help="field seperator")

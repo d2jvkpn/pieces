@@ -1,5 +1,5 @@
 MySQL Genie PyCall Mongoc Redis
-TOML JSON BSON TimeZones Logging FileIO ArgParse BenchmarkTools
+TOML JSON BSON TimeZones Logging FileIO ArgParse BenchmarkTools ClusterManagers
 Images HTTP Shell LaTeXStrings
 Plots CSV DataFrames StatsBase PyPlot JLD2 Distributions TimeSeries XLSX
 Flux RDatasets MLBase LIBSVM Clustering GLM DiffEqBase DiffEqFlux DynamicalSystems

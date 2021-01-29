@@ -7,10 +7,26 @@ import pandas as pd
 import pymysql, toml
 from sqlalchemy import create_engine
 
+
+def df2tsv(df, name, gz=False, index=False):
+    if name == "-":
+        df.to_csv(os.sys.stdout, sep="\t", index=index)
+        return
+
+    os.makedirs(os.path.dirname(os.path.abspath(name)), exist_ok=True)
+    if gz:
+        name = name if name.endswith(".gz") else name + ".gz" 
+        df.to_csv(name, sep="\t", compression='gzip', index=index)
+    else:
+        df.to_csv(name, sep="\t", index=index)
+
+    print("saved \"{}\", {} records".format(name, df.shape[0]), file=os.sys.stderr)
+
+
 # tf, db, tables = sys.argv[1], sys.argv[2], sys.argv[3:]
-parser = argparse.ArgumentParser()
+parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 parser.add_argument("-toml", default="config.toml", help="toml config file")
-parser.add_argument("-sect", default="mysql", help="mysql sect in config")
+parser.add_argument("-sect", default="mysql", help="mysql sect name in config")
 parser.add_argument("-db", required=True, help="target database")
 parser.add_argument("-tables", nargs="+", required=True, help='mysql tables')
 parser.add_argument("-export_df", type=bool, default =False, help="export table as data frame")
@@ -25,7 +41,7 @@ with open(tf, "r") as f: config = toml.load(tf)
 
 c = config[sect]
 conn = pymysql.connect(host = c["host"], user = c["user"], \
-   password = c["password"], charset = c["charset"], db = db)
+   password = c["password"], charset = c.get("charset", "utf8mb4"), db = db)
 
 now, joinDir = datetime.now().astimezone(), os.path.join
 outdir =  "mysql_{}_{}_{}".format(db, now.strftime("%FT%H%M"), int(now.timestamp()))
@@ -39,7 +55,7 @@ if len(tables) == 0: # all tables
     d = pd.DataFrame(cursor.fetchall())
     tables = d.iloc[:, 0].to_list()
 
-tmpl = "-- {}\n\nCREATE DATABASE IF NOT EXISTS {} DEFAULT CHARSET utf8;\n\n"
+tmpl = "-- {}\n\n-- CREATE DATABASE IF NOT EXISTS {} DEFAULT CHARSET utf8;\n\n"
 createTables = tmpl.format(now.isoformat(timespec="milliseconds"), db)
 
 for table in tables:
@@ -67,8 +83,7 @@ for table in tables:
 
     df.columns = dh.iloc[:, 0]
     out = joinDir(outdir, table + ".tsv")
-    df.to_csv(out, sep="\t", index=False)
-    print("~~~ saved {}, {}x{}".format(out, df.shape[0], df.shape[1]))
+    df2tsv(df, out)
 
 with open(joinDir(outdir, db + "_create.sql"), "w") as f:
     f.write(createTables)

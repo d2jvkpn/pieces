@@ -1,0 +1,12 @@
+[mysql_viewer]
+user = "hello"
+host = "127.0.0.1"
+password = "world"
+charset = "utf8mb4"
+
+[mongo]
+user = ""
+password = ""
+host = "127.0.0.1"
+port = 27017
+db = "funny"
