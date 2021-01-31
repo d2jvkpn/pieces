@@ -10,7 +10,7 @@ func NewErrContainer(value interface{}, errmsg string) (ec *ErrContainer) {
 	return &ErrContainer{value: value, errmsg: errmsg}
 }
 
-func (ec *ErrContainer) SetLevel(level int) (out *ErrContainer) {
+func (ec *ErrContainer) SetLevel(level int) *ErrContainer {
 	ec.level = level
 	return ec
 }
