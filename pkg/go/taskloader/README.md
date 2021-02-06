@@ -1,6 +1,7 @@
-# taskgroup
+# taskloader
 
-Package taskgroup provides synchronization, error propagation, context cancelation, record for groups of goroutines(tasks) working on subtasks of a common task.
+Package taskloader provides synchronization, error propagation, context cancelation, record for
+groups of goroutines(tasks) working on subtasks of a common task.
 
 
 #### 1. Support status
@@ -17,15 +18,15 @@ Package taskgroup provides synchronization, error propagation, context cancelati
   
 #### 2. Demo
 
-- create taskgroup
+- create taskloader
 ```go
-tg := NewTaskGroup(context.TODO(), "node1")
-// tg := NewTaskGroup(context.TODO(), "node1", true) // debug mode 
+tl := NewTaskLoader(context.TODO(), "node1")
+// tl := NewTaskLoader(context.TODO(), "node1", true) // debug mode 
 ```
 
 - add task
 ```go
-tg.Go(func() error {
+tl.Go(func() error {
 	time.Sleep(4 * time.Second)
 	return fmt.Errorf("task1 unexpected")
 }, nil, "t1")
@@ -33,7 +34,7 @@ tg.Go(func() error {
 
 - add task accept context
 ```go
-tg.GoWithContext(func(ctx context.Context) error {
+tl.GoWithContext(func(ctx context.Context) error {
 	ch := make(chan error)
 
 	go func() {
@@ -54,15 +55,15 @@ tg.GoWithContext(func(ctx context.Context) error {
 
 - waiting all tasks exit
 ```go
-tg.Wait()
+tl.Wait()
 ```
 
 - canceling all tasks
 ```go
-tg.Cancel()
+tl.Cancel()
 ```
 
 - listen os interrupt signal and cancel all task
 ```go
-tg.ListenOSIntr()
+tl.ListenOSIntr()
 ```
