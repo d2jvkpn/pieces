@@ -25,7 +25,7 @@ download profile file and convert to svg image
   $ wget -O profile.out localhost:8080/debug/pprof/profile?seconds=30
   $ go tool pprof  -svg profile.out > profile.svg
 
-get pprof in 3o seconds svg image
+get pprof in 30 seconds and save to svg image
   $ go tool pprof -svg http://localhost:8080/debug/pprof/allocs?seconds=30 > allocs.svg
 
 get trace in 5 seconds
