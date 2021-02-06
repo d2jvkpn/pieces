@@ -1,6 +1,18 @@
-MySQL Genie PyCall Mongoc Redis
-TOML JSON BSON TimeZones Logging FileIO ArgParse BenchmarkTools ClusterManagers
+MySQL Genie PyCall Mongoc Redis DynamicalSystems
+
+TOML JSON BSON TimeZones Logging
+FileIO ArgParse BenchmarkTools ClusterManagers
 Images HTTP Shell LaTeXStrings
-Plots CSV DataFrames Query StatsBase PyPlot JLD2 Distributions TimeSeries XLSX
-Flux RDatasets MLBase LIBSVM Clustering GLM DiffEqBase DiffEqFlux DynamicalSystems
-# IJulia
+
+Plots CSV DataFrames Query Tables
+PyPlot JLD2 XLSX DataStructures
+JLD NPZ VegaDatasets VegaLite RDatasets
+
+Flux ScikitLearn MLBase DiffEqBase DiffEqFlux
+
+KernelDensity HypothesisTests MultivariateStats Distances GLMNet
+DecisionTree NearestNeighbors LIBSVM  LsqFit StatsBase
+LIBSVM Clustering GLM Convex StatsPlots
+LightGraphs MatrixNetworks SCS Distributions TimeSeries
+
+# IJulia RData, RCall, MAT
