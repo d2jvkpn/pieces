@@ -120,7 +120,6 @@ func (tl *TaskLoader) log(format string, a ...interface{}) {
 		time.Now().Format("2006-01-02T15:04:05.000Z07:00"),
 		strings.TrimSpace(format),
 	)
-
 	fmt.Printf(tmpl, a...)
 }
 
@@ -238,6 +237,7 @@ func (tl *TaskLoader) wait() {
 	}
 
 	tl.stage = STAGE_Done
+
 	for i := range tl.tks {
 		if tl.tks[i].Status != STATUS_Done {
 			tl.stage = STAGE_Exit
@@ -271,7 +271,6 @@ func (tl *TaskLoader) ListenOSIntr(sgs ...os.Signal) (err error) {
 
 	go func() {
 		quit := make(chan os.Signal)
-
 		if len(sgs) == 0 {
 			signal.Notify(quit, os.Interrupt, syscall.SIGTERM)
 		} else {
@@ -280,7 +279,7 @@ func (tl *TaskLoader) ListenOSIntr(sgs ...os.Signal) (err error) {
 
 		<-quit
 		tl.Cancel()
-		chErr <- fmt.Errorf("tasks was intrrupted")
+		chErr <- fmt.Errorf("task loader was intrrupted")
 	}()
 
 	return <-chErr
