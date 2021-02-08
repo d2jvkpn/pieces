@@ -15,7 +15,7 @@
 
 *.zip
 sub*/
-wk*/
+**/wk*/
 main
 backup
 *.exe

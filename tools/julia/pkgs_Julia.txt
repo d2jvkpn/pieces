@@ -15,4 +15,5 @@ DecisionTree NearestNeighbors LIBSVM  LsqFit StatsBase
 LIBSVM Clustering GLM Convex StatsPlots
 LightGraphs MatrixNetworks SCS Distributions TimeSeries
 
+# Seq
 # IJulia RData, RCall, MAT
