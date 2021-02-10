@@ -1,2 +1,11 @@
 # pieces
-Miscellaneous pieces of coding work
+Miscellaneous pieces of coding work in Golang, Python, Bash, etc.
+
+
+#### Introduction
+
+- docker: docker files;
+- instances: instances of programming language, frameworks and problem solving;
+- pkg: packages in different languages;
+- prototype: programming prototypes;
+- tools: command line tools;
