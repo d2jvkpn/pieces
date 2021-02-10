@@ -19,7 +19,8 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type CalculatorServiceClient interface {
 	// PrimeNumberDecomposition
-	PND(ctx context.Context, in *PNDRequest, opts ...grpc.CallOption) (CalculatorService_PNDClient, error)
+	PND(ctx context.Context, in *Number, opts ...grpc.CallOption) (CalculatorService_PNDClient, error)
+	Multiply(ctx context.Context, opts ...grpc.CallOption) (CalculatorService_MultiplyClient, error)
 }
 
 type calculatorServiceClient struct {
@@ -30,7 +31,7 @@ func NewCalculatorServiceClient(cc grpc.ClientConnInterface) CalculatorServiceCl
 	return &calculatorServiceClient{cc}
 }
 
-func (c *calculatorServiceClient) PND(ctx context.Context, in *PNDRequest, opts ...grpc.CallOption) (CalculatorService_PNDClient, error) {
+func (c *calculatorServiceClient) PND(ctx context.Context, in *Number, opts ...grpc.CallOption) (CalculatorService_PNDClient, error) {
 	stream, err := c.cc.NewStream(ctx, &CalculatorService_ServiceDesc.Streams[0], "/calculatorpb.CalculatorService/PND", opts...)
 	if err != nil {
 		return nil, err
@@ -46,7 +47,7 @@ func (c *calculatorServiceClient) PND(ctx context.Context, in *PNDRequest, opts 
 }
 
 type CalculatorService_PNDClient interface {
-	Recv() (*PNDResponse, error)
+	Recv() (*Number, error)
 	grpc.ClientStream
 }
 
@@ -54,8 +55,42 @@ type calculatorServicePNDClient struct {
 	grpc.ClientStream
 }
 
-func (x *calculatorServicePNDClient) Recv() (*PNDResponse, error) {
-	m := new(PNDResponse)
+func (x *calculatorServicePNDClient) Recv() (*Number, error) {
+	m := new(Number)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func (c *calculatorServiceClient) Multiply(ctx context.Context, opts ...grpc.CallOption) (CalculatorService_MultiplyClient, error) {
+	stream, err := c.cc.NewStream(ctx, &CalculatorService_ServiceDesc.Streams[1], "/calculatorpb.CalculatorService/Multiply", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &calculatorServiceMultiplyClient{stream}
+	return x, nil
+}
+
+type CalculatorService_MultiplyClient interface {
+	Send(*Number) error
+	CloseAndRecv() (*Number, error)
+	grpc.ClientStream
+}
+
+type calculatorServiceMultiplyClient struct {
+	grpc.ClientStream
+}
+
+func (x *calculatorServiceMultiplyClient) Send(m *Number) error {
+	return x.ClientStream.SendMsg(m)
+}
+
+func (x *calculatorServiceMultiplyClient) CloseAndRecv() (*Number, error) {
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	m := new(Number)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
 	}
@@ -67,7 +102,8 @@ func (x *calculatorServicePNDClient) Recv() (*PNDResponse, error) {
 // for forward compatibility
 type CalculatorServiceServer interface {
 	// PrimeNumberDecomposition
-	PND(*PNDRequest, CalculatorService_PNDServer) error
+	PND(*Number, CalculatorService_PNDServer) error
+	Multiply(CalculatorService_MultiplyServer) error
 	// mustEmbedUnimplementedCalculatorServiceServer()
 }
 
@@ -75,8 +111,11 @@ type CalculatorServiceServer interface {
 type UnimplementedCalculatorServiceServer struct {
 }
 
-func (UnimplementedCalculatorServiceServer) PND(*PNDRequest, CalculatorService_PNDServer) error {
+func (UnimplementedCalculatorServiceServer) PND(*Number, CalculatorService_PNDServer) error {
 	return status.Errorf(codes.Unimplemented, "method PND not implemented")
+}
+func (UnimplementedCalculatorServiceServer) Multiply(CalculatorService_MultiplyServer) error {
+	return status.Errorf(codes.Unimplemented, "method Multiply not implemented")
 }
 func (UnimplementedCalculatorServiceServer) mustEmbedUnimplementedCalculatorServiceServer() {}
 
@@ -92,7 +131,7 @@ func RegisterCalculatorServiceServer(s grpc.ServiceRegistrar, srv CalculatorServ
 }
 
 func _CalculatorService_PND_Handler(srv interface{}, stream grpc.ServerStream) error {
-	m := new(PNDRequest)
+	m := new(Number)
 	if err := stream.RecvMsg(m); err != nil {
 		return err
 	}
@@ -100,7 +139,7 @@ func _CalculatorService_PND_Handler(srv interface{}, stream grpc.ServerStream) e
 }
 
 type CalculatorService_PNDServer interface {
-	Send(*PNDResponse) error
+	Send(*Number) error
 	grpc.ServerStream
 }
 
@@ -108,8 +147,34 @@ type calculatorServicePNDServer struct {
 	grpc.ServerStream
 }
 
-func (x *calculatorServicePNDServer) Send(m *PNDResponse) error {
+func (x *calculatorServicePNDServer) Send(m *Number) error {
 	return x.ServerStream.SendMsg(m)
+}
+
+func _CalculatorService_Multiply_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(CalculatorServiceServer).Multiply(&calculatorServiceMultiplyServer{stream})
+}
+
+type CalculatorService_MultiplyServer interface {
+	SendAndClose(*Number) error
+	Recv() (*Number, error)
+	grpc.ServerStream
+}
+
+type calculatorServiceMultiplyServer struct {
+	grpc.ServerStream
+}
+
+func (x *calculatorServiceMultiplyServer) SendAndClose(m *Number) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func (x *calculatorServiceMultiplyServer) Recv() (*Number, error) {
+	m := new(Number)
+	if err := x.ServerStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
 }
 
 // CalculatorService_ServiceDesc is the grpc.ServiceDesc for CalculatorService service.
@@ -124,6 +189,11 @@ var CalculatorService_ServiceDesc = grpc.ServiceDesc{
 			StreamName:    "PND",
 			Handler:       _CalculatorService_PND_Handler,
 			ServerStreams: true,
+		},
+		{
+			StreamName:    "Multiply",
+			Handler:       _CalculatorService_Multiply_Handler,
+			ClientStreams: true,
 		},
 	},
 	Metadata: "pkg/calculatorpb/calculator.proto",

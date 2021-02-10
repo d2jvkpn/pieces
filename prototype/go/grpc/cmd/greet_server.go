@@ -15,10 +15,12 @@ import (
 type Server struct{}
 
 func (srv *Server) Greet(ctx context.Context, req *GreetRequest) (res *GreetResponse, err error) {
+	fmt.Println(">>> Greet processing")
 	res = new(GreetResponse)
 	// res.Result = fmt.Sprintf("Hello, %s %s!", req.Greeting.FirstName, req.Greeting.LastName)
 	firstName := req.GetGreeting().GetFirstName()
 	lastName := req.GetGreeting().GetLastName()
+	fmt.Println("    recevied:", firstName, lastName)
 
 	res.Result = fmt.Sprintf("Hello, %s %s!", firstName, lastName)
 
@@ -26,13 +28,13 @@ func (srv *Server) Greet(ctx context.Context, req *GreetRequest) (res *GreetResp
 }
 
 func (srv *Server) Greet2(req *GreetRequest, stream GreetService_Greet2Server) (err error) {
+	fmt.Println(">>> Greet2 processing")
 	firstName := req.GetGreeting().GetFirstName()
 	lastName := req.GetGreeting().GetLastName()
+	fmt.Println("    recevied:", firstName, lastName)
 
 	for i := 0; i < 10; i++ {
 		msg := fmt.Sprintf("Hello, %s %s, number: %d.", firstName, lastName, i)
-		fmt.Printf(">> Sending: %q\n", msg)
-
 		if err = stream.Send(&Greet2Response{Result: msg}); err != nil {
 			break
 		}
@@ -58,7 +60,7 @@ func main() {
 	srv = grpc.NewServer()
 	RegisterGreetServiceServer(srv, &Server{})
 
-	log.Printf("Greet RPC server %q\n", addr)
+	log.Printf("### Greet RPC server %q\n", addr)
 	if err = srv.Serve(lis); err != nil {
 		log.Fatal(err)
 	}

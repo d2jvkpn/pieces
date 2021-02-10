@@ -4,15 +4,14 @@ package calculatorpb;
 option go_package = "pkg/calculatorpb";
 
 
-message PNDRequest {
-	int64 number = 1;
-}
-
-message PNDResponse {
-	int64 prime_factor = 1;
+message Number {
+	int64 value = 1;
 }
 
 service CalculatorService {
 	// PrimeNumberDecomposition
-	rpc PND(PNDRequest) returns (stream PNDResponse) {}
+	rpc PND(Number) returns (stream Number) {};
+
+	// client streaming
+	rpc Multiply(stream Number) returns (Number) {};
 }

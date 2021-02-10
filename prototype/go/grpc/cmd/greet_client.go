@@ -53,7 +53,7 @@ func doUnary(client GreetServiceClient) (err error) {
 	if res, err = client.Greet(context.TODO(), req); err != nil {
 		return err
 	}
-	fmt.Println(res)
+	fmt.Println("    received:", res.Result)
 
 	return nil
 }
@@ -62,8 +62,8 @@ func doServerStreaming(client GreetServiceClient) (err error) {
 	fmt.Println(">>> Greet RPC client doServerStreaming")
 
 	var (
-		resStream GreetService_Greet2Client
-		result    *Greet2Response
+		stream GreetService_Greet2Client
+		res    *Greet2Response
 	)
 
 	req := &GreetRequest{Greeting: &Greeting{
@@ -71,18 +71,18 @@ func doServerStreaming(client GreetServiceClient) (err error) {
 		LastName:  "Chan",
 	}}
 
-	if resStream, err = client.Greet2(context.TODO(), req); err != nil {
+	if stream, err = client.Greet2(context.TODO(), req); err != nil {
 		return err
 	}
 
 	for {
-		if result, err = resStream.Recv(); err == io.EOF {
+		if res, err = stream.Recv(); err == io.EOF {
 			break
 		}
 		if err != nil {
 			return err
 		}
-		fmt.Println(result)
+		fmt.Println("    received:", res.Result)
 	}
 
 	return nil
