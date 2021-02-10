@@ -1,2 +1,2 @@
 # pieces
-miscellaneous pieces of coding work
+Miscellaneous pieces of coding work
