@@ -1,0 +1,21 @@
+[[machine]]
+name = "machine1"
+addr = "root@172.17.0.11:1001"
+n = 2
+dir = "/root/wk_julia"
+exename = "/opt/julia-1.5.3/bin/julia"
+
+[[machine]]
+name = "machine2"
+addr = "root@172.17.0.12:1001"
+n = 2
+dir = "/root/wk_julia"
+exename = "/opt/julia-1.5.3/bin/julia"
+
+
+[[machine]]
+name = "machine3"
+addr = "root@172.17.0.13:1001"
+n = 1
+dir = "/root/wk_julia"
+exename = "/opt/julia-1.5.3/bin/julia"
