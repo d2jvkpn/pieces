@@ -21,7 +21,7 @@ function addmachine(c)
 end
 
 config = TOML.parsefile("config.toml")
-machines = config["machine"]
+machines = config["machines"]
 
 println("### found $(length(machines)) machines")
 
