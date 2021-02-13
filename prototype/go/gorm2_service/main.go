@@ -11,9 +11,9 @@ import (
 )
 
 var (
-	addr string = ":8080"
+	addr = ":8080"
 
-	config map[string]string = map[string]string{
+	config = map[string]string{
 		"user":     "root",
 		"password": "rover",
 		"uri":      "172.17.0.2:3306",
