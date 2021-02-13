@@ -7,6 +7,7 @@ Images HTTP Shell LaTeXStrings
 Plots CSV DataFrames Query Tables
 PyPlot JLD2 XLSX DataStructures
 JLD NPZ VegaDatasets VegaLite RDatasets
+GR Gadfly
 
 Flux ScikitLearn MLBase DiffEqBase DiffEqFlux
 

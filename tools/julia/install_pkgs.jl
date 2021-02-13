@@ -7,6 +7,7 @@ else
     file = "pkgs_Julia.txt"
 end
 
+### read packages list
 # lines = split(read(text, String), "\n")
 lines = [strip(line) for line in readlines(file)]
 lines = filter(x -> !(occursin("#", x) || x == ""), lines)
@@ -20,6 +21,7 @@ end
 
 println("### Installing $(length(pkgs)) packages...")
 
+### install packages
 for p in pkgs
 #=
     installedList = keys(Pkg.installed())
@@ -36,6 +38,7 @@ end
 
 println("### Precompiling packages...")
 
+### precompile installed packaged
 for p in pkgs
     println(">>> precompiling $p")
     eval(Meta.parse(string("using $p")))

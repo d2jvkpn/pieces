@@ -4,7 +4,7 @@ Miscellaneous pieces of coding work in Golang, Python, Bash, etc.
 
 #### Introduction
 
-- docker: docker files;
+- docker: Dockerfile for docker build;
 - instances: instances of programming language, frameworks and problem solving;
 - pkg: packages in different languages;
 - prototype: programming prototypes;
