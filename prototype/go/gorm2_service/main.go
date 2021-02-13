@@ -12,7 +12,6 @@ import (
 
 var (
 	addr string = ":8080"
-	db   *gorm.DB
 
 	config map[string]string = map[string]string{
 		"user":     "root",
@@ -26,6 +25,7 @@ var (
 func main() {
 	var (
 		err    error
+		db     *gorm.DB
 		router *gin.Engine
 	)
 
@@ -34,21 +34,23 @@ func main() {
 	}
 
 	router = gin.Default()
-	router.GET("/", Hello)
+	router.GET("/", Handle(db))
 	router.Run(addr)
 }
 
-func Hello(c *gin.Context) {
-	results := make([]map[string]interface{}, 0)
+func Handle(db *gorm.DB) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		results := make([]map[string]interface{}, 0)
 
-	state := fmt.Sprintf("select * from %s limit 20;", config["table"])
-	if err := db.Raw(state).Scan(&results).Error; err != nil {
-		fmt.Printf(">>> error: %v\n", err)
-		c.JSON(http.StatusInternalServerError, nil)
-	} else {
-		c.JSON(http.StatusOK, results)
+		state := fmt.Sprintf("select * from %s limit 20;", config["table"])
+		if err := db.Raw(state).Scan(&results).Error; err != nil {
+			fmt.Printf(">>> error: %v\n", err)
+			c.JSON(http.StatusInternalServerError, nil)
+		} else {
+			c.JSON(http.StatusOK, results)
+		}
+		return
 	}
-	return
 }
 
 func NewDB(mp map[string]string) (db *gorm.DB, err error) {
