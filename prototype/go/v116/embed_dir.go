@@ -7,10 +7,10 @@ import (
 )
 
 //go:embed fs
-var Content embed.FS
+var Dir embed.FS
 
 func main() {
-	dirs, err := Content.ReadDir("fs")
+	dirs, err := Dir.ReadDir("fs")
 	if err != nil {
 		log.Fatal(err)
 	}
