@@ -4,7 +4,7 @@ set -eu -o pipefail
 export GIT_REPO="https://github.com/d2jvkpn/hello-service"
 export PROG="hello-service"
 export PORT=8080
-export TAG=`date +%Y%m%dT%H%M`
+export TAG=`date +%Y%m%dT%H%M%S`
 
 docker build --squash              \
   --build-arg GIT_REPO="$GIT_REPO" \
