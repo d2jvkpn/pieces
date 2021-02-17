@@ -2,18 +2,20 @@
 set -eu -o pipefail
 
 export GIT_REPO="https://github.com/d2jvkpn/hello-service"
+export BRANCH="main"
 export PROG="hello-service"
 export PORT=8080
-export TAG=`date +%Y%m%dT%H%M%S`
+export GO_VERSION="1.16"
+export TAG=$(date +%Y%m%dT%H%M%S)
 
 docker build --squash              \
   --build-arg GIT_REPO="$GIT_REPO" \
   --build-arg PROG="$PROG"         \
-  --build-arg BRANCH="main"        \
+  --build-arg BRANCH="$BRANCH"     \
   --build-arg PORT=$PORT           \
-  --build-arg GO_VERSION="1.15.6"  \
+  --build-arg GO_VERSION="$GO_VERSION"  \
   -t $PROG:$TAG .
-# --no-cache
+#  --no-cache
 
 docker inspect $PROG:$TAG                    |
     jq -r ".[0].Comment"                     |

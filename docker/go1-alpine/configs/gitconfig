@@ -1,6 +1,6 @@
 [user]
 name = rover
-email = rover@server.local
+email = rover@server.domain
 
 [credential]
 helper = store

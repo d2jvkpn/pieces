@@ -18,7 +18,7 @@ COPY configs/git-credentials /root/.git-credentials
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
 
 #### maintains
-RUN apk --no-cache update && \
+RUN apk --no-cache update  && \
     apk --no-cache upgrade && \
     apk add git tzdata wget libc6-compat
 
@@ -32,18 +32,18 @@ ENV PATH=/opt/go/bin:$PATH
 RUN go env -w GOPROXY="https://goproxy.cn,direct"
 
 #### install program
-# RUN git clone ${GIT_REPO}.git /app/${PROG}
+RUN git clone ${GIT_REPO}.git /opt/${PROG}
 
-COPY Dockerfile               /app/${PROG}/Dockerfile
-WORKDIR /app/${PROG}
+COPY Dockerfile /opt/${PROG}/Dockerfile
+WORKDIR /opt/${PROG}
+
+RUN git checkout -f ${BRANCH} && go build -o main ./
 
 # go clean -x
-RUN git checkout -f ${BRANCH}            && \
-    go build -o main ./                  && \
-    go clean -cache -testcache -modcache && \
+RUN go clean -cache -testcache -modcache && \
     rm -r /opt/go /root/go               && \
     apk del git wget
 
 #### setup service
 EXPOSE ${PORT}
-CMD ["sh", "-c", "./main -port ${PORT} ${ARGS}"]
+CMD ["./main -port ${PORT} ${ARGS}"]
