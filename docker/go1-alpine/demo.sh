@@ -17,14 +17,14 @@ docker build --squash              \
   -t $PROG:$TAG .
 #  --no-cache
 
-docker inspect $PROG:$TAG                    |
-    jq -r ".[0].Comment"                     |
+docker inspect $PROG:$TAG |
+    jq -r ".[0].Comment"  |
     awk '{sub("sha256:", "", $2); print $2}' |
     xargs -i docker rmi {}
 
 docker run --detach --publish=$PORT:$PORT --name=$PROG $PROG:$TAG
 
-curl localhost:$PORT/rover
+curl localhost:$PORT
 
 exit 0
 #### docker support --squash

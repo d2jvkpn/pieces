@@ -46,4 +46,4 @@ RUN go clean -cache -testcache -modcache && \
 
 #### setup service
 EXPOSE ${PORT}
-CMD ["./main -port ${PORT} ${ARGS}"]
+CMD ["sh", "-c", "./main -port ${PORT} ${ARGS}"]
