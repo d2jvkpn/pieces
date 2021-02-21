@@ -1,0 +1,8 @@
+for d in $(ls -d ~/Apps/*/ /opt/*/ 2>/dev/null); do
+    d=${d%/}
+    test -d $d/bin && d=$d/bin
+    export PATH=$d:$PATH
+done
+
+export HISTTIMEFORMAT="%FT%T%z  "
+export PROMPT_DIRTRIM=2
