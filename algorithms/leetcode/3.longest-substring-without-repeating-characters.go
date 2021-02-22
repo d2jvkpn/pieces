@@ -1,4 +1,4 @@
-package letcode
+package leetcode
 
 func LengthOfLongestSubstring(s string) int {
 	mp := make(map[byte]int)

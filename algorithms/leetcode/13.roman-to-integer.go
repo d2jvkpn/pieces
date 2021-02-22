@@ -1,4 +1,4 @@
-package letcode
+package leetcode
 
 func RomanToInteger(str string) (num int) {
 	mp := map[byte]int{

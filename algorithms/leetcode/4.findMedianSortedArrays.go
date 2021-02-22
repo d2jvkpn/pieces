@@ -1,4 +1,4 @@
-package letcode
+package leetcode
 
 import (
 	"sort"
