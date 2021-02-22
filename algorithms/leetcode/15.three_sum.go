@@ -70,7 +70,7 @@ func ThreeSum2(nums []int) (out [][]int) {
 func ThreeSum3(nums []int) (out [][]int) {
 	out = make([][]int, 0)
 	mp := make(map[int]int)
-	mp2 := make(map[[3]int]bool, len(out))
+	mp2 := make(map[[3]int]bool)
 	arr := [3]int{0, 0, 0}
 
 	for i := range nums {
