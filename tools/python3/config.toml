@@ -1,4 +1,4 @@
-[mysql_viewer]
+[mysql]
 user = "hello"
 host = "127.0.0.1"
 password = "world"
