@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-func MaxConcatNum(slice []int) string {
+func SliceToMaxNumber(slice []int) string {
 	if len(slice) == 0 {
 		return "0"
 	}

@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestMaxConcatNum(t *testing.T) {
+func TestSliceToMaxNumber(t *testing.T) {
 	slice := []int{1, 4, 30, 301, 9, 5}
 
 	fmt.Printf("%v -> %s\n", slice, MaxConcatNum(slice))
