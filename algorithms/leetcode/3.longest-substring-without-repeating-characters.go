@@ -1,5 +1,9 @@
 package leetcode
 
+import (
+	"fmt"
+)
+
 func LengthOfLongestSubstring(s string) int {
 	mp := make(map[byte]int)
 	m := 0
@@ -20,4 +24,8 @@ func LengthOfLongestSubstring(s string) int {
 	}
 
 	return m
+}
+
+func InstLengthOfLongestSubstring() {
+	fmt.Println(LengthOfLongestSubstring("abccdefkk"))
 }

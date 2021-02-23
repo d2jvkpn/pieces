@@ -1,6 +1,7 @@
 package interview
 
 import (
+	"fmt"
 	"sort"
 )
 
@@ -15,4 +16,12 @@ func SortPN(arr []int) {
 			return arr[i] < arr[j]
 		}
 	})
+}
+
+func InstSortPN() {
+	arr := []int{4, 1, 3, 2, -3, -1, -4, -2}
+	// expect 1234, -1,-2,-3,-4
+
+	SortPN(arr)
+	fmt.Println(arr)
 }

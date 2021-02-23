@@ -1,6 +1,7 @@
 package interview
 
 import (
+	"fmt"
 	"sort"
 	"strconv"
 	"strings"
@@ -21,4 +22,10 @@ func SliceToMaxnum(slice []int) string {
 	})
 
 	return strings.Join(strs, "")
+}
+
+func InstSliceToMaxnum() {
+	slice := []int{1, 4, 30, 34, 301, 9, 5}
+	// expect 95434303011
+	fmt.Printf("%v -> %s\n", slice, SliceToMaxnum(slice))
 }

@@ -1,6 +1,7 @@
 package leetcode
 
 import (
+	"fmt"
 	"sort"
 )
 
@@ -14,4 +15,13 @@ func FindMedianSortedArrays(nums1 []int, nums2 []int) float64 {
 	}
 
 	return float64(numx[n/2]+numx[n/2-1]) / 2
+}
+
+func InstFindMedianSortedArrays() {
+	result := FindMedianSortedArrays(
+		[]int{2, 9, 19, 30, 12, 6},
+		[]int{2, 100, 9, 3, 10, 82},
+	)
+
+	fmt.Println(result)
 }

@@ -1,5 +1,9 @@
 package leetcode
 
+import (
+	"fmt"
+)
+
 func TwoSum(nums []int, target int) []int {
 	mp := make(map[int]int, len(nums))
 	for i := range nums {
@@ -14,4 +18,9 @@ func TwoSum(nums []int, target int) []int {
 	}
 
 	return nil
+}
+
+func InstTwoSum() {
+	result := TwoSum([]int{1, 2, 3, 4, 5, 6, 7, 8, 9}, 10)
+	fmt.Println(result)
 }

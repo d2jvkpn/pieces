@@ -1,10 +1,11 @@
 package leetcode
 
 import (
+	"fmt"
 	"sort"
 )
 
-func ThreeSum(nums []int) (out [][]int) {
+func ThreeSum1(nums []int) (out [][]int) {
 	out = make([][]int, 0)
 	mp := make(map[[3]int]bool)
 
@@ -104,4 +105,11 @@ func ThreeSum3(nums []int) (out [][]int) {
 	}
 
 	return
+}
+
+func InstThreeSum() {
+	ints := []int{-1, 0, 1, 2, -1, -4}
+	fmt.Printf("ThreeSum1: %v -> %v\n", ints, ThreeSum1(ints))
+	fmt.Printf("ThreeSum2: %v -> %v\n", ints, ThreeSum2(ints))
+	fmt.Printf("ThreeSum3: %v -> %v\n", ints, ThreeSum3(ints))
 }

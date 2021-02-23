@@ -1,5 +1,9 @@
 package leetcode
 
+import (
+	"fmt"
+)
+
 func RomanToInteger(str string) (num int) {
 	mp := map[byte]int{
 		'I': 1, 'V': 5, 'X': 10, 'L': 50,
@@ -21,4 +25,10 @@ func RomanToInteger(str string) (num int) {
 	}
 
 	return
+}
+
+func InstRomanToInteger() {
+	for _, str := range []string{"III", "IX", "LVIII"} {
+		fmt.Printf("%s -> %d\n", str, RomanToInteger(str))
+	}
 }
