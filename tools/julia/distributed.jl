@@ -2,6 +2,8 @@ using Distributed
 
 using TOML
 
+# addprocs(2) // add local processes
+
 #= example
 addprocs(
     [("root@172.17.0.2:22", 2)];

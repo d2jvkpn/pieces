@@ -32,9 +32,9 @@ parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFo
 parser.add_argument("-toml", default="config.toml", help="toml config file")
 parser.add_argument("-sect", default="mongo", help="mongo sect name in config")
 parser.add_argument("-db", required=True, help="target database")
-parser.add_argument("-tables", nargs="+", required=True, help='mysql tables')
+parser.add_argument("-tables", nargs="+", required=True, help='mongo tables')
 parser.add_argument("-export_df", type=bool, default =False, help="export table as data frame")
-parser.add_argument("-where", default="", help="mysql select with where, work with -export_df true")
+parser.add_argument("-where", default="", help="mongo select with where, work with -export_df true")
 args = parser.parse_args()
 
 tf, sect = args.toml, args.sect
