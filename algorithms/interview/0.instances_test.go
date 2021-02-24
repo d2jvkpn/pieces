@@ -23,3 +23,7 @@ func TestWaittimeout1(t *testing.T) {
 func TestWaittimeout2(t *testing.T) {
 	Waittimeout2()
 }
+
+func TestNeighborOnes(t *testing.T) {
+	InstNeighborOnes()
+}
