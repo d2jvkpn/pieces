@@ -72,7 +72,7 @@ func (nm NodesMatrix) ClearNeighbors() (num int) {
 
 // instance
 func InstNeighborOnes() {
-	// expect InstNeighborOnes(matrix) = 4
+	// expect output: 4
 	matrix := [][]int{
 		{1, 0, 0, 0, 1},
 		{0, 0, 0, 1, 1},
