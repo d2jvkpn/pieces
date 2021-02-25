@@ -7,7 +7,7 @@ import (
 type Node struct {
 	Value int      // 0: be cleared, 1: origin value
 	Posi  [2]int   // position
-	Nodes [4]*Node // up, right, down, left
+	URDL  [4]*Node // up, right, down, left
 }
 
 func (node *Node) Clear(parent *Node) {
@@ -16,7 +16,7 @@ func (node *Node) Clear(parent *Node) {
 		return
 	}
 
-	for _, v := range node.Nodes {
+	for _, v := range node.URDL {
 		if v == nil || v.Value == 0 || v == parent {
 			continue
 		}
@@ -43,10 +43,10 @@ func MatrixNeighborOnes(matrix [][]int) (num int) {
 
 	for k := range nodes {
 		i, j := k[0], k[1]
-		nodes[k].Nodes[0] = nodes[[2]int{i - 1, j}]
-		nodes[k].Nodes[1] = nodes[[2]int{i, j + 1}]
-		nodes[k].Nodes[2] = nodes[[2]int{i + 1, j}]
-		nodes[k].Nodes[3] = nodes[[2]int{i, j - 1}]
+		nodes[k].URDL[0] = nodes[[2]int{i - 1, j}]
+		nodes[k].URDL[1] = nodes[[2]int{i, j + 1}]
+		nodes[k].URDL[2] = nodes[[2]int{i + 1, j}]
+		nodes[k].URDL[3] = nodes[[2]int{i, j - 1}]
 	}
 
 	for k := range nodes {
