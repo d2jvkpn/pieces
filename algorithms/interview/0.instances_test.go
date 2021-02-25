@@ -12,8 +12,8 @@ func TestSliceToMaxnum(t *testing.T) {
 	InstSliceToMaxnum()
 }
 
-func TestSortPN(t *testing.T) {
-	InstSortPN()
+func TestInstSortPositiveNegative(t *testing.T) {
+	InstSortPositiveNegative()
 }
 
 func TestWaittimeout1(t *testing.T) {
@@ -24,6 +24,6 @@ func TestWaittimeout2(t *testing.T) {
 	Waittimeout2()
 }
 
-func TestNeighborOnes(t *testing.T) {
-	InstNeighborOnes()
+func TestMatrixJoinedOnes(t *testing.T) {
+	InstMatrixJoinedOnes()
 }
