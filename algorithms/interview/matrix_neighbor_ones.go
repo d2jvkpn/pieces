@@ -25,7 +25,7 @@ func (node *Node) Clear(parent *Node) {
 		}
 
 		if v.Value == 1 {
-			v.Clear(node)
+			v.Clear(node) // recurssion
 			v.Value = 0
 		}
 	}
