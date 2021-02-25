@@ -16,14 +16,14 @@ type NodesMatrix struct {
 }
 
 // clear neighbors
-func (node *Node) Clear(parent *Node) {
-	fmt.Printf("    clearing: Node -> %v, Parent -> %v\n", node.Posi, parent)
+func (node *Node) Clear(previous *Node) {
+	fmt.Printf("    clearing: Node -> %v, Previous -> %v\n", node.Posi, previous)
 	if node.Value == 0 {
 		return
 	}
 
 	for _, v := range node.URDL {
-		if v == nil || v.Value == 0 || v == parent {
+		if v == nil || v.Value == 0 || v == previous {
 			continue
 		}
 
