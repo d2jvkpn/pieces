@@ -10,6 +10,9 @@ type Node struct {
 	URDL  [4]*Node // up, right, down, left
 }
 
+type NodesMatrix map[[2]int]*Node
+
+// clear neighbors
 func (node *Node) Clear(parent *Node) {
 	fmt.Printf("    clearing: Node -> %v, Parent -> %v\n", node.Posi, parent)
 	if node.Value == 0 {
@@ -28,8 +31,9 @@ func (node *Node) Clear(parent *Node) {
 	}
 }
 
-func MatrixNeighborOnes(matrix [][]int) (num int) {
-	nodes := make(map[[2]int]*Node)
+// create NodesMatrix from two dimensional array
+func NewNodesMatrix(matrix [][]int) (nm NodesMatrix) {
+	nm = make(map[[2]int]*Node)
 
 	for i := range matrix {
 		for j := range matrix[i] {
@@ -37,23 +41,28 @@ func MatrixNeighborOnes(matrix [][]int) (num int) {
 				continue
 			}
 			posi := [2]int{i, j}
-			nodes[posi] = &Node{Value: 1, Posi: posi}
+			nm[posi] = &Node{Value: 1, Posi: posi}
 		}
 	}
 
-	for k := range nodes {
+	return
+}
+
+// clear neighbors and count nodes which .Value  == 1
+func (nm NodesMatrix) ClearNeighbors() (num int) {
+	for k := range nm {
 		i, j := k[0], k[1]
-		nodes[k].URDL[0] = nodes[[2]int{i - 1, j}]
-		nodes[k].URDL[1] = nodes[[2]int{i, j + 1}]
-		nodes[k].URDL[2] = nodes[[2]int{i + 1, j}]
-		nodes[k].URDL[3] = nodes[[2]int{i, j - 1}]
+		nm[k].URDL[0] = nm[[2]int{i - 1, j}]
+		nm[k].URDL[1] = nm[[2]int{i, j + 1}]
+		nm[k].URDL[2] = nm[[2]int{i + 1, j}]
+		nm[k].URDL[3] = nm[[2]int{i, j - 1}]
 	}
 
-	for k := range nodes {
+	for k := range nm {
 		fmt.Printf(">>> Iterating at: %v\n", k)
-		nodes[k].Clear(nil)
+		nm[k].Clear(nil)
 
-		if nodes[k].Value == 1 {
+		if nm[k].Value == 1 {
 			num++
 		}
 	}
@@ -61,6 +70,7 @@ func MatrixNeighborOnes(matrix [][]int) (num int) {
 	return
 }
 
+// instance
 func InstNeighborOnes() {
 	// expect InstNeighborOnes(matrix) = 4
 	matrix := [][]int{
@@ -71,5 +81,6 @@ func InstNeighborOnes() {
 		{0, 0, 0, 1, 0},
 	}
 
-	fmt.Println(MatrixNeighborOnes(matrix))
+	nm := NewNodesMatrix(matrix)
+	fmt.Println(nm.ClearNeighbors())
 }
