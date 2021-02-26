@@ -1,8 +1,6 @@
-using Genie
-using Genie.Router
+using Genie, Genie.Router
 
-using Dates
-using TimeZones
+using Dates, TimeZones
 
 
 function currentTime()
