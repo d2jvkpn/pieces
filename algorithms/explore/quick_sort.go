@@ -20,15 +20,15 @@ func QuickSort(slice []int) (out []int) {
 	}
 
 	out = make([]int, 0, len(slice))
-	out = append(QuickSort(s1), slice[0])
-	out = append(out, QuickSort(s2)...)
+	out = append(QuickSort(s1), slice[0]) // recursion
+	out = append(out, QuickSort(s2)...)   // recursion
 
 	return
 }
 
 func InstQuickSort() {
-	slice := []int{14, 33, 10, 27, 19, 35, 42, 44, 18}
 	fmt.Println(">>> InstQuickSort:")
+	slice := []int{14, 33, 10, 27, 19, 35, 42, 44, 18}
 	fmt.Printf("    slice = %v\n", slice)
 	out := QuickSort(slice)
 	fmt.Printf("    out = %v\n", out)
