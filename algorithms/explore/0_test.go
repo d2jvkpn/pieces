@@ -29,3 +29,7 @@ func TestInstMergeSort(t *testing.T) {
 	InstMergeSort()
 	InstMergeSort2()
 }
+
+func TestInstQuickSort(t *testing.T) {
+	InstQuickSort()
+}
