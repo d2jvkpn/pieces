@@ -4,11 +4,11 @@ import (
 	"testing"
 )
 
-func TestIsPrime(t *testing.T) {
+func TestInstIsPrime(t *testing.T) {
 	InstIsPrime()
 }
 
-func TestSliceToMaxnum(t *testing.T) {
+func TestInstSliceToMaxnum(t *testing.T) {
 	InstSliceToMaxnum()
 }
 
@@ -16,14 +16,14 @@ func TestInstSortPositiveNegative(t *testing.T) {
 	InstSortPositiveNegative()
 }
 
-func TestWaittimeout1(t *testing.T) {
+func TestInstWaittimeout1(t *testing.T) {
 	Waittimeout1()
 }
 
-func TestWaittimeout2(t *testing.T) {
+func TestInstWaittimeout2(t *testing.T) {
 	Waittimeout2()
 }
 
-func TestMatrixJoinedOnes(t *testing.T) {
+func TestInstMatrixJoinedOnes(t *testing.T) {
 	InstMatrixJoinedOnes()
 }

@@ -4,6 +4,18 @@ import (
 	"testing"
 )
 
-func TestBinarySearch(t *testing.T) {
+func TestInstDeliveryBalance(t *testing.T) {
+	InstDeliveryBalance()
+}
+
+func TestInstBinarySearch(t *testing.T) {
 	InstBinarySearch()
+}
+
+func TestInstIntеrpоlаtiоnSеаrch(t *testing.T) {
+	InstIntеrpоlаtiоnSеаrch()
+}
+
+func TestInstBubbleSort(t *testing.T) {
+	InstBubbleSort()
 }

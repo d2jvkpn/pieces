@@ -4,15 +4,15 @@ import (
 	"testing"
 )
 
-func TestTwoSum(t *testing.T) {
+func TestInstTwoSum(t *testing.T) {
 	InstTwoSum()
 }
 
-func TestLengthOfLongestSubstring(t *testing.T) {
+func TestInstLengthOfLongestSubstring(t *testing.T) {
 	InstLengthOfLongestSubstring()
 }
 
-func TestFindMedianSortedArrays(t *testing.T) {
+func TestInstFindMedianSortedArrays(t *testing.T) {
 	InstFindMedianSortedArrays()
 }
 
@@ -20,18 +20,18 @@ func TestInstReverseNum(t *testing.T) {
 	InstReverseNum()
 }
 
-func TestPalindromeNumber(t *testing.T) {
+func TestInstPalindromeNumber(t *testing.T) {
 	InstPalindromeNumber()
 }
 
-func TestRomanToInteger(t *testing.T) {
+func TestInstRomanToInteger(t *testing.T) {
 	InstRomanToInteger()
 }
 
-func TestLongestCommonPrefix(t *testing.T) {
+func TestInstLongestCommonPrefix(t *testing.T) {
 	InstLongestCommonPrefix()
 }
 
-func TestThreeSum(t *testing.T) {
+func TestInstThreeSum(t *testing.T) {
 	InstThreeSum()
 }

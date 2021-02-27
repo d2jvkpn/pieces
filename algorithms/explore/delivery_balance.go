@@ -1,7 +1,7 @@
 package explore
 
 import (
-	// "fmt"
+	"fmt"
 	"sort"
 )
 
@@ -34,4 +34,14 @@ func DeliveryBalance(curr []int64, k int64) {
 	}
 
 	return
+}
+
+func InstDeliveryBalance() {
+	fmt.Println(">>> InstDeliveryBalance:")
+	m := []int64{2, 5, 3, 12, 1, 7, 8}
+	n := int64(20)
+	fmt.Printf("    m = %v, n = %d\n", m, n)
+
+	DeliveryBalance(m, n)
+	fmt.Println("   ", m)
 }

@@ -4,10 +4,10 @@ import (
 	"fmt"
 )
 
-func BinarySearch(slice []int, target int) (idx int) {
+func BinarySearch(slice []int, target int) int {
 	fmt.Printf(">>> BinarySearch:\n    slice -> %v, target -> %d\n", slice, target)
 
-	n, m := 0, len(slice)-1
+	n, m, idx := 0, len(slice)-1, 0
 	if len(slice) == 0 || target < slice[n] || target > slice[m] {
 		return -1
 	}
