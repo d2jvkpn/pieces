@@ -18,6 +18,7 @@ func QuickSort(slice []int) (out []int) {
 			s2 = append(s2, slice[i])
 		}
 	}
+	fmt.Printf("    s1 = %v, s2 = %v\n", s1, s2)
 
 	out = make([]int, 0, len(slice))
 	out = append(QuickSort(s1), slice[0]) // recursion
