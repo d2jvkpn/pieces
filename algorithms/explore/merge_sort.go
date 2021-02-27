@@ -10,18 +10,14 @@ func MergeSort(slice []int) (out []int) {
 	}
 
 	m := (len(slice) + 1) / 2
-	s1, s2 := MergeSort(slice[:m]), MergeSort(slice[m:])
+	s1, s2 := MergeSort(slice[:m]), MergeSort(slice[m:]) // recurrsion
 	fmt.Printf("    ~~~ s1 = %v, s2 = %v\n", s1, s2)
 	out = make([]int, 0, len(slice))
 
 	for i, j := 0, 0; ; {
-		if i == len(s1) {
-			out = append(out, s2[j:]...)
-			break
-		}
-
-		if j == len(s1) {
-			out = append(out, s1[i:]...)
+		if i == len(s1) || j == len(s2) {
+			out = append(out, s2[j:]...) // when i == len(s1)
+			out = append(out, s1[i:]...) // when j == len(s2)
 			break
 		}
 
@@ -40,6 +36,15 @@ func MergeSort(slice []int) (out []int) {
 func InstMergeSort() {
 	slice := []int{14, 33, 10, 27, 19, 35, 42, 44}
 	fmt.Println(">>> InstMergeSort:")
+	fmt.Printf("    slice = %v\n", slice)
+
+	out := MergeSort(slice)
+	fmt.Printf("    out = %v\n", out)
+}
+
+func InstMergeSort2() {
+	slice := []int{14, 33, 10, 27, 19, 35, 42, 44, 18}
+	fmt.Println(">>> InstMergeSort2:")
 	fmt.Printf("    slice = %v\n", slice)
 
 	out := MergeSort(slice)

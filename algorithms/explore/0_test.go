@@ -18,9 +18,6 @@ func TestInstIntеrpоlаtiоnSеаrch(t *testing.T) {
 
 func TestInstBubbleSort(t *testing.T) {
 	InstBubbleSort()
-}
-
-func TestInstBubbleSort2(t *testing.T) {
 	InstBubbleSort2()
 }
 
@@ -30,4 +27,5 @@ func TestInstInsertSort(t *testing.T) {
 
 func TestInstMergeSort(t *testing.T) {
 	InstMergeSort()
+	InstMergeSort2()
 }
