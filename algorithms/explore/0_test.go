@@ -27,3 +27,7 @@ func TestInstBubbleSort2(t *testing.T) {
 func TestInstInsertSort(t *testing.T) {
 	InstInsertSort()
 }
+
+func TestInstMergeSort(t *testing.T) {
+	InstMergeSort()
+}
