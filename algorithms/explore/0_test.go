@@ -12,6 +12,10 @@ func TestInstBinarySearch(t *testing.T) {
 	InstBinarySearch()
 }
 
+func TestInstBinarySearch2(t *testing.T) {
+	InstBinarySearch2()
+}
+
 func TestInstIntеrpоlаtiоnSеаrch(t *testing.T) {
 	InstIntеrpоlаtiоnSеаrch()
 }

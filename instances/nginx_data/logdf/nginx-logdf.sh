@@ -32,7 +32,7 @@ awk 'BEGIN{
 
 
 
-exit
+exit 0
 
 default format:
     '$remote_addr - $remote_user [$time_local] '

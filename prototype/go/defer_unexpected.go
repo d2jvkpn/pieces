@@ -40,14 +40,14 @@ func InstDefer2() {
 		defer func() {
 			t += 3
 		}()
-		return t
+		return t // return value is 1
 	}
 
 	defer3 := func(i int) (t int) {
 		defer func() {
 			t += i
 		}()
-		return 2
+		return 2 // t = 2 before return and defer func
 	}
 
 	fmt.Print(defer1(1))
