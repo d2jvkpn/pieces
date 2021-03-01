@@ -36,10 +36,7 @@ func BinarySearch(slice []int, target int) int {
 }
 
 func InstBinarySearch() {
-	slice := []int{
-		1, 4, 7, 9, 10,
-		14, 17, 20, 27, 31,
-	}
+	slice := []int{1, 4, 7, 9, 10, 14, 17, 20, 27, 31}
 
 	fmt.Println("    result =", BinarySearch(slice, 17))
 	fmt.Println("    result =", BinarySearch(slice, 7))
