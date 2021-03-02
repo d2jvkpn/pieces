@@ -13,6 +13,10 @@ func BinarySearch(slice []int, target int) int {
 	}
 
 	for {
+		/*
+			v := (float64(n) + float64(m))/2
+			idx := int(v) // idx := int(math.Ceil(v))
+		*/
 		idx := (n + m) / 2
 		fmt.Printf("    n = %d, m = %d, idx = %d\n", n, m, idx)
 
