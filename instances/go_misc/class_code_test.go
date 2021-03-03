@@ -1,4 +1,4 @@
-package rover
+package main
 
 import (
 	"fmt"
