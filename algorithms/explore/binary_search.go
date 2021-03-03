@@ -23,7 +23,8 @@ func BinarySearch(slice []int, target int) int {
 		switch {
 		case slice[idx] == target:
 			return idx
-		case slice[idx+1] == target: // n = 0 && m = 1 => idx = 0, check target == slice[1]
+		// n = 0 && m = 1 => idx = 0, check target == slice[1]
+		case slice[idx+1] == target:
 			return idx + 1
 		case slice[idx] > target:
 			m = idx
@@ -53,4 +54,12 @@ func InstBinarySearch2() {
 	fmt.Println("    result =", BinarySearch(slice, 1))
 	fmt.Println("    result =", BinarySearch(slice, 4))
 	fmt.Println("    result =", BinarySearch(slice, 2))
+}
+
+func InstBinarySearch3() {
+	slice := []int{1, 2}
+
+	fmt.Println("    result =", BinarySearch(slice, 1))
+	fmt.Println("    result =", BinarySearch(slice, 2))
+	fmt.Println("    result =", BinarySearch(slice, -1))
 }

@@ -5,6 +5,12 @@ import (
 	"time"
 )
 
+func GetOClock(shift int) (clock time.Time) {
+	clock = time.Now().AddDate(0, 0, shift)
+	clock = time.Date(clock.Year(), clock.Month(), clock.Day(), 0, 0, 0, 0, clock.Location())
+	return clock
+}
+
 /*
   ceil time, e.g. TimeCeil('2020-12-01T17:39:07.123+08:00', "M") -> '2020-12-01T17:40:00+08:00'
     valid unit(key or value)

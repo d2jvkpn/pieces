@@ -10,10 +10,10 @@ func TestInstDeliveryBalance(t *testing.T) {
 
 func TestInstBinarySearch(t *testing.T) {
 	InstBinarySearch()
-}
 
-func TestInstBinarySearch2(t *testing.T) {
 	InstBinarySearch2()
+
+	InstBinarySearch3()
 }
 
 func TestInstIntеrpоlаtiоnSеаrch(t *testing.T) {
