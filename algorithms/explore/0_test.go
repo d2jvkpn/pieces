@@ -41,3 +41,7 @@ func TestInstQuickSort(t *testing.T) {
 func TestInstSelectSort(t *testing.T) {
 	InstSelectSort()
 }
+
+func TestInstHeapSort(t *testing.T) {
+	InstHeapSort()
+}
