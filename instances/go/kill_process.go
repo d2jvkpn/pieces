@@ -22,6 +22,7 @@ func main() {
 
 	time.AfterFunc(10*time.Second, func() {
 		fmt.Println("    kill process")
+		// syscall.Kill(cmd.Process.Pid, syscall.SIGKILL)
 		cmd.Process.Kill()
 	})
 	cmd.Wait()
