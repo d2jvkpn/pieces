@@ -91,20 +91,25 @@ func HeapSort2(slice []int, asc bool) (out []int) {
 		}
 	}
 
+	dropNode := func(node *Node) {
+		if node.P == nil { // root nodes
+			return
+		}
+
+		if node.P.L == node {
+			node.P.L = nil
+		} else {
+			node.P.R = nil
+		}
+		fmt.Printf("    drop node: %s\n", node)
+	}
+
 	popSwap = func(node *Node) (out *Node, v int) {
 		v = node.V
 
 		if node.L == nil && node.R == nil {
-			if node.P != nil {
-				if node.P.L == node {
-					node.P.L = nil
-				} else {
-					node.P.R = nil
-				}
-				fmt.Printf("    popSwap drop node: %s\n", node)
-			}
-			out = nil
-			return
+			dropNode(node)
+			return nil, v
 		}
 
 		if x := choose(node.L, node.R, asc); x != nil {
