@@ -13,7 +13,7 @@ func BuildTree2(slice []int, asc bool) (root *Node) {
 		n        int
 		queue    []*Node
 		bindNode func(*Node, *Node, *int)
-		addSwap  func(*Node, *Node, bool)
+		pushSwap func(*Node, *Node, bool)
 	)
 
 	queue = make([]*Node, len(slice))
@@ -29,29 +29,29 @@ func BuildTree2(slice []int, asc bool) (root *Node) {
 		fmt.Printf("    queue = %v\n", ints)
 	}
 
-	addSwap = func(node1, node2 *Node, less bool) {
+	pushSwap = func(node1, node2 *Node, less bool) {
 		if (less && node1.V > node2.V) || (!less && node1.V < node2.V) {
-			fmt.Printf("    addSwap %d and %d\n", node1.V, node2.V)
+			fmt.Printf("    pushSwap node: %d with %d\n", node1.V, node2.V)
 			node1.V, node2.V = node2.V, node1.V
 		}
 
 		if node1.P != nil {
-			addSwap(node1.P, node1, less)
+			pushSwap(node1.P, node1, less)
 		}
 	}
 
 	bindNode = func(parent, node *Node, n *int) {
 		switch {
 		case parent.L == nil:
-			fmt.Printf("    setting %d.L = %d\n", parent.V, node.V)
+			fmt.Printf("    bindNode: %d.L = %d\n", parent.V, node.V)
 			parent.L, node.P = node, parent
 		default:
-			fmt.Printf("    setting %d.R = %d\n", parent.V, node.V)
+			fmt.Printf("    bindNode: %d.R = %d\n", parent.V, node.V)
 			parent.R, node.P = node, parent
 			*n++
 		}
 
-		addSwap(parent, node, asc)
+		pushSwap(parent, node, asc)
 	}
 
 	root, n = queue[0], 0
@@ -92,7 +92,6 @@ func HeapSort2(slice []int, asc bool) (out []int) {
 	}
 
 	popSwap = func(node *Node) (out *Node, v int) {
-		fmt.Printf("    popSwap node %s\n", node)
 		v = node.V
 
 		if node.L == nil && node.R == nil {
@@ -102,14 +101,14 @@ func HeapSort2(slice []int, asc bool) (out []int) {
 				} else {
 					node.P.R = nil
 				}
-				fmt.Printf("    popSwap drop %d\n", node.V)
+				fmt.Printf("    popSwap drop node: %s\n", node)
 			}
 			out = nil
 			return
 		}
 
 		if x := choose(node.L, node.R, asc); x != nil {
-			fmt.Printf("    popSwap %d -> %d\n", x.V, node.V)
+			fmt.Printf("    popSwap swap node: %s with %s\n", node, x)
 			node.V = x.V
 			popSwap(x)
 		}
