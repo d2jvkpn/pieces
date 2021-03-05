@@ -60,7 +60,6 @@ func BuildTree2(slice []int, asc bool) (root *Node) {
 	}
 
 	printQueue(queue)
-
 	return
 }
 
@@ -107,14 +106,13 @@ func HeapSort2(slice []int, asc bool) (out []int) {
 
 	popSwap = func(node *Node) (out *Node, v int) {
 		v = node.V
-
 		if node.L == nil && node.R == nil {
 			dropNode(node)
 			return nil, v
 		}
 
 		if x := choose(node.L, node.R, asc); x != nil {
-			fmt.Printf("    popSwap swap node: %s with %s\n", node, x)
+			fmt.Printf("    popSwap 2 nodes: %s with %s\n", node, x)
 			node.V = x.V
 			popSwap(x)
 		}
