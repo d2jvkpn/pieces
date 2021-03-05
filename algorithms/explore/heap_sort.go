@@ -140,7 +140,7 @@ func HeapSort(slice []int) (out []int) {
 	for root != nil {
 		root, v = popSwap(root)
 		out = append(out, v)
-		fmt.Printf("    ~~~ value = %d, root = %s\n", v, root)
+		fmt.Printf("    append to out: %d, root = %s\n", v, root)
 	}
 
 	return out
