@@ -26,10 +26,10 @@ func BuildTree(slice []int) (root *Node) {
 	}
 
 	var (
-		n            int
-		queue        []*Node
-		bindNode     func(*Node, *Node, *int)
-		heapSortSwap func(*Node, *Node, bool)
+		n        int
+		queue    []*Node
+		bindNode func(*Node, *Node, *int)
+		addSwap  func(*Node, *Node, bool)
 	)
 
 	queue = make([]*Node, len(slice))
@@ -38,21 +38,21 @@ func BuildTree(slice []int) (root *Node) {
 	}
 
 	printQueue := func(queue []*Node) {
-		strs := make([]int, len(queue))
+		ints := make([]int, len(queue))
 		for i := range queue {
-			strs[i] = queue[i].V
+			ints[i] = queue[i].V
 		}
-		fmt.Printf("    queue = %v\n", strs)
+		fmt.Printf("    queue = %v\n", ints)
 	}
 
-	heapSortSwap = func(node1, node2 *Node, greater bool) {
+	addSwap = func(node1, node2 *Node, greater bool) {
 		if greater && node1.V < node2.V {
-			fmt.Printf("    swap %d and %d\n", node1.V, node2.V)
+			fmt.Printf("    addSwap %d and %d\n", node1.V, node2.V)
 			node1.V, node2.V = node2.V, node1.V
 		}
 
 		if node1.P != nil {
-			heapSortSwap(node1.P, node1, greater)
+			addSwap(node1.P, node1, greater)
 		}
 	}
 
@@ -67,7 +67,7 @@ func BuildTree(slice []int) (root *Node) {
 			*n++
 		}
 
-		heapSortSwap(parent, node, true)
+		addSwap(parent, node, true)
 	}
 
 	root, n = queue[0], 0
@@ -85,12 +85,63 @@ func HeapSort(slice []int) (out []int) {
 		return slice
 	}
 
-	root := BuildTree(slice)
-	fmt.Println(root)
+	var (
+		v       int
+		popSwap func(*Node) (*Node, int)
+	)
 
-	fmt.Println(root.L, root.R)
-	fmt.Println(root.L.L, root.L.R, root.R.L, root.R.R)
-	fmt.Println(root.L.L.L, root.L.L.R, root.L.R.L, root.L.R.R)
+	root := BuildTree(slice)
+
+	greater := func(node1, node2 *Node) bool {
+		switch {
+		case node1 == nil && node2 == nil:
+			return false
+		case node1 != nil && node2 == nil:
+			return true
+		case node1 == nil && node2 != nil:
+			return false
+		default:
+			return node1.V > node2.V
+		}
+	}
+
+	popSwap = func(node *Node) (out *Node, v int) {
+		v = node.V
+
+		fmt.Printf("    popSwap node %v\n", node)
+
+		switch {
+		case node.L == nil && node.R == nil:
+			if node.P != nil {
+				if node.P.L == node {
+					node.P.L = nil
+				} else {
+					node.P.R = nil
+				}
+				fmt.Printf("    popSwap drop %d\n", node.V)
+			}
+			out = nil
+		case greater(node.L, node.R):
+			fmt.Printf("    popSwap %d -> %d\n", node.L.V, node.V)
+			node.V = node.L.V
+			popSwap(node.L)
+			out = node
+		default:
+			fmt.Printf("    popSwap %d -> %d\n", node.R.V, node.V)
+			node.V = node.R.V
+			popSwap(node.R)
+			out = node
+		}
+
+		return
+	}
+
+	out = make([]int, 0, len(slice))
+	for root != nil {
+		root, v = popSwap(root)
+		out = append(out, v)
+		fmt.Printf("    ~~~ value = %d, root = %s\n", v, root)
+	}
 
 	return out
 }
