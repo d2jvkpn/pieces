@@ -25,9 +25,7 @@ func BubbleSort(slice []int) (k, n int) {
 
 func InstBubbleSort() {
 	fmt.Println(">>> BubbleSort:")
-	slice := []int{
-		56, 1, 7, 2, 4, 9, 19, 16, 32, 30,
-	}
+	slice := []int{56, 1, 7, 2, 4, 9, 19, 16, 32, 30}
 	fmt.Printf("    slice = %v\n", slice)
 
 	k, n := BubbleSort(slice)
@@ -58,9 +56,7 @@ func BubbleSort2(slice []int) (k, n int) {
 
 func InstBubbleSort2() {
 	fmt.Println(">>> BubbleSort2:")
-	slice := []int{
-		56, 1, 7, 2, 4, 9, 19, 16, 32, 30,
-	}
+	slice := []int{56, 1, 7, 2, 4, 9, 19, 16, 32, 30}
 	fmt.Printf("    slice = %v\n", slice)
 
 	k, n := BubbleSort2(slice)
