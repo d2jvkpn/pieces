@@ -71,10 +71,11 @@ func HeapSort2(slice []int, asc bool) (out []int) {
 
 	var (
 		v       int
+		root    *Node
 		popSwap func(*Node) (*Node, int)
 	)
 
-	root := BuildTree2(slice, asc)
+	root = BuildTree2(slice, asc)
 
 	choose := func(node1, node2 *Node, less bool) (out *Node) {
 		switch {
