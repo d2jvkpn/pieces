@@ -40,8 +40,10 @@ func BinarySearch(slice []int, target int) int {
 	return -1
 }
 
-func InstBinarySearch() {
+func InstBinarySearch1() {
+	fmt.Println(">>> InstBinarySearch1:")
 	slice := []int{1, 4, 7, 9, 10, 14, 17, 20, 27, 31}
+	fmt.Printf("    slice = %v\n", slice)
 
 	fmt.Println("    result =", BinarySearch(slice, 17))
 	fmt.Println("    result =", BinarySearch(slice, 7))
@@ -49,7 +51,9 @@ func InstBinarySearch() {
 }
 
 func InstBinarySearch2() {
+	fmt.Println(">>> InstBinarySearch2:")
 	slice := []int{1, 4}
+	fmt.Printf("    slice = %v\n", slice)
 
 	fmt.Println("    result =", BinarySearch(slice, 1))
 	fmt.Println("    result =", BinarySearch(slice, 4))
@@ -57,7 +61,9 @@ func InstBinarySearch2() {
 }
 
 func InstBinarySearch3() {
+	fmt.Println(">>> InstBinarySearch3:")
 	slice := []int{1, 2}
+	fmt.Printf("    slice = %v\n", slice)
 
 	fmt.Println("    result =", BinarySearch(slice, 1))
 	fmt.Println("    result =", BinarySearch(slice, 2))

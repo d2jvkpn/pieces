@@ -4,23 +4,7 @@ import (
 	"fmt"
 )
 
-type Node struct {
-	V       int
-	P, L, R *Node
-}
-
-func NewNode(value int) *Node {
-	return &Node{V: value}
-}
-
-func (node *Node) String() string {
-	if node == nil {
-		return "."
-	}
-	return fmt.Sprintf("%d", node.V)
-}
-
-func BuildTree(slice []int) (root *Node) {
+func BuildTree2(slice []int, asc bool) (root *Node) {
 	if len(slice) == 0 {
 		return nil
 	}
@@ -45,14 +29,14 @@ func BuildTree(slice []int) (root *Node) {
 		fmt.Printf("    queue = %v\n", ints)
 	}
 
-	addSwap = func(node1, node2 *Node, greater bool) {
-		if greater && node1.V < node2.V {
+	addSwap = func(node1, node2 *Node, less bool) {
+		if (less && node1.V > node2.V) || (!less && node1.V < node2.V) {
 			fmt.Printf("    addSwap %d and %d\n", node1.V, node2.V)
 			node1.V, node2.V = node2.V, node1.V
 		}
 
 		if node1.P != nil {
-			addSwap(node1.P, node1, greater)
+			addSwap(node1.P, node1, less)
 		}
 	}
 
@@ -67,7 +51,7 @@ func BuildTree(slice []int) (root *Node) {
 			*n++
 		}
 
-		addSwap(parent, node, true)
+		addSwap(parent, node, asc)
 	}
 
 	root, n = queue[0], 0
@@ -80,7 +64,7 @@ func BuildTree(slice []int) (root *Node) {
 	return
 }
 
-func HeapSort(slice []int) (out []int) {
+func HeapSort2(slice []int, asc bool) (out []int) {
 	if len(slice) < 2 {
 		return slice
 	}
@@ -90,28 +74,28 @@ func HeapSort(slice []int) (out []int) {
 		popSwap func(*Node) (*Node, int)
 	)
 
-	root := BuildTree(slice)
+	root := BuildTree2(slice, asc)
 
-	greater := func(node1, node2 *Node) bool {
+	choose := func(node1, node2 *Node, less bool) (out *Node) {
 		switch {
 		case node1 == nil && node2 == nil:
-			return false
+			return nil
 		case node1 != nil && node2 == nil:
-			return true
+			return node1
 		case node1 == nil && node2 != nil:
-			return false
+			return node2
+		case (node1.V < node2.V && less) || (node1.V > node2.V && !less): //!!!
+			return node1
 		default:
-			return node1.V > node2.V
+			return node2
 		}
 	}
 
 	popSwap = func(node *Node) (out *Node, v int) {
+		fmt.Printf("    popSwap node %s\n", node)
 		v = node.V
 
-		fmt.Printf("    popSwap node %v\n", node)
-
-		switch {
-		case node.L == nil && node.R == nil:
+		if node.L == nil && node.R == nil {
 			if node.P != nil {
 				if node.P.L == node {
 					node.P.L = nil
@@ -121,18 +105,16 @@ func HeapSort(slice []int) (out []int) {
 				fmt.Printf("    popSwap drop %d\n", node.V)
 			}
 			out = nil
-		case greater(node.L, node.R):
-			fmt.Printf("    popSwap %d -> %d\n", node.L.V, node.V)
-			node.V = node.L.V
-			popSwap(node.L)
-			out = node
-		default:
-			fmt.Printf("    popSwap %d -> %d\n", node.R.V, node.V)
-			node.V = node.R.V
-			popSwap(node.R)
-			out = node
+			return
 		}
 
+		if x := choose(node.L, node.R, asc); x != nil {
+			fmt.Printf("    popSwap %d -> %d\n", x.V, node.V)
+			node.V = x.V
+			popSwap(x)
+		}
+
+		out = node
 		return
 	}
 
@@ -143,14 +125,23 @@ func HeapSort(slice []int) (out []int) {
 		fmt.Printf("    append to out: %d, root = %s\n", v, root)
 	}
 
-	return out
+	return
 }
 
-func InstHeapSort1() {
-	fmt.Println(">>> InstHeapSort1:")
+func InstHeapSort2() {
+	fmt.Println(">>> InstHeapSort2:")
 	slice := []int{14, 33, 10, 27, 19, 35, 42, 44, 18, 17, 12, 28}
 	fmt.Printf("    slice = %v\n", slice)
 
-	out := HeapSort(slice)
+	out := HeapSort2(slice, true)
+	fmt.Printf("    out = %#v\n", out)
+}
+
+func InstHeapSort3() {
+	fmt.Println(">>> InstHeapSort3:")
+	slice := []int{14, 33, 10, 27, 19, 35, 42, 44, 18, 17, 12, 28}
+	fmt.Printf("    slice = %v\n", slice)
+
+	out := HeapSort2(slice, false)
 	fmt.Printf("    out = %#v\n", out)
 }

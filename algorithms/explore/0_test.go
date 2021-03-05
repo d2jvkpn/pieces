@@ -8,11 +8,15 @@ func TestInstDeliveryBalance(t *testing.T) {
 	InstDeliveryBalance()
 }
 
-func TestInstBinarySearch(t *testing.T) {
-	InstBinarySearch()
+func TestInstBinarySearch1(t *testing.T) {
+	InstBinarySearch1()
+}
 
+func TestInstBinarySearch2(t *testing.T) {
 	InstBinarySearch2()
+}
 
+func TestInstBinarySearch3(t *testing.T) {
 	InstBinarySearch3()
 }
 
@@ -42,6 +46,14 @@ func TestInstSelectSort(t *testing.T) {
 	InstSelectSort()
 }
 
-func TestInstHeapSort(t *testing.T) {
-	InstHeapSort()
+func TestInstHeapSort1(t *testing.T) {
+	InstHeapSort1()
+}
+
+func TestInstHeapSort2(t *testing.T) {
+	InstHeapSort2()
+}
+
+func TestInstHeapSort3(t *testing.T) {
+	InstHeapSort3()
 }
