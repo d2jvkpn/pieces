@@ -17,49 +17,48 @@ func (node *Node) String() string {
 	if node == nil {
 		return "."
 	}
-
 	return fmt.Sprintf("%d", node.V)
 }
 
-func (node *Node) NoC() (n int) {
-	if node == nil {
-		return 0
+func (node1 *Node) Swap(node2 *Node) {
+	fmt.Printf("    swap %d and %d\n", node1.V, node2.V)
+	node1.V, node2.V = node2.V, node1.V
+}
+
+func BuildTree(slice []int) (root *Node) {
+	if len(slice) == 0 {
+		return nil
 	}
 
-	if node.L != nil {
-		n++
+	var (
+		n        int
+		queue    []*Node
+		bindNode func(*Node, *Node, *int)
+	)
+
+	queue = make([]*Node, len(slice))
+	for i := range slice {
+		queue[i] = NewNode(slice[i])
 	}
 
-	if node.R != nil {
-		n++
+	bindNode = func(parent, node *Node, n *int) {
+		switch {
+		case parent.L == nil:
+			fmt.Printf("    setting %d.L = %d\n", parent.V, node.V)
+			parent.L, node.P = node, parent
+		default:
+			fmt.Printf("    setting %d.R = %d\n", parent.V, node.V)
+			parent.R, node.P = node, parent
+			*n++
+		}
+	}
+
+	root, n = queue[0], 0
+	for _, v := range queue[1:] {
+		bindNode(queue[n], v, &n)
 	}
 
 	return
-}
-
-func AddNode(root, node *Node) {
-	switch {
-	case root.L == nil:
-		fmt.Printf("    setting %d.L = %d\n", root.V, node.V)
-		root.L, node.P = node, root
-
-		return
-	case root.R == nil:
-		fmt.Printf("    setting %d.R = %d\n", root.V, node.V)
-		root.R, node.P = node, root
-		return
-	}
-
-	if root.L.NoC()-root.R.NoC() == 2 { // balance
-		AddNode(root.R, node)
-	} else {
-		AddNode(root.L, node)
-	}
-}
-
-func SwapNode(node1, node2 *Node) {
-	fmt.Printf("    swap %d and %d\n", node1.V, node2.V)
-	node1.V, node2.V = node2.V, node1.V
 }
 
 func HeapSort(slice []int) (out []int) {
@@ -67,16 +66,7 @@ func HeapSort(slice []int) (out []int) {
 		return slice
 	}
 
-	var root *Node
-
-	for i := range slice {
-		if i == 0 {
-			root = NewNode(slice[i])
-			continue
-		}
-
-		AddNode(root, &Node{V: slice[i]})
-	}
+	root := BuildTree(slice)
 
 	fmt.Println(root)
 	fmt.Println(root.L, root.R)
@@ -88,7 +78,7 @@ func HeapSort(slice []int) (out []int) {
 
 func InstHeapSort() {
 	fmt.Println(">>> InstQuickSort:")
-	slice := []int{14, 33, 10, 27, 19, 35, 42, 44, 18}
+	slice := []int{14, 33, 10, 27, 19, 35, 42, 44, 18, 17, 12, 28}
 	fmt.Printf("    slice = %v\n", slice)
 
 	out := HeapSort(slice)
