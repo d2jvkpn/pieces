@@ -5,8 +5,9 @@ import (
 )
 
 type Node struct {
-	V       int
-	P, L, R *Node
+	V       int   // value
+	P, L, R *Node // Parent, Left, Right
+	// Status bool // node status
 }
 
 func NewNode(value int) *Node {
