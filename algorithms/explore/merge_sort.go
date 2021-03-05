@@ -33,9 +33,9 @@ func MergeSort(slice []int) (out []int) {
 	return
 }
 
-func InstMergeSort() {
-	slice := []int{14, 33, 10, 27, 19, 35, 42, 44}
+func InstMergeSort1() {
 	fmt.Println(">>> InstMergeSort:")
+	slice := []int{14, 33, 10, 27, 19, 35, 42, 44}
 	fmt.Printf("    slice = %v\n", slice)
 
 	out := MergeSort(slice)
@@ -43,8 +43,8 @@ func InstMergeSort() {
 }
 
 func InstMergeSort2() {
-	slice := []int{14, 33, 10, 27, 19, 35, 42, 44, 18}
 	fmt.Println(">>> InstMergeSort2:")
+	slice := []int{14, 33, 10, 27, 19, 35, 42, 44, 18}
 	fmt.Printf("    slice = %v\n", slice)
 
 	out := MergeSort(slice)

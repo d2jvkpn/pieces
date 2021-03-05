@@ -28,7 +28,9 @@ func RomanToInteger(str string) (num int) {
 }
 
 func InstRomanToInteger() {
+	fmt.Println(">>> InstRomanToInteger:")
+
 	for _, str := range []string{"III", "IX", "LVIII"} {
-		fmt.Printf("%s -> %d\n", str, RomanToInteger(str))
+		fmt.Printf("    roman = %s, number = %d\n", str, RomanToInteger(str))
 	}
 }

@@ -18,10 +18,11 @@ func FindMedianSortedArrays(nums1 []int, nums2 []int) float64 {
 }
 
 func InstFindMedianSortedArrays() {
-	result := FindMedianSortedArrays(
-		[]int{2, 9, 19, 30, 12, 6},
-		[]int{2, 100, 9, 3, 10, 82},
-	)
+	fmt.Println(">>> InstFindMedianSortedArrays:")
+	slice1 := []int{2, 9, 19, 30, 12, 6}
+	slice2 := []int{2, 100, 9, 3, 10, 82}
+	fmt.Printf("    slice1 = %v, slice2 = %v\n", slice1, slice2)
 
-	fmt.Println(result)
+	out := FindMedianSortedArrays(slice1, slice2)
+	fmt.Printf("    out = %v\n", out)
 }

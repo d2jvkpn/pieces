@@ -23,6 +23,8 @@ func IsPrime(num int) (yes bool, err error) {
 }
 
 func InstIsPrime() {
+	fmt.Println(">>> InstIsPrime:")
+
 	for i := 1; i <= 20; i++ {
 		isprime, err := IsPrime(i)
 		fmt.Printf(">>> %d, %t, %v\n", i, isprime, err)

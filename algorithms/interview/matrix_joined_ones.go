@@ -91,6 +91,7 @@ func (nm *NodesMatrix) ClearNeighbors() (num int) {
 
 // instance
 func InstMatrixJoinedOnes() {
+	fmt.Println(">>> InstMatrixJoinedOnes:")
 	// expect output: 4
 	matrix := [][]int{
 		{1, 0, 0, 0, 1},
@@ -99,7 +100,9 @@ func InstMatrixJoinedOnes() {
 		{1, 0, 0, 0, 0},
 		{0, 0, 0, 1, 0},
 	}
+	fmt.Printf("    matrix = %v\n", matrix)
 
 	nm := NewNodesMatrix(matrix)
-	fmt.Println(nm.ClearNeighbors())
+	num := nm.ClearNeighbors()
+	fmt.Printf("    number = %d\n", num)
 }

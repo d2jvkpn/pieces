@@ -19,9 +19,7 @@ func InsertSort(slice []int) (n int) {
 
 func InstInsertSort() {
 	fmt.Println(">>> InsertSort:")
-	slice := []int{
-		56, 1, 7, 2, 4, 9, 19, 16, 32, 30,
-	}
+	slice := []int{56, 1, 7, 2, 4, 9, 19, 16, 32, 30}
 	fmt.Printf("    slice = %v\n", slice)
 
 	n := InsertSort(slice)

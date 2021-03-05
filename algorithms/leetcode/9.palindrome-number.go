@@ -18,7 +18,8 @@ func PalindromeNumber(num int) bool {
 }
 
 func InstPalindromeNumber() {
-	fmt.Printf("%d -> %t\n", 12421, PalindromeNumber(12421))
-	fmt.Printf("%d -> %t\n", 124, PalindromeNumber(124))
-	fmt.Printf("%d -> %t\n", -12421, PalindromeNumber(-12421))
+	fmt.Println(">>> InstPalindromeNumber:")
+	fmt.Printf("    number = %d,  isPalindromeNumber = %t\n", 12421, PalindromeNumber(12421))
+	fmt.Printf("    number = %d,  isPalindromeNumber = %t\n", 124, PalindromeNumber(124))
+	fmt.Printf("    number = %d,  isPalindromeNumber = %t\n", -12421, PalindromeNumber(-12421))
 }

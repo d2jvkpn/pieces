@@ -19,9 +19,11 @@ func SortPositiveNegative(arr []int) {
 }
 
 func InstSortPositiveNegative() {
-	arr := []int{4, 1, 3, 2, -3, -1, -4, -2}
+	fmt.Println(">>> InstSortPositiveNegative:")
+	slice := []int{4, 1, 3, 2, -3, -1, -4, -2}
 	// expect 1, 2, 3, 4, -1,-2,-3,-4
+	fmt.Printf("    slice = %v\n", slice)
 
-	SortPositiveNegative(arr)
-	fmt.Println(arr)
+	SortPositiveNegative(slice)
+	fmt.Printf("    out = %v\n", slice)
 }

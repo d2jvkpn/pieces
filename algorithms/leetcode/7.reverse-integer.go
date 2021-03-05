@@ -32,6 +32,11 @@ func ReverseNum(x int) (out int) {
 }
 
 func InstReverseNum() {
-	fmt.Println(419, "->", ReverseNum(419))
-	fmt.Println(-123, "->", ReverseNum(-123))
+	fmt.Println(">>> InstReverseNum:")
+	var num int
+	num = 419
+
+	fmt.Printf("    number = %d, out = %d\n", num, ReverseNum(num))
+	num = -123
+	fmt.Printf("    number = %d, out = %d\n", num, ReverseNum(num))
 }

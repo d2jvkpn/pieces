@@ -30,12 +30,14 @@ OUT:
 }
 
 func InstLongestCommonPrefix() {
+	fmt.Println(">>> InstLongestCommonPrefix:")
+
 	strs := []string{"flower", "flow", "flight"}
-	fmt.Printf("%v -> %s\n", strs, LongestCommonPrefix(strs))
+	fmt.Printf("    strs = %v,  prefix = %s\n", strs, LongestCommonPrefix(strs))
 
 	strs = []string{"dog", "racecar", "car"}
-	fmt.Printf("%v -> %s\n", strs, LongestCommonPrefix(strs))
+	fmt.Printf("    strs = %v,  prefix = %s\n", strs, LongestCommonPrefix(strs))
 
 	strs = []string{"", "b"}
-	fmt.Printf("%v -> %s\n", strs, LongestCommonPrefix(strs))
+	fmt.Printf("    strs = %v,  prefix = %s\n", strs, LongestCommonPrefix(strs))
 }

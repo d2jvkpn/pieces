@@ -36,14 +36,15 @@ func (wg *TimeoutWaitGroup) WaitTimeout() bool {
 func (wg *TimeoutWaitGroup) AddJob(job func()) {
 	wg.Add(1)
 	go func() {
-		fmt.Println(">>>")
+		fmt.Println("    >>>")
 		job()
-		fmt.Println("<<<")
+		fmt.Println("    <<<")
 		wg.Done()
 	}()
 }
 
 func Waittimeout2() {
+	fmt.Println(">>> Waittimeout2:")
 	wg := NewTimeoutWaitGroup(20 * time.Second)
 
 	for i := 0; i < 10; i++ {
@@ -51,9 +52,9 @@ func Waittimeout2() {
 	}
 
 	if ok := wg.WaitTimeout(); ok {
-		fmt.Println("all jobs done.")
+		fmt.Println("    all jobs done.")
 	} else {
-		fmt.Println("timeout!")
+		fmt.Println("    timeout!")
 	}
 }
 

@@ -31,6 +31,7 @@ func InstQuickSort() {
 	fmt.Println(">>> InstQuickSort:")
 	slice := []int{14, 33, 10, 27, 19, 35, 42, 44, 18}
 	fmt.Printf("    slice = %v\n", slice)
+
 	out := QuickSort(slice)
 	fmt.Printf("    out = %v\n", out)
 }

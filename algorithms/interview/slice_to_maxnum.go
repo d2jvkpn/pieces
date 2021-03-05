@@ -25,7 +25,10 @@ func SliceToMaxnum(slice []int) string {
 }
 
 func InstSliceToMaxnum() {
+	fmt.Println(">>> InstSliceToMaxnum:")
 	slice := []int{1, 4, 30, 34, 301, 9, 5}
+	fmt.Printf("    slice = %v\n", slice)
 	// expect 95434303011
-	fmt.Printf("%v -> %s\n", slice, SliceToMaxnum(slice))
+
+	fmt.Printf("    out = %s\n", SliceToMaxnum(slice))
 }

@@ -29,6 +29,7 @@ func InstBubbleSort() {
 		56, 1, 7, 2, 4, 9, 19, 16, 32, 30,
 	}
 	fmt.Printf("    slice = %v\n", slice)
+
 	k, n := BubbleSort(slice)
 	fmt.Printf("    k = %d, n = %d, slice = %v\n", k, n, slice)
 }
@@ -61,6 +62,7 @@ func InstBubbleSort2() {
 		56, 1, 7, 2, 4, 9, 19, 16, 32, 30,
 	}
 	fmt.Printf("    slice = %v\n", slice)
+
 	k, n := BubbleSort2(slice)
 	fmt.Printf("    k = %d, n = %d, slice = %v\n", k, n, slice)
 }

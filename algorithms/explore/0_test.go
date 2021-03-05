@@ -33,8 +33,11 @@ func TestInstInsertSort(t *testing.T) {
 	InstInsertSort()
 }
 
-func TestInstMergeSort(t *testing.T) {
-	InstMergeSort()
+func TestInstMergeSort1(t *testing.T) {
+	InstMergeSort1()
+}
+
+func TestInstMergeSort2(t *testing.T) {
 	InstMergeSort2()
 }
 

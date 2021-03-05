@@ -108,8 +108,11 @@ func ThreeSum3(nums []int) (out [][]int) {
 }
 
 func InstThreeSum() {
-	ints := []int{-1, 0, 1, 2, -1, -4}
-	fmt.Printf("ThreeSum1: %v -> %v\n", ints, ThreeSum1(ints))
-	fmt.Printf("ThreeSum2: %v -> %v\n", ints, ThreeSum2(ints))
-	fmt.Printf("ThreeSum3: %v -> %v\n", ints, ThreeSum3(ints))
+	fmt.Println(">>> InstThreeSum:")
+	slice := []int{-1, 0, 1, 2, -1, -4}
+	fmt.Printf("    slice = %v\n", slice)
+
+	fmt.Printf("    ThreeSum1 out = %v\n", ThreeSum1(slice))
+	fmt.Printf("    ThreeSum2 out = %v\n", ThreeSum2(slice))
+	fmt.Printf("    ThreeSum3 out = %v\n", ThreeSum3(slice))
 }

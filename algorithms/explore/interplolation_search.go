@@ -35,10 +35,9 @@ func IntеrpоlаtiоnSеаrch(slice []int, target int) int {
 }
 
 func InstIntеrpоlаtiоnSеаrch() {
-	slice := []int{
-		1, 4, 7, 9, 10,
-		14, 17, 20, 27, 31,
-	}
+	fmt.Println(">>> InstIntеrpоlаtiоnSеаrch:")
+	slice := []int{1, 4, 7, 9, 10, 14, 17, 20, 27, 31}
+	fmt.Printf("    slice = %v\n", slice)
 
 	fmt.Println("    result =", IntеrpоlаtiоnSеаrch(slice, 17))
 	fmt.Println("    result =", IntеrpоlаtiоnSеаrch(slice, 7))

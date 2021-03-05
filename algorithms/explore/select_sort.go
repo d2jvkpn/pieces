@@ -26,6 +26,7 @@ func InstSelectSort() {
 	fmt.Println(">>> InstSelectSort:")
 	slice := []int{14, 33, 10, 27, 19, 35, 42, 44, 18}
 	fmt.Printf("    slice = %v\n", slice)
+
 	n := SelectSort(slice)
 	fmt.Printf("    n = %d, slice = %v\n", n, slice)
 }

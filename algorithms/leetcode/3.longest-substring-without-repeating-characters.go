@@ -27,5 +27,10 @@ func LengthOfLongestSubstring(s string) int {
 }
 
 func InstLengthOfLongestSubstring() {
-	fmt.Println(LengthOfLongestSubstring("abccdefkk"))
+	fmt.Println(">>> InstLengthOfLongestSubstring:")
+	strs := "abccdefkk"
+	fmt.Printf("    strs = %v\n", strs)
+
+	out := LengthOfLongestSubstring("abccdefkk")
+	fmt.Printf("    out = %v\n", out)
 }

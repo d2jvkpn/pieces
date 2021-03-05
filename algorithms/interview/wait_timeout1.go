@@ -7,11 +7,13 @@ import (
 )
 
 func Waittimeout1() {
+	fmt.Println(">>> Waittimeout1:")
+
 	job1 := func(wg *sync.WaitGroup) {
-		fmt.Println(">>>")
+		fmt.Println("    >>>")
 		time.Sleep(5 * time.Second)
 		wg.Done()
-		fmt.Println("<<<")
+		fmt.Println("    <<<")
 		return
 	}
 
@@ -29,8 +31,8 @@ func Waittimeout1() {
 
 	select {
 	case <-ch:
-		fmt.Println("all jobs done!")
+		fmt.Println("    all jobs done!")
 	case <-time.After(20 * time.Second):
-		fmt.Println("timeout!")
+		fmt.Println("    timeout!")
 	}
 }

@@ -21,6 +21,11 @@ func TwoSum(nums []int, target int) []int {
 }
 
 func InstTwoSum() {
-	result := TwoSum([]int{1, 2, 3, 4, 5, 6, 7, 8, 9}, 10)
-	fmt.Println(result)
+	fmt.Println(">>> InstTwoSum")
+	slice := []int{1, 2, 3, 4, 5, 6, 7, 8, 9}
+	target := 10
+	fmt.Printf("    slice = %v, target = %d\n", slice, target)
+
+	out := TwoSum(slice, target)
+	fmt.Printf("    out = %v\n", out)
 }
