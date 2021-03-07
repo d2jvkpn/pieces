@@ -27,8 +27,11 @@ docker run --detach --publish=$PORT:$PORT --name=$PROG $PROG:$TAG
 curl localhost:$PORT
 
 exit 0
+
 #### docker support --squash
-cat > /etc/docker/daemon.json << 'EOF'
+mkdir -p /etc/docker/
+
+cat > /etc/docker/daemon.json << EOF
 {
   "experimental": true
 }
