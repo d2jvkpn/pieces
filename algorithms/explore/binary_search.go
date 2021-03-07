@@ -45,9 +45,15 @@ func InstBinarySearch1() {
 	slice := []int{1, 4, 7, 9, 10, 14, 17, 20, 27, 31}
 	fmt.Printf("    slice = %v\n", slice)
 
-	fmt.Println("    result =", BinarySearch(slice, 17))
-	fmt.Println("    result =", BinarySearch(slice, 7))
-	fmt.Println("    result =", BinarySearch(slice, 100))
+	var target int
+	target = 17
+	fmt.Printf("    target = %d, result = %d\n", target, BinarySearch(slice, target))
+
+	target = 7
+	fmt.Printf("    target = %d, result = %d\n", target, BinarySearch(slice, target))
+
+	target = 100
+	fmt.Printf("    target = %d, result = %d\n", target, BinarySearch(slice, target))
 }
 
 func InstBinarySearch2() {
@@ -55,9 +61,16 @@ func InstBinarySearch2() {
 	slice := []int{1, 4}
 	fmt.Printf("    slice = %v\n", slice)
 
-	fmt.Println("    result =", BinarySearch(slice, 1))
-	fmt.Println("    result =", BinarySearch(slice, 4))
-	fmt.Println("    result =", BinarySearch(slice, 2))
+	var target int
+
+	target = 1
+	fmt.Printf("    target = %d, result = %d\n", target, BinarySearch(slice, target))
+
+	target = 4
+	fmt.Printf("    target = %d, result = %d\n", target, BinarySearch(slice, target))
+
+	target = 2
+	fmt.Printf("    target = %d, result = %d\n", target, BinarySearch(slice, target))
 }
 
 func InstBinarySearch3() {
@@ -65,7 +78,14 @@ func InstBinarySearch3() {
 	slice := []int{1, 2}
 	fmt.Printf("    slice = %v\n", slice)
 
-	fmt.Println("    result =", BinarySearch(slice, 1))
-	fmt.Println("    result =", BinarySearch(slice, 2))
-	fmt.Println("    result =", BinarySearch(slice, -1))
+	var target int
+
+	target = 1
+	fmt.Printf("    target = %d, result = %d\n", target, BinarySearch(slice, target))
+
+	target = 2
+	fmt.Printf("    target = %d, result = %d\n", target, BinarySearch(slice, target))
+
+	target = -1
+	fmt.Printf("    target = %d, result = %d\n", target, BinarySearch(slice, target))
 }

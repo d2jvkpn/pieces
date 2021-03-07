@@ -37,14 +37,14 @@ func InstIntеrpоlаtiоnSеаrch() {
 	slice := []int{1, 4, 7, 9, 10, 14, 17, 20, 27, 31}
 	fmt.Printf("    slice = %v\n", slice)
 
-	var targer int
+	var target int
 
 	target = 17
-	fmt.Println("    target = %d, result =", IntеrpоlаtiоnSеаrch(slice, target))
+	fmt.Printf("    target = %d, result = %d\n", target, IntеrpоlаtiоnSеаrch(slice, target))
 
 	target = 7
-	fmt.Println("    target = %d, result =", IntеrpоlаtiоnSеаrch(slice, target))
+	fmt.Printf("    target = %d, result = %d\n", target, IntеrpоlаtiоnSеаrch(slice, target))
 
-	targer = 100
-	fmt.Println("    target = %d, result =", IntеrpоlаtiоnSеаrch(slice, target))
+	target = 100
+	fmt.Printf("    target = %d, result = %d\n", target, IntеrpоlаtiоnSеаrch(slice, target))
 }
