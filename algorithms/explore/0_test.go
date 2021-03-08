@@ -60,3 +60,7 @@ func TestInstHeapSort2(t *testing.T) {
 func TestInstHeapSort3(t *testing.T) {
 	InstHeapSort3()
 }
+
+func TestInstGNodeDepthFirstTransversal(t *testing.T) {
+	InstGNodeDepthFirstTransversal()
+}

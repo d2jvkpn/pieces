@@ -4,7 +4,8 @@ import (
 	"fmt"
 )
 
-func (node *GNode) Transversal() {
+// Dеpth First Trаvеrsаl
+func (node *GNode) DepthFirstTransversal() {
 	var (
 		curr  *GNode
 		queue []*GNode
@@ -16,7 +17,7 @@ func (node *GNode) Transversal() {
 
 	// push one node to queue, set node to visited and curr to the node
 	push := func(n1 *GNode) {
-		fmt.Printf("    push node: %q\n", curr)
+		fmt.Printf("    push node: %q\n", n1)
 		n1.Status = 1
 		queue = append(queue, n1)
 		curr = n1
@@ -42,7 +43,7 @@ func (node *GNode) Transversal() {
 	}
 
 	///
-	curr = node
+	push(node)
 
 LOOP:
 	for curr != nil {
@@ -55,4 +56,21 @@ LOOP:
 
 		pop()
 	}
+}
+
+func InstGNodeDepthFirstTransversal() {
+	fmt.Println(">>> InstGNodeTransversal:")
+
+	s, a, d := NewGNode("S"), NewGNode("A"), NewGNode("D")
+	g, e, b := NewGNode("G"), NewGNode("E"), NewGNode("B")
+	f, c := NewGNode("F"), NewGNode("C")
+
+	s.AddTargets(a, b, c)
+	a.AddTargets(d)
+	d.AddTargets(g)
+	g.AddTargets(e, f)
+	e.AddTargets(b)
+	f.AddTargets(c)
+
+	s.DepthFirstTransversal()
 }
