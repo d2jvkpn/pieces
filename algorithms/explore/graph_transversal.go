@@ -41,18 +41,19 @@ func (node *GNode) DepthFirstTransversal() {
 	}
 
 	///
-	push(node)
-
-LOOP:
-	for curr != nil {
+	for push(node); curr != nil; {
+		forward := false
 		for _, v := range curr.Targets {
 			if v.Status == 0 {
 				push(v)
-				continue LOOP
+				forward = true
+				break
 			}
 		}
 
-		pop()
+		if !forward {
+			pop()
+		}
 	}
 }
 
