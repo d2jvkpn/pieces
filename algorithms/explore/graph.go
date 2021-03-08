@@ -57,7 +57,9 @@ func (node *GNode) addTarget(node2 *GNode) (num int) {
 
 func (node *GNode) AddTargets(nodes ...*GNode) (num int) {
 	for i := range nodes {
-		num += node.addTarget(nodes[i])
+		if nodes[i] != nil {
+			num += node.addTarget(nodes[i])
+		}
 	}
 
 	return

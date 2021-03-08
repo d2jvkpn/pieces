@@ -63,12 +63,15 @@ func InstGNodeDepthFirstTransversal() {
 	g, e, b := NewGNode("G"), NewGNode("E"), NewGNode("B")
 	f, c := NewGNode("F"), NewGNode("C")
 
-	s.AddTargets(a, b, c)
-	a.AddTargets(d)
-	d.AddTargets(g)
-	g.AddTargets(e, f)
-	e.AddTargets(b)
-	f.AddTargets(c)
+	edges := 0
+	edges += s.AddTargets(a, b, c)
+	edges += a.AddTargets(d)
+	edges += d.AddTargets(g)
+	edges += g.AddTargets(e, f)
+	edges += e.AddTargets(b)
+	edges += f.AddTargets(c)
+
+	fmt.Printf("    ~ number of edges: %d\n", edges/2)
 
 	s.DepthFirstTransversal()
 }
