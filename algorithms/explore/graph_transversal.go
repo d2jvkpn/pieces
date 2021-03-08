@@ -11,8 +11,6 @@ func (node *GNode) DepthFirstTransversal() {
 		queue []*GNode
 	)
 
-	fmt.Println(">>> Transversal:")
-
 	queue = make([]*GNode, 0)
 
 	// push one node to queue, set node to visited and curr to the node
@@ -59,7 +57,7 @@ LOOP:
 }
 
 func InstGNodeDepthFirstTransversal() {
-	fmt.Println(">>> InstGNodeTransversal:")
+	fmt.Println(">>> InstGNodeDepthFirstTransversal:")
 
 	s, a, d := NewGNode("S"), NewGNode("A"), NewGNode("D")
 	g, e, b := NewGNode("G"), NewGNode("E"), NewGNode("B")
