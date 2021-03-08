@@ -4,23 +4,6 @@ import (
 	"fmt"
 )
 
-type Node struct {
-	V       int   // value
-	P, L, R *Node // Parent, Left, Right
-	// Status bool // node status
-}
-
-func NewNode(value int) *Node {
-	return &Node{V: value}
-}
-
-func (node *Node) String() string {
-	if node == nil {
-		return "."
-	}
-	return fmt.Sprintf("%d", node.V)
-}
-
 func BuildTree(slice []int) (root *Node) {
 	if len(slice) == 0 {
 		return nil
