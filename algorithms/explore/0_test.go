@@ -61,6 +61,18 @@ func TestInstHeapSort3(t *testing.T) {
 	InstHeapSort3()
 }
 
-func TestInstGNodeDepthFirstTransversal(t *testing.T) {
-	InstGNodeDepthFirstTransversal()
+func TestInstGNodeDFS1(t *testing.T) {
+	InstGNodeDFS1()
+}
+
+func TestInstGNodeDFS2(t *testing.T) {
+	InstGNodeDFS2()
+}
+
+func TestInstGNodeBFS1(t *testing.T) {
+	InstGNodeBFS1()
+}
+
+func TestInstGNodeBFS2(t *testing.T) {
+	InstGNodeBFS2()
 }

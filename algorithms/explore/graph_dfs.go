@@ -5,7 +5,7 @@ import (
 )
 
 // Dеpth First Trаvеrsаl
-func (node *GNode) DepthFirstTransversal() {
+func (node *GNode) DFS() {
 	var (
 		curr  *GNode
 		queue []*GNode
@@ -45,20 +45,20 @@ func (node *GNode) DepthFirstTransversal() {
 		forward := false
 		for _, v := range curr.Targets {
 			if v.Status == 0 {
-				push(v)
+				push(v) // curr = queue[len(queue) - 1]
 				forward = true
 				break
 			}
 		}
 
 		if !forward {
-			pop()
+			pop() // curr = queue[len(queue) - 1]
 		}
 	}
 }
 
-func InstGNodeDepthFirstTransversal() {
-	fmt.Println(">>> InstGNodeDepthFirstTransversal:")
+func InstGNodeDFS1() {
+	fmt.Println(">>> InstGNodeDFS1:")
 
 	s, a, d := NewGNode("S"), NewGNode("A"), NewGNode("D")
 	g, e, b := NewGNode("G"), NewGNode("E"), NewGNode("B")
@@ -74,5 +74,22 @@ func InstGNodeDepthFirstTransversal() {
 
 	fmt.Printf("    ~ number of edges: %d\n", edges/2)
 
-	s.DepthFirstTransversal()
+	s.DFS()
+}
+
+func InstGNodeDFS2() {
+	fmt.Println(">>> InstGNodeDFS2:")
+
+	a, b, c := NewGNode("A"), NewGNode("B"), NewGNode("C")
+	d, e, f := NewGNode("D"), NewGNode("E"), NewGNode("F")
+	g := NewGNode("G")
+
+	edges := 0
+	edges += a.BuildPath(b, c, d)
+	edges += a.AddTargets(e, f)
+	edges += f.AddTargets(g)
+
+	fmt.Printf("    ~ number of edges: %d\n", edges/2)
+
+	a.DFS()
 }

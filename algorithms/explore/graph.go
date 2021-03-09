@@ -64,3 +64,30 @@ func (node *GNode) AddTargets(nodes ...*GNode) (num int) {
 
 	return
 }
+
+func (node *GNode) BuildPath(nodes ...*GNode) (num int) {
+	if len(nodes) == 0 {
+		return 0
+	}
+
+	node.addTarget(nodes[0])
+	for i := 1; i < len(nodes); i++ {
+		if nodes[i] != nil {
+			num += nodes[i-1].addTarget(nodes[i])
+		}
+	}
+
+	return
+}
+
+func (node *GNode) Unvisited() (targets []*GNode) {
+	targets = make([]*GNode, 0)
+
+	for i := range node.Targets {
+		if node.Targets[i].Status == 0 {
+			targets = append(targets, node.Targets[i])
+		}
+	}
+
+	return
+}
