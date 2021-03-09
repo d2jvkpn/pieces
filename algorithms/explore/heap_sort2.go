@@ -10,7 +10,7 @@ func BuildTree2(slice []int, asc bool) (root *Node) {
 	}
 
 	var (
-		n        int
+		cursor   *int
 		queue    []*Node
 		bindNode func(*Node, *Node, *int)
 		pushSwap func(*Node, *Node, bool)
@@ -40,7 +40,7 @@ func BuildTree2(slice []int, asc bool) (root *Node) {
 		}
 	}
 
-	bindNode = func(parent, node *Node, n *int) {
+	bindNode = func(parent, node *Node, cursor *int) {
 		switch {
 		case parent.L == nil:
 			fmt.Printf("    bindNode: %d.L = %d\n", parent.V, node.V)
@@ -48,15 +48,15 @@ func BuildTree2(slice []int, asc bool) (root *Node) {
 		default:
 			fmt.Printf("    bindNode: %d.R = %d\n", parent.V, node.V)
 			parent.R, node.P = node, parent
-			*n++
+			*cursor++
 		}
 
 		pushSwap(parent, node, asc)
 	}
 
-	root, n = queue[0], 0
+	root, cursor = queue[0], new(int)
 	for _, v := range queue[1:] {
-		bindNode(queue[n], v, &n)
+		bindNode(queue[*cursor], v, cursor)
 	}
 
 	printQueue(queue)
