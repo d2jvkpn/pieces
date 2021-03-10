@@ -52,7 +52,7 @@ with open(tf, "r") as f: config = toml.load(tf)
 c = config[sect]
 if c["user"] != "":
     client = pymongo.MongoClient("mongodb://{}:{}@{}:{}".format(
-      c["user"], c["password"], c["host"], c["port"],
+      c["username"], c["password"], c["host"], c["port"],
     ), tz_aware=True)
 else:
    client = pymongo.MongoClient("mongodb://{}:{}".format(

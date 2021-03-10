@@ -1,12 +1,13 @@
 [mysql]
-user = "hello"
+username = "hello"
 host = "127.0.0.1"
+port = 3306
 password = "world"
 charset = "utf8mb4"
 
 [mongo]
-user = ""
-password = ""
+username = ""
 host = "127.0.0.1"
 port = 27017
+password = ""
 db = "funny"

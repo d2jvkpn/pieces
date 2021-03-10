@@ -40,7 +40,7 @@ export_df, where = args.export_df, args.where
 with open(tf, "r") as f: config = toml.load(tf)
 
 c = config[sect]
-conn = pymysql.connect(host = c["host"], user = c["user"], \
+conn = pymysql.connect(host = c["host"], user = c["username"], port = c["port"], \
    password = c["password"], charset = c.get("charset", "utf8mb4"), db = db)
 
 now, joinDir = datetime.now().astimezone(), os.path.join
