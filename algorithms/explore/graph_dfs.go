@@ -80,15 +80,10 @@ func InstGNodeDFS1() {
 func InstGNodeDFS2() {
 	fmt.Println(">>> InstGNodeDFS2:")
 
-	a, b, c := NewGNode("A"), NewGNode("B"), NewGNode("C")
-	d, e, f := NewGNode("D"), NewGNode("E"), NewGNode("F")
-	g := NewGNode("G")
+	a, b, c, d := NewGNode("A"), NewGNode("B"), NewGNode("C"), NewGNode("D")
+	e, f, g := NewGNode("E"), NewGNode("F"), NewGNode("G")
 
-	edges := 0
-	edges += a.BuildPath(b, c, d)
-	edges += a.AddTargets(e, f)
-	edges += f.AddTargets(g)
-
+	edges := a.BuildPath(b, c, d) + a.AddTargets(e, f) + f.AddTargets(g)
 	fmt.Printf("    ~ number of edges: %d\n", edges/2)
 
 	a.DFS()

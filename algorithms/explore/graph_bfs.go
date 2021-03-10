@@ -6,11 +6,7 @@ import (
 
 // Brеаdth First Trаvеrsаl
 func (node *GNode) BFS() {
-	var (
-		queue []*GNode
-	)
-
-	queue = []*GNode{node}
+	queue := []*GNode{node}
 
 	// push one node and set Status = 1
 	visit := func(n1 *GNode) {
@@ -24,7 +20,6 @@ func (node *GNode) BFS() {
 				return i
 			}
 		}
-
 		return -1
 	}
 
@@ -37,14 +32,12 @@ func (node *GNode) BFS() {
 				out = append(out, s2[i])
 			}
 		}
-
 		return
 	}
 
 	///
 	for len(queue) > 0 {
 		unvisited := []*GNode{}
-
 		for i := range queue {
 			visit(queue[i])
 			unvisited = mergeSlice(unvisited, queue[i].Unvisited())
@@ -57,12 +50,10 @@ func (node *GNode) BFS() {
 func InstGNodeBFS1() {
 	fmt.Println(">>> InstGNodeBFS1:")
 
-	s, a, d := NewGNode("S"), NewGNode("A"), NewGNode("D")
-	g, e, b := NewGNode("G"), NewGNode("E"), NewGNode("B")
-	f, c := NewGNode("F"), NewGNode("C")
+	s, a, d, g := NewGNode("S"), NewGNode("A"), NewGNode("D"), NewGNode("G")
+	e, b, f, c := NewGNode("E"), NewGNode("B"), NewGNode("F"), NewGNode("C")
 
 	edges := s.BuildPath(a, d, g, e, b, s) + s.BuildPath(c, f, g)
-
 	fmt.Printf("    ~ number of edges: %d\n", edges/2)
 
 	s.BFS()
@@ -71,12 +62,10 @@ func InstGNodeBFS1() {
 func InstGNodeBFS2() {
 	fmt.Println(">>> InstGNodeBFS2:")
 
-	a, b, c := NewGNode("A"), NewGNode("B"), NewGNode("C")
-	d, e, f := NewGNode("D"), NewGNode("E"), NewGNode("F")
-	g := NewGNode("G")
+	a, b, c, d := NewGNode("A"), NewGNode("B"), NewGNode("C"), NewGNode("D")
+	e, f, g := NewGNode("E"), NewGNode("F"), NewGNode("G")
 
 	edges := a.BuildPath(b, c, d) + a.AddTargets(e) + a.BuildPath(f, g)
-
 	fmt.Printf("    ~ number of edges: %d\n", edges/2)
 
 	a.BFS()

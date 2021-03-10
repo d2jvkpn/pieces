@@ -4,6 +4,7 @@ type GNode struct {
 	Name    string
 	Status  int
 	Targets []*GNode
+	// Prev, Next *GNode
 }
 
 func NewGNode(name string, targets ...*GNode) (node *GNode) {
