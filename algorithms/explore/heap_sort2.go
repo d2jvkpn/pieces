@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-func BuildTree2(slice []int, asc bool) (root *Node) {
+func BuildTree2(slice []int, order bool, asc bool) (root *Node) {
 	if len(slice) == 0 {
 		return nil
 	}
@@ -51,7 +51,9 @@ func BuildTree2(slice []int, asc bool) (root *Node) {
 			*cursor++
 		}
 
-		pushSwap(parent, node, asc)
+		if order {
+			pushSwap(parent, node, asc)
+		}
 	}
 
 	root, cursor = queue[0], new(int)
@@ -74,7 +76,7 @@ func HeapSort2(slice []int, asc bool) (out []int) {
 		popSwap func(*Node) (*Node, int)
 	)
 
-	root = BuildTree2(slice, asc)
+	root = BuildTree2(slice, true, asc)
 
 	choose := func(node1, node2 *Node, lt bool) (out *Node) {
 		switch {
