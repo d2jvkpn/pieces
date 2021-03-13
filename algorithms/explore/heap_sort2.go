@@ -24,30 +24,30 @@ func BuildTree2(slice []int, asc bool) (root *Node) {
 	printQueue := func(queue []*Node) {
 		ints := make([]int, len(queue))
 		for i := range queue {
-			ints[i] = queue[i].V
+			ints[i] = queue[i].Value
 		}
 		fmt.Printf("    queue = %v\n", ints)
 	}
 
 	pushSwap = func(node1, node2 *Node, lt bool) { // lt => less than
-		if (lt && node1.V > node2.V) || (!lt && node1.V < node2.V) {
-			fmt.Printf("    pushSwap node: %d with %d\n", node1.V, node2.V)
-			node1.V, node2.V = node2.V, node1.V
+		if (lt && node1.Value > node2.Value) || (!lt && node1.Value < node2.Value) {
+			fmt.Printf("    pushSwap node: %d with %d\n", node1.Value, node2.Value)
+			node1.Value, node2.Value = node2.Value, node1.Value
 		}
 
-		if node1.P != nil {
-			pushSwap(node1.P, node1, lt)
+		if node1.Parent != nil {
+			pushSwap(node1.Parent, node1, lt)
 		}
 	}
 
 	bindNode = func(parent, node *Node, cursor *int) {
 		switch {
-		case parent.L == nil:
-			fmt.Printf("    bindNode: %d.L = %d\n", parent.V, node.V)
-			parent.L, node.P = node, parent
+		case parent.Left == nil:
+			fmt.Printf("    bindNode: %d.L = %d\n", parent.Value, node.Value)
+			parent.Left, node.Parent = node, parent
 		default:
-			fmt.Printf("    bindNode: %d.R = %d\n", parent.V, node.V)
-			parent.R, node.P = node, parent
+			fmt.Printf("    bindNode: %d.R = %d\n", parent.Value, node.Value)
+			parent.Right, node.Parent = node, parent
 			*cursor++
 		}
 
@@ -84,7 +84,7 @@ func HeapSort2(slice []int, asc bool) (out []int) {
 			return node1
 		case node1 == nil && node2 != nil:
 			return node2
-		case (node1.V < node2.V && lt) || (node1.V > node2.V && !lt): //!!!
+		case (node1.Value < node2.Value && lt) || (node1.Value > node2.Value && !lt): //!!!
 			return node1
 		default:
 			return node2
@@ -92,28 +92,28 @@ func HeapSort2(slice []int, asc bool) (out []int) {
 	}
 
 	dropNode := func(node *Node) {
-		if node.P == nil { // root nodes
+		if node.Parent == nil { // root nodes
 			return
 		}
 
-		if node.P.L == node {
-			node.P.L = nil
+		if node.Parent.Left == node {
+			node.Parent.Left = nil
 		} else {
-			node.P.R = nil
+			node.Parent.Right = nil
 		}
 		fmt.Printf("    drop node: %s\n", node)
 	}
 
 	popSwap = func(node *Node) (out *Node, v int) {
-		v = node.V
-		if node.L == nil && node.R == nil {
+		v = node.Value
+		if node.Left == nil && node.Right == nil {
 			dropNode(node)
 			return nil, v
 		}
 
-		if x := choose(node.L, node.R, asc); x != nil {
+		if x := choose(node.Left, node.Right, asc); x != nil {
 			fmt.Printf("    popSwap 2 nodes: %s with %s\n", node, x)
-			node.V = x.V
+			node.Value = x.Value
 			popSwap(x)
 		}
 

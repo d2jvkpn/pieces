@@ -5,17 +5,19 @@ import (
 )
 
 type Node struct {
-	V       int   // value
-	P, L, R *Node // Parent, Left, Right
+	Value  int
+	Parent *Node
+	Left   *Node
+	Right  *Node
 }
 
 func NewNode(value int) *Node {
-	return &Node{V: value}
+	return &Node{Value: value}
 }
 
 func (node *Node) String() string {
 	if node == nil {
 		return "."
 	}
-	return fmt.Sprintf("%d", node.V)
+	return fmt.Sprintf("%d", node.Value)
 }

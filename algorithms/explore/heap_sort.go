@@ -24,30 +24,30 @@ func BuildTree(slice []int) (root *Node) {
 	printQueue := func(queue []*Node) {
 		ints := make([]int, len(queue))
 		for i := range queue {
-			ints[i] = queue[i].V
+			ints[i] = queue[i].Value
 		}
 		fmt.Printf("    queue = %v\n", ints)
 	}
 
 	addSwap = func(node1, node2 *Node, greater bool) {
-		if greater && node1.V < node2.V {
-			fmt.Printf("    addSwap %d and %d\n", node1.V, node2.V)
-			node1.V, node2.V = node2.V, node1.V
+		if greater && node1.Value < node2.Value {
+			fmt.Printf("    addSwap %d and %d\n", node1.Value, node2.Value)
+			node1.Value, node2.Value = node2.Value, node1.Value
 		}
 
-		if node1.P != nil {
-			addSwap(node1.P, node1, greater)
+		if node1.Parent != nil {
+			addSwap(node1.Parent, node1, greater)
 		}
 	}
 
 	bindNode = func(parent, node *Node, n *int) {
 		switch {
-		case parent.L == nil:
-			fmt.Printf("    setting %d.L = %d\n", parent.V, node.V)
-			parent.L, node.P = node, parent
+		case parent.Left == nil:
+			fmt.Printf("    setting %d.L = %d\n", parent.Value, node.Value)
+			parent.Left, node.Parent = node, parent
 		default:
-			fmt.Printf("    setting %d.R = %d\n", parent.V, node.V)
-			parent.R, node.P = node, parent
+			fmt.Printf("    setting %d.R = %d\n", parent.Value, node.Value)
+			parent.Right, node.Parent = node, parent
 			*n++
 		}
 
@@ -85,35 +85,35 @@ func HeapSort(slice []int) (out []int) {
 		case node1 == nil && node2 != nil:
 			return false
 		default:
-			return node1.V > node2.V
+			return node1.Value > node2.Value
 		}
 	}
 
 	popSwap = func(node *Node) (out *Node, v int) {
-		v = node.V
+		v = node.Value
 
 		fmt.Printf("    popSwap node %v\n", node)
 
 		switch {
-		case node.L == nil && node.R == nil:
-			if node.P != nil {
-				if node.P.L == node {
-					node.P.L = nil
+		case node.Left == nil && node.Right == nil:
+			if node.Parent != nil {
+				if node.Parent.Left == node {
+					node.Parent.Left = nil
 				} else {
-					node.P.R = nil
+					node.Parent.Right = nil
 				}
-				fmt.Printf("    popSwap drop %d\n", node.V)
+				fmt.Printf("    popSwap drop %d\n", node.Value)
 			}
 			out = nil
-		case greater(node.L, node.R):
-			fmt.Printf("    popSwap %d -> %d\n", node.L.V, node.V)
-			node.V = node.L.V
-			popSwap(node.L)
+		case greater(node.Left, node.Right):
+			fmt.Printf("    popSwap %d -> %d\n", node.Left.Value, node.Value)
+			node.Value = node.Left.Value
+			popSwap(node.Left)
 			out = node
 		default:
-			fmt.Printf("    popSwap %d -> %d\n", node.R.V, node.V)
-			node.V = node.R.V
-			popSwap(node.R)
+			fmt.Printf("    popSwap %d -> %d\n", node.Right.Value, node.Value)
+			node.Value = node.Right.Value
+			popSwap(node.Right)
 			out = node
 		}
 
