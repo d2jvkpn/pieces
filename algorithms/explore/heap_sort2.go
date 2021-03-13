@@ -29,14 +29,14 @@ func BuildTree2(slice []int, asc bool) (root *Node) {
 		fmt.Printf("    queue = %v\n", ints)
 	}
 
-	pushSwap = func(node1, node2 *Node, less bool) {
-		if (less && node1.V > node2.V) || (!less && node1.V < node2.V) {
+	pushSwap = func(node1, node2 *Node, lt bool) { // lt => less than
+		if (lt && node1.V > node2.V) || (!lt && node1.V < node2.V) {
 			fmt.Printf("    pushSwap node: %d with %d\n", node1.V, node2.V)
 			node1.V, node2.V = node2.V, node1.V
 		}
 
 		if node1.P != nil {
-			pushSwap(node1.P, node1, less)
+			pushSwap(node1.P, node1, lt)
 		}
 	}
 
@@ -76,7 +76,7 @@ func HeapSort2(slice []int, asc bool) (out []int) {
 
 	root = BuildTree2(slice, asc)
 
-	choose := func(node1, node2 *Node, less bool) (out *Node) {
+	choose := func(node1, node2 *Node, lt bool) (out *Node) {
 		switch {
 		case node1 == nil && node2 == nil:
 			return nil
@@ -84,7 +84,7 @@ func HeapSort2(slice []int, asc bool) (out []int) {
 			return node1
 		case node1 == nil && node2 != nil:
 			return node2
-		case (node1.V < node2.V && less) || (node1.V > node2.V && !less): //!!!
+		case (node1.V < node2.V && lt) || (node1.V > node2.V && !lt): //!!!
 			return node1
 		default:
 			return node2
