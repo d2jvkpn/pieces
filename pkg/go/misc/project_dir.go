@@ -7,7 +7,7 @@ import (
 )
 
 // get root path of project by recursively match go.mod in parent directory
-func ProjectDir() (p string, err error) {
+func ProjectDir() (dir string, err error) {
 	var (
 		x, tmp string
 		ms     []string
@@ -31,4 +31,17 @@ func ProjectDir() (p string, err error) {
 	}
 
 	return "", fmt.Errorf("not found project dir")
+}
+
+func ProjectFile(p2f ...string) (fp string, err error) {
+	var dir string
+
+	if dir, err = ProjectDir(); err != nil {
+		return "", err
+	}
+	arr := make([]string, 0, len(p2f)+1)
+	arr = append(arr, dir)
+	arr = append(arr, p2f...)
+
+	return filepath.Join(arr...), nil
 }

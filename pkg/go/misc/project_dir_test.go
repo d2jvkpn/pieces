@@ -13,3 +13,12 @@ func TestProjectDir(t *testing.T) {
 
 	fmt.Println(p)
 }
+
+func TestProjectFile(t *testing.T) {
+	p, err := ProjectFile("config", "a.toml")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	fmt.Println(p)
+}
