@@ -1,20 +1,24 @@
-using Genie, Genie.Router
+import Dates, TimeZones
 
-using Dates, TimeZones
+import Genie
 
 
 function currentTime()
-  a = now()
-  ZonedDateTime(year(a), month(a), day(a), hour(a), minute(a), second(a), millisecond(a), localzone())
+  now = Dates.now()
+
+  TimeZones.ZonedDateTime(
+    Dates.year(now), Dates.month(now), Dates.day(now),
+    Dates.hour(now), Dates.minute(now), Dates.second(now),
+    Dates.millisecond(now), TimeZones.localzone(),
+  )
 end
 
 
-Genie.config.run_as_server = true
 port = length(ARGS) > 0 ? parse(Int64, ARGS[1]) : 8000
+Genie.config.run_as_server = true
 
-
-route("/") do
-  currentTime()
+Genie.route("/") do
+  Dates.format(currentTime(), "yyyy-mm-ddTHH:MM:SS.sssz")
 end
 
 println("starting service $(port)")

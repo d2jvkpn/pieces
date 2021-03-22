@@ -1,6 +1,6 @@
-using Distributed
+import Distributed
 
-using TOML
+import TOML
 
 # addprocs(2) // add local processes
 
@@ -16,7 +16,7 @@ addprocs(
 function addmachine(c)
     println(">>> connect to machine $(c["name"]) => $(c["addr"])")
 
-    addprocs(
+    Distributed.addprocs(
         [(c["addr"], c["n"])];
         dir=c["dir"], exename=c["exename"], tunnel=true,
     )

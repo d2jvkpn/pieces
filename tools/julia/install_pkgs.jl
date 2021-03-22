@@ -1,4 +1,4 @@
-using Pkg
+import Pkg
 
 
 if length(ARGS) > 0
