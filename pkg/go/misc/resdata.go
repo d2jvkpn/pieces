@@ -10,7 +10,7 @@ type ResData struct {
 	Data    map[string]interface{} `json:"data"`
 
 	RequestId string `json:"requestId,omitempty"` // unique request id for log
-	Errmsg    string `json:"errmsg,omitempty"`    // error message for debug
+	Err       error  `json:"-"`                   // error for debug
 }
 
 func NewResData(code int, message string) (rd ResData) {
@@ -21,22 +21,38 @@ func NewResData(code int, message string) (rd ResData) {
 	}
 }
 
-func (rd *ResData) SetErrmsg(err error) {
-	if err != nil {
-		rd.Errmsg = err.Error()
-	}
+func (rd *ResData) SetErr(err error) {
+	rd.Err = err
 }
 
-func (rd *ResData) SetData(key string, value interface{}) {
+func (rd *ResData) SetKV(key string, value interface{}) {
 	rd.Data[key] = value
 }
 
+func (rd *ResData) Reset(code int, message string) {
+	rd.Code, rd.Message = code, message
+}
+
+func (rd *ResData) Error() string {
+	/*
+		if rd.Err == nil {
+			return "<nil>"
+		}
+	*/
+	return rd.Err.Error()
+}
+
+func (rd *ResData) OK() bool {
+	return rd.Err == nil
+}
+
+///
 func (rd *ResData) Bytes() []byte {
 	bts, _ := json.Marshal(rd)
 	return bts
 }
 
-func (rd *ResData) String() string {
+func (rd ResData) String() string {
 	return string(rd.Bytes())
 }
 
