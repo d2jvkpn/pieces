@@ -7,10 +7,10 @@ import (
 
 func TestResData_t1(t *testing.T) {
 	rd := NewResData(0, "OK")
-	rd.SetKV("name", "rover")
+	rd.Set("name", "rover")
 
 	rd.RequestId = "xxxx_1"
-	rd.SetErr(fmt.Errorf("something is wrong"))
+	rd.Err = fmt.Errorf("something is wrong")
 
 	fmt.Printf(">>> TestResData_t1:\n%s\n", rd)
 	fmt.Printf(">>> TestResData_t1:\n%s\n", rd.Pretty())

@@ -21,11 +21,7 @@ func NewResData(code int, message string) (rd *ResData) {
 	}
 }
 
-func (rd *ResData) SetErr(err error) {
-	rd.Err = err
-}
-
-func (rd *ResData) SetKV(key string, value interface{}) {
+func (rd *ResData) Set(key string, value interface{}) {
 	rd.Data[key] = value
 }
 
