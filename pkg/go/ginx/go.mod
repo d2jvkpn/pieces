@@ -1,6 +1,6 @@
 module github.com/d2jvkpn/pieces/pkg/go/ginx
 
-go 1.15
+go 1.16
 
 require (
 	github.com/gin-gonic/gin v1.6.3

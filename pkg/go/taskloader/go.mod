@@ -1,3 +1,3 @@
 module github.com/d2jvkpn/pieces/pkg/go/taskloader
 
-go 1.15
+go 1.16
