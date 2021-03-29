@@ -1,5 +1,4 @@
-function datetime() {
-  function padH0 (value, len=2) { return value.toString().padStart(len, '0')}
+function padH0 (value, len=2) { return value.toString().padStart(len, '0')}
 
   function timezoneOffset(offset) {
     if (offset === 0) { return "Z" }
@@ -10,15 +9,14 @@ function datetime() {
   }
 
   let now = new Date();
+  
+  now.date = `${now.getFullYear()}-${padH0(now.getMonth() + 1)}-${padH0(now.getDate())}`;
+  now.time = `${padH0(now.getHours())}:${padH0(now.getMinutes())}:${padH0(now.getSeconds())}`;
+  now.ms = padH0(now.getMilliseconds(), 3);
+  now.tz = timezoneOffset(now.getTimezoneOffset());
 
-  let date = `${now.getFullYear()}-${padH0(now.getMonth() + 1)}-${padH0(now.getDate())}`;
-  let clock = `${padH0(now.getHours())}:${padH0(now.getMinutes())}:${padH0(now.getSeconds())}`;
-  let ms = padH0(now.getMilliseconds(), 3);
-  let tz = timezoneOffset(now.getTimezoneOffset());
-
-  now.tz = tz;
-  now.rfc3339 = `${date}T${clock}${tz}`;
-  now.rfc3339ms = `${date}T${clock}.${ms}${tz}`;
+  now.rfc3339 = `${now.date}T${now.time}${now.tz}`;
+  now.rfc3339ms = `${now.date}T${now.time}.${now.ms}${now.tz}`;
 
   return now
 }
