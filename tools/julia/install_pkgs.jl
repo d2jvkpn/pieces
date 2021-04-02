@@ -1,5 +1,4 @@
-import Pkg
-
+import Pkg, Dates
 
 if length(ARGS) > 0
     file = ARGS[1]
@@ -40,6 +39,6 @@ println("### Precompiling packages...")
 
 ### precompile installed packaged
 for p in pkgs
-    println(">>> precompiling $p")
+    println(">>> precompiling $p, $(Dates.now())")
     eval(Meta.parse(string("using $p")))
 end
