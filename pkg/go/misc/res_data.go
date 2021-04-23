@@ -13,6 +13,7 @@ type ResData struct {
 	Err       error  `json:"-"`                   // error for debug
 }
 
+// factory method
 func NewResData(code int, message string) (rd *ResData) {
 	return &ResData{
 		Code:    code,

@@ -25,3 +25,6 @@ function newDatetime() {
 	let now = new Date();
 	return toDatetime(now);
 }
+
+// "X-TZ-Offset", -new Date().getTimezoneOffset()/60;
+// Intl.DateTimeFormat().resolvedOptions().timeZone;

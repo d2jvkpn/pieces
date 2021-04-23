@@ -15,28 +15,6 @@ type HttpError struct {
 	Code     int    `json:"code"`     // bussiness logical code
 }
 
-type ResData struct {
-	Code    int                    `json:"code"`
-	Message string                 `json:"message"`
-	Data    map[string]interface{} `json:"data"`
-
-	RequestId string `json:"requestId,omitempty"` // unique request id for log
-	Err       error  `json:"-"`                   // error for debug
-}
-
-// factory method
-func NewResData(code int, message string) (rd *ResData) {
-	return &ResData{
-		Code:    code,
-		Message: message,
-		Data:    make(map[string]interface{}, 1),
-	}
-}
-
-func (rd *ResData) Set(key string, value interface{}) {
-	rd.Data[key] = value
-}
-
 func NewHttpError(raw error, message string, httpCode int, codes ...int) (err *HttpError) {
 	if raw == nil {
 		return nil
@@ -90,6 +68,9 @@ func ResJSON(ctx *gin.Context, data interface{}, errs ...error) {
 		err = errs[0]
 	}
 	if err == nil {
+		if data == nil {
+			data = make(map[string]interface{}, 0)
+		}
 		ctx.JSON(http.StatusOK, data)
 		return
 	}
