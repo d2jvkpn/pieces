@@ -1,10 +1,10 @@
 package misc
 
 import (
+	"encoding/json"
 	"net/http"
-
 	// "github.com/pkg/errors"
-	"github.com/gin-gonic/gin"
+	// "github.com/gin-gonic/gin"
 )
 
 // models return a error which will treated as a response to gin.Context
@@ -51,18 +51,26 @@ func (err *HttpError) ToResData(codes ...int) (rd *ResData) {
 	return rd
 }
 
+func resJSON(writer http.ResponseWriter, httpCode int, data interface{}) (int, error) {
+	bts, _ := json.Marshal(data)
+	writer.WriteHeader(httpCode)
+	return writer.Write(bts)
+}
+
 //?? data is ResData
-func ResJSON(ctx *gin.Context, data interface{}, errs ...error) {
+func ResJSON(writer http.ResponseWriter, data interface{}, errs ...error) {
 	var (
 		ok      bool
 		err     error
 		httpErr *HttpError
 	)
 
-	defer func() {
-		ctx.Set("response/data", data)
-		ctx.Set("response/error", err)
-	}()
+	/*
+		defer func() {
+			ctx.Set("response/data", data)
+			ctx.Set("response/error", err)
+		}()
+	*/
 
 	if len(errs) > 0 {
 		err = errs[0]
@@ -71,16 +79,16 @@ func ResJSON(ctx *gin.Context, data interface{}, errs ...error) {
 		if data == nil {
 			data = make(map[string]interface{}, 0)
 		}
-		ctx.JSON(http.StatusOK, data)
+		resJSON(writer, http.StatusOK, data)
 		return
 	}
 
 	if httpErr, ok = err.(*HttpError); !ok {
 		//!! return error to front endwith status 500 and code 100
-		ctx.JSON(http.StatusInternalServerError, NewResData(100, err.Error()))
+		resJSON(writer, http.StatusInternalServerError, NewResData(100, err.Error()))
 		return
 	}
 
-	ctx.JSON(httpErr.HttpCode, httpErr.ToResData())
+	resJSON(writer, httpErr.HttpCode, httpErr.ToResData())
 	return
 }
