@@ -1,9 +1,15 @@
 #! /usr/bin/env bash
 set -eu -o pipefail
 
+if [ $# -gt 0 ]; then
+   targets=$*
+else
+   targets=$(ls -d */)
+fi
+
 SAVEIFS=$IFS
 IFS=$(echo -en "\n\b")
-for d in $(ls -d */); do
+for d in $targets; do
     echo ">>> tar $d"
     tar -cf "${d%/}.tar" "$d" && rm -r "$d"
 done
