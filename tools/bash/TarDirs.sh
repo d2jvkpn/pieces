@@ -2,7 +2,7 @@
 set -eu -o pipefail
 
 if [ $# -gt 0 ]; then
-   targets=$*
+   targets=$(echo $* | tr ' ' '\n')
 else
    targets=$(ls -d */)
 fi
