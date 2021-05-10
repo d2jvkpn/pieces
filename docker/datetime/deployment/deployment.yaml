@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+  citymachine-api: 
+    image: ${DOCKER_Registry}/datetime:${TAG}
+    container_name: datetime_${TAG}_service
+    # command: ./main -certFile=./wk_cert/domain.cer -keyFile=./wk_cert/domain.key 
+    command: ./main
+    restart: always
+    volumes:
+      # - /path/to/cert_dir:/app/wk_cert/
+    ports:
+      - "${PORT}:8080"
