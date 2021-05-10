@@ -32,4 +32,5 @@ export PORT=${PORT}
 envsubst < $path/deployment.yaml > docker-compose.yaml
 docker-compose up -d
 
+echo ">>> http server port: $PORT"
 docker logs datetime_${BRANCH}_service
