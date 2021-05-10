@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"net"
 	"net/http"
 	"strconv"
 	"strings"
@@ -19,12 +20,15 @@ var (
 	logFields = strings.Join(
 		[]string{
 			"%s", // time
+			"%s", // ip
 			"%s", // method
 			"%s", // path
+			"%d", // content length
 			"%s", // handler
 			"%d", // status code
 			"%d", // response bytes
 			"%s", // error
+			"%s", // user agent
 		}, "\t",
 	) + "\n"
 )
@@ -93,6 +97,22 @@ func Datetime(writer http.ResponseWriter, req *http.Request) {
 		errStr = err.Error()
 	}
 
-	fmt.Printf(logFields, nowStr, "GET", "/", "Datetime", http.StatusOK, n, errStr)
+	fmt.Printf(logFields,
+		nowStr, ReqIP(req), "GET", "/",
+		req.ContentLength, "Datetime", http.StatusOK, n,
+		errStr, req.Header.Get("User-Agent"),
+	)
+	return
+}
+
+func ReqIP(req *http.Request) (ip string) {
+	if ip = req.Header.Get("X-Real-IP"); ip != "" {
+		return
+	}
+	if ip = req.Header.Get("X-Forwarded-For"); ip != "" {
+		return
+	}
+	ip, _, _ = net.SplitHostPort(req.RemoteAddr)
+
 	return
 }
