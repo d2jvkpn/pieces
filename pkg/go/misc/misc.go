@@ -26,6 +26,15 @@ func init() {
 	// rand.Seed(time.Now().UnixNano()); rand.Fn()
 }
 
+func quoteString(str string) (out string) {
+	if str == "" {
+		return ""
+	}
+	out = fmt.Sprintf("%q", str)
+	out = out[1 : len(out)-1] // remove quote
+	return
+}
+
 func NewRand() (rd *rand.Rand) {
 	return rand.New(rand.NewSource(time.Now().UnixNano()))
 }
