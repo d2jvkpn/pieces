@@ -12,10 +12,11 @@ func main() {
 	PrintResult(false, x.Match([]byte("xk")))
 	PrintResult(false, x.Match([]byte("xy")))
 
-	// [0-9A-Za-z]{2}  (_[0-9]+)?  (.jpeg)|(.png)
-	y := regexp.MustCompile("^[0-9A-Za-z]{2}(_[0-9]+)?(.jpeg)|(.png)$")
+	// [0-9A-Za-z]{2}  (_[0-9]+)?  \\.(jpeg)|(png)
+	y := regexp.MustCompile("^[0-9A-Za-z]{2}(_[0-9]+)?\\.(jpeg)|(png)$")
 	PrintResult(true, y.Match([]byte("aa.png")))
 	PrintResult(false, y.Match([]byte("aa_12.jpeg")))
+	PrintResult(false, y.Match([]byte("aa_12xjpeg")))
 	PrintResult(false, y.Match([]byte("aa_xx")))
 }
 
