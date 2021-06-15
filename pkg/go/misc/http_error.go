@@ -2,6 +2,7 @@ package misc
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	// "github.com/pkg/errors"
 	// "github.com/gin-gonic/gin"
@@ -61,14 +62,17 @@ func resJSON(writer http.ResponseWriter, httpCode int, data interface{}) (int, e
 func ResJSON(writer http.ResponseWriter, data interface{}, errs ...error) {
 	var (
 		ok      bool
+		code    int
+		message string
 		err     error
 		httpErr *HttpError
 	)
 
 	/*
 		defer func() {
-			ctx.Set("response/data", data)
-			ctx.Set("response/error", err)
+			ctx.Set("response/code", code)
+			ctx.Set("response/message", message)
+			ctx.Set("error", err)
 		}()
 	*/
 
@@ -79,16 +83,39 @@ func ResJSON(writer http.ResponseWriter, data interface{}, errs ...error) {
 		if data == nil {
 			data = make(map[string]interface{}, 0)
 		}
+		code, message = 0, "OK"
 		resJSON(writer, http.StatusOK, data)
 		return
 	}
 
 	if httpErr, ok = err.(*HttpError); !ok {
 		//!! return error to front endwith status 500 and code 100
-		resJSON(writer, http.StatusInternalServerError, NewResData(100, err.Error()))
+		err = fmt.Errorf("Not an HttpError")
+		code, message = 100, "request failed"
+		resData := NewResData(code, message)
+		resData.Err = err
+		resJSON(writer, http.StatusInternalServerError, resData)
 		return
 	}
 
 	resJSON(writer, httpErr.HttpCode, httpErr.ToResData())
 	return
+}
+
+func ResBadRequest(writer http.ResponseWriter, code int, err error) {
+	var err2 error
+
+	if err != nil {
+		err2 = NewHttpError(err, "", http.StatusBadRequest, code)
+	} else {
+		err2 = NewHttpError(
+			fmt.Errorf("err is nil"), "<error>", http.StatusBadRequest, code,
+		)
+	}
+
+	ResJSON(writer, nil, err2)
+}
+
+func ResOk(writer http.ResponseWriter) {
+	ResJSON(writer, map[string]interface{}{})
 }
