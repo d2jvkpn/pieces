@@ -2,15 +2,16 @@ package main
 
 import (
 	"fmt"
+	"path/filepath"
 	"runtime"
 )
 
 func foo(n int) {
-	fn, file, no, ok := runtime.Caller(n)
+	fn, file, line, ok := runtime.Caller(n)
 	details := runtime.FuncForPC(fn)
 
 	if ok {
-		fmt.Printf("called from %s: %s[%d]\n", file, details.Name(), no)
+		fmt.Printf("called from \"%s (%s [%d])\"\n", details.Name(), filepath.Base(file), line)
 	} else {
 		foo(n - 1)
 	}
