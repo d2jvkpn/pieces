@@ -25,7 +25,7 @@ func TestHttpError_t2(t *testing.T) {
 		http.StatusInternalServerError, 1,
 	)
 
-	ResetHttpErrorCode(err, 10)
+	HttpErrorResetCode(err, 10)
 
 	PrintJSON(err)
 }
@@ -38,7 +38,7 @@ func TestHttpError_t3(t *testing.T) {
 		http.StatusBadRequest, -1,
 	)
 
-	ResetHttpErrorCode(err, 10, -5)
+	HttpErrorResetCode(err, 10, -5)
 
 	PrintJSON(err)
 }
@@ -51,5 +51,5 @@ func TestHttpError_t4(t *testing.T) {
 		http.StatusBadRequest, -1,
 	)
 
-	fmt.Println(ExtractHttpError(err))
+	fmt.Println(HttpErrorExtract(err))
 }

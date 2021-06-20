@@ -120,7 +120,7 @@ func ResOk(writer http.ResponseWriter) {
 	ResJSON(writer, map[string]interface{}{})
 }
 
-func ResetHttpErrorCode(err error, code uint, codes ...int) (ok bool) {
+func HttpErrorResetCode(err error, code uint, codes ...int) (ok bool) {
 	var err2 *HttpError
 
 	if err == nil {
@@ -143,7 +143,7 @@ func ResetHttpErrorCode(err error, code uint, codes ...int) (ok bool) {
 	return true
 }
 
-func ExtractHttpError(err error) error {
+func HttpErrorExtract(err error) error {
 	var (
 		ok   bool
 		err2 *HttpError
