@@ -152,5 +152,6 @@ func HttpErrorExtract(err error) error {
 	if err2, ok = err.(*HttpError); !ok {
 		return err
 	}
+
 	return err2.Raw
 }
