@@ -119,3 +119,23 @@ func ResBadRequest(writer http.ResponseWriter, code int, err error) {
 func ResOk(writer http.ResponseWriter) {
 	ResJSON(writer, map[string]interface{}{})
 }
+
+func ResetHttpErrorCode(err error, code uint, codes ...int) (ok bool) {
+	var err2 *HttpError
+
+	if err == nil {
+		return false
+	}
+
+	if err2, ok = err.(*HttpError); !ok {
+		return false
+	}
+
+	if err2.Code < 0 && len(codes) > 0 { // codes[0] should be a negative number
+		err2.Code = codes[0]
+	} else {
+		err2.Code = int(code)
+	}
+
+	return true
+}
