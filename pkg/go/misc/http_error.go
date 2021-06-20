@@ -16,17 +16,14 @@ type HttpError struct {
 	Code     int    `json:"code"`     // bussiness logical code
 }
 
-func NewHttpError(raw error, message string, httpCode int, codes ...int) (err *HttpError) {
+func NewHttpError(raw error, message string, httpCode, code int) (err *HttpError) {
 	if raw == nil {
 		return nil
 	}
 
-	err = &HttpError{Raw: raw, Message: message, HttpCode: httpCode}
+	err = &HttpError{Raw: raw, Message: message, HttpCode: httpCode, Code: code}
 	if err.Message == "" {
 		err.Message = err.Raw.Error()
-	}
-	if len(codes) > 0 {
-		err.Code = codes[0]
 	}
 
 	return err
