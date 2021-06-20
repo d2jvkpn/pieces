@@ -131,10 +131,13 @@ func ResetHttpErrorCode(err error, code uint, codes ...int) (ok bool) {
 		return false
 	}
 
-	if err2.Code < 0 && len(codes) > 0 { // codes[0] should be a negative number
+	switch {
+	case err2.Code < 0 && len(codes) > 0 && codes[0] < 0: // codes[0] should be a negative number
 		err2.Code = codes[0]
-	} else {
+	case err2.Code > 0 && code > 0:
 		err2.Code = int(code)
+	default:
+		return false
 	}
 
 	return true
