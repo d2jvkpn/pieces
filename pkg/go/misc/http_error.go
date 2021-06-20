@@ -142,3 +142,15 @@ func ResetHttpErrorCode(err error, code uint, codes ...int) (ok bool) {
 
 	return true
 }
+
+func ExtractHttpError(err error) error {
+	var (
+		ok   bool
+		err2 *HttpError
+	)
+
+	if err2, ok = err.(*HttpError); !ok {
+		return err
+	}
+	return err2.Raw
+}

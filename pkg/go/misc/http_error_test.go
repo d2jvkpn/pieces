@@ -42,3 +42,14 @@ func TestHttpError_t3(t *testing.T) {
 
 	PrintJSON(err)
 }
+
+func TestHttpError_t4(t *testing.T) {
+	var httpErr = NewHttpError
+
+	err := httpErr(
+		fmt.Errorf("invlaid parameter found"), "bad request",
+		http.StatusBadRequest, -1,
+	)
+
+	fmt.Println(ExtractHttpError(err))
+}
