@@ -18,14 +18,14 @@ func GetPanic(n int) {
 	mp := map[string]string{
 		"kind":    "panic",
 		"message": fmt.Sprintf("%v", intf),
-		"stack":   simplifyDebugStack(debug.Stack(), n),
+		"stack":   SimplifyDebugStack(debug.Stack(), n),
 	}
 
 	bts, _ := json.MarshalIndent(mp, "", "  ")
 	fmt.Printf("%s\n", bts)
 }
 
-func simplifyDebugStack(bts []byte, n int) string {
+func SimplifyDebugStack(bts []byte, n int) string {
 	strs := strings.Split(strings.TrimSpace(string(bts)), "\n")
 	builder := new(strings.Builder)
 	builder.WriteString(strs[0] + "\n")
