@@ -27,5 +27,9 @@ func TestGetPanic_t2(t *testing.T) {
 }
 
 func TestGetPanic_t3(t *testing.T) {
+	_fn2(3)
+}
+
+func TestGetPanic_t4(t *testing.T) {
 	_fn2(20)
 }
