@@ -30,7 +30,7 @@ func NewHttpError(raw error, message string, httpCode, code int) (err *HttpError
 
 	fn, file, line, _ := runtime.Caller(1)
 	err.Raw = fmt.Errorf(
-		"%s(%s[%d]): %w", runtime.FuncForPC(fn).Name(),
+		"%s(%s:%d): %w", runtime.FuncForPC(fn).Name(),
 		filepath.Base(file), line, err,
 	)
 
