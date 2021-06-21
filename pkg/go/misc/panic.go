@@ -15,8 +15,8 @@ func GetPanic(n int) {
 	}
 
 	mp := map[string]string{
-		"kind": "panic", "panicMessage": fmt.Sprintf("%v", intf),
-		"panicStack": simplifyDebugStack(debug.Stack(), n),
+		"panicMessage": fmt.Sprintf("%v", intf),
+		"panicStack":   simplifyDebugStack(debug.Stack(), n),
 	}
 
 	bts, _ := json.MarshalIndent(mp, "", "  ")
