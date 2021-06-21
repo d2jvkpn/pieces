@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-func GetPanic() {
+func GetPanic(n int) {
 	var intf interface{}
 	if intf = recover(); intf == nil {
 		return
@@ -16,19 +16,26 @@ func GetPanic() {
 
 	mp := map[string]string{
 		"kind": "panic", "panicMessage": fmt.Sprintf("%v", intf),
-		"panicStack": simplifyDebugStack(debug.Stack()),
+		"panicStack": simplifyDebugStack(debug.Stack(), n),
 	}
 
 	bts, _ := json.MarshalIndent(mp, "", "  ")
 	fmt.Printf("%s\n", bts)
 }
 
-func simplifyDebugStack(bts []byte) string {
+func simplifyDebugStack(bts []byte, n int) string {
 	strs := strings.Split(strings.TrimSpace(string(bts)), "\n")
 	b := new(strings.Builder)
 	b.WriteString(strs[0] + "\n")
 
-	for i := 1; i < len(strs); i++ {
+	m := 0
+	if n < 1 {
+		m = len(strs)
+	} else {
+		m = 2*n + 1
+	}
+
+	for i := 1; i < m && i < len(strs); i++ {
 		if i%2 == 1 {
 			b.WriteString(strings.Split(strs[i], "(")[0])
 		} else {
@@ -37,5 +44,5 @@ func simplifyDebugStack(bts []byte) string {
 		}
 	}
 
-	return b.String()
+	return strings.TrimSpace(b.String())
 }
