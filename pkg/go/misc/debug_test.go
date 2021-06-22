@@ -17,6 +17,11 @@ func _fn1() {
 	fmt.Printf("Hello, playground %d", j)
 }
 
+func TestWrapError(t *testing.T) {
+	err := WrapError(fmt.Errorf("something is wrong"))
+	fmt.Println(err)
+}
+
 // go test -run  TestGetPanic_t1 | sed '$d' | sed '$d' | jq .panicStack | xargs -i printf {}
 func TestGetPanic_t1(t *testing.T) {
 	_fn2(1)
