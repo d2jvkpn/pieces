@@ -12,7 +12,7 @@ import (
 	"time"
 )
 
-//
+///
 var (
 	Rand *rand.Rand
 )
@@ -46,7 +46,7 @@ func PrintJSON(d interface{}) (err error) {
 	return coder.Encode(d)
 }
 
-//
+///
 func AddHttpsScheme(a string) string {
 	a = strings.TrimSpace(a)
 
@@ -64,7 +64,7 @@ func AddHttpsScheme(a string) string {
 	return "https://" + a
 }
 
-//
+///
 func ListenOSIntr(do func(), errch chan<- error, sgs ...os.Signal) {
 	// linux support syscall.SIGUSR2
 	quit := make(chan os.Signal)
@@ -86,7 +86,7 @@ func ListenOSIntr(do func(), errch chan<- error, sgs ...os.Signal) {
 	return
 }
 
-//
+///
 func StrsIndex(ss []string, s string) (i int) {
 	for i = range ss {
 		if ss[i] == s {
@@ -97,7 +97,7 @@ func StrsIndex(ss []string, s string) (i int) {
 	return -1
 }
 
-//
+///
 func SetLogRFC3339() {
 	log.SetFlags(0)
 	log.SetOutput(new(logWriter))
@@ -108,4 +108,12 @@ type logWriter struct{}
 func (writer *logWriter) Write(bts []byte) (int, error) {
 	// time.RFC3339
 	return fmt.Print(time.Now().Format(RFC3339ms) + "  " + string(bts))
+}
+
+///
+func QuoteString(str string) string {
+	if str == "" {
+		return ""
+	}
+	return fmt.Sprintf("%q", str)
 }
