@@ -5,6 +5,16 @@ import (
 	"time"
 )
 
+// date format: "2021-06-24"
+func ParseDate(value string) (at time.Time, err error) {
+	return time.ParseInLocation("2006-01-02", value, time.Local)
+}
+
+// datetime format: "2021-06-24 09:10:11"
+func ParseDatetime(value string) (at time.Time, err error) {
+	return time.ParseInLocation("2006-01-02 15:04:05", value, time.Local)
+}
+
 func GetOClock(shift int) (clock time.Time) {
 	clock = time.Now().AddDate(0, 0, shift)
 	clock = time.Date(clock.Year(), clock.Month(), clock.Day(), 0, 0, 0, 0, clock.Location())
