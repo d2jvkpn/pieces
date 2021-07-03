@@ -11,9 +11,8 @@ import (
 
 // abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ 0123456789
 
-const USAGE = `randStr usgage:
+const USAGE = `rand_passwd usgage:
 $ rand_passwd  <length>  [chars]
-  generate randome password
 
   e.g. $ rand_passwd 32 "@/"
 `
@@ -36,7 +35,7 @@ func main() {
 		return false
 	}
 
-	if len(os.Args) > 1 && inArr([]string{"--help", "-help", "-h"}, os.Args[0]) {
+	if len(os.Args) > 1 && inArr([]string{"--help", "-help", "-h"}, os.Args[1]) {
 		fmt.Fprintln(os.Stderr, USAGE)
 		os.Exit(0)
 	}
