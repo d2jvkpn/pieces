@@ -1,0 +1,4 @@
+# ~/.config/go/env
+GO111MODULE=auto
+GOPATH=~/.go
+GOPROXY=https://goproxy.cn,direct
