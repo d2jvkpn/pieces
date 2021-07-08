@@ -7,6 +7,9 @@ replace-with = 'ustc'
 [source.ustc]
 registry = "git://mirrors.ustc.edu.cn/crates.io-index"
 
+[net]
+git-fetch-with-cli = true
+
 [http]
 proxy = "socks://127.0.0.1:1080"
 
