@@ -23,12 +23,14 @@ DF.mapcols!(col -> string.(col), df)
 strRow = row -> "('$(join(row, "', '"))')"
 
 strs = [
-  "INSERT INTO $target", "(" * join(names(df), ", ") * ")",
-  "VALUES", join(strRow.(eachrow(df)), ",\n  "),
+  "INSERT INTO $target",
+  "(" * join(names(df), ", ") * ")",
+  "VALUES",
+  join(strRow.(eachrow(df)), ",\n  "),
 ]
 
 sql = join(strs, "\n  ") * ";\n"
 
 open(output, "w") do io
-  write(io, sql)
+    write(io, sql)
 end
