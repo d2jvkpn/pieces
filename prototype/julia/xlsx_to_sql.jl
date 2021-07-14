@@ -7,7 +7,7 @@ import DataFrames as DF
 input = ARGS[1]
 output = ARGS[2]
 target = ARGS[3]
-println("input: $input, output: $output, target: $target")
+println("Input xlsx: $input, Output sql: $output, Target table: $target")
 
 df = DF.DataFrame(XLSX.readtable(input, 1)...)
 
@@ -22,10 +22,12 @@ DF.mapcols!(col -> string.(col), df)
 
 strRow = row -> "('$(join(row, "', '"))')"
 
-sql = "INSERT INTO $target\n  " *
-  "(" * join(names(df), ", ") * ")\n  " *
-  "VALUES\n  " *
-  join(strRow.(eachrow(df)), ",\n  ") * ";\n"
+strs = [
+  "INSERT INTO $target", "(" * join(names(df), ", ") * ")",
+  "VALUES", join(strRow.(eachrow(df)), ",\n  "),
+]
+
+sql = join(strs, "\n  ") * ";\n"
 
 open(output, "w") do io
   write(io, sql)
