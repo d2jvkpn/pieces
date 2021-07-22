@@ -73,10 +73,10 @@ func (ex *Executor) Wait(dura time.Duration, sgs ...os.Signal) {
 	}
 
 	select {
-	case sig := <-quit:
-		log.Printf("Executor quit: received signal: %v\n", sig)
+	case <-quit:
+		log.Printf("Executor exit")
 	case <-ex.ch:
-		log.Printf("Executor quit: task(s) failed")
+		log.Println("Executor failed")
 		if dura > 0 {
 			time.Sleep(dura)
 		}
