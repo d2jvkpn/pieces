@@ -56,6 +56,7 @@ func (ex *Executor) Load(run func() error, onExit func(error)) {
 	go func() {
 		err := run()
 		ex.setErr(index, err)
+		log.Printf("Executor error: %v\n", err)
 		ex.once.Do(func() {
 			ex.ch <- false
 		})
@@ -73,9 +74,9 @@ func (ex *Executor) Wait(dura time.Duration, sgs ...os.Signal) {
 
 	select {
 	case sig := <-quit:
-		log.Printf("Executor: received signal: %v\n", sig)
+		log.Printf("Executor quit: received signal: %v\n", sig)
 	case <-ex.ch:
-		log.Printf("Executor: task(s) failed")
+		log.Printf("Executor quit: task(s) failed")
 		if dura > 0 {
 			time.Sleep(dura)
 		}
