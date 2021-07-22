@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-type Excutor struct {
+type Executor struct {
 	exitFuncs []func(error)
 	errors    []error
 	lock      *sync.Mutex
@@ -17,8 +17,8 @@ type Excutor struct {
 	ch        chan bool
 }
 
-func NewExcutor() *Excutor {
-	return &Excutor{
+func NewExecutor() *Executor {
+	return &Executor{
 		exitFuncs: make([]func(error), 0),
 		errors:    make([]error, 0),
 		lock:      new(sync.Mutex),
@@ -27,7 +27,7 @@ func NewExcutor() *Excutor {
 	}
 }
 
-func (ex *Excutor) setErr(idx int, err error) bool {
+func (ex *Executor) setErr(idx int, err error) bool {
 	ex.lock.Lock()
 	defer ex.lock.Unlock()
 
@@ -38,7 +38,7 @@ func (ex *Excutor) setErr(idx int, err error) bool {
 	return true
 }
 
-func (ex *Excutor) getErr(idx int) (err error) {
+func (ex *Executor) getErr(idx int) (err error) {
 	ex.lock.Lock()
 	defer ex.lock.Unlock()
 
@@ -48,7 +48,7 @@ func (ex *Excutor) getErr(idx int) (err error) {
 	return ex.errors[idx]
 }
 
-func (ex *Excutor) Load(run func() error, onExit func(error)) {
+func (ex *Executor) Load(run func() error, onExit func(error)) {
 	ex.exitFuncs = append(ex.exitFuncs, onExit)
 	ex.errors = append(ex.errors, nil)
 	index := len(ex.exitFuncs) - 1
@@ -62,7 +62,7 @@ func (ex *Excutor) Load(run func() error, onExit func(error)) {
 	}()
 }
 
-func (ex *Excutor) Wait(dura time.Duration, sgs ...os.Signal) {
+func (ex *Executor) Wait(dura time.Duration, sgs ...os.Signal) {
 	quit := make(chan os.Signal)
 
 	if len(sgs) == 0 {
@@ -73,9 +73,9 @@ func (ex *Excutor) Wait(dura time.Duration, sgs ...os.Signal) {
 
 	select {
 	case sig := <-quit:
-		log.Printf("Excutor: received signal: %v\n", sig)
+		log.Printf("Executor: received signal: %v\n", sig)
 	case <-ex.ch:
-		log.Printf("Excutor: task(s) failed")
+		log.Printf("Executor: task(s) failed")
 		if dura > 0 {
 			time.Sleep(dura)
 		}
