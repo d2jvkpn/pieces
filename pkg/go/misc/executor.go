@@ -54,9 +54,11 @@ func (ex *Executor) Load(run func() error, onExit func(error)) {
 	index := len(ex.exitFuncs) - 1
 
 	go func() {
-		err := run()
-		ex.setErr(index, err)
-		log.Printf("Executor error: %v\n", err)
+		if err := run(); err != nil {
+			log.Printf("Executor error %d: %v\n", index, err)
+			ex.setErr(index, err)
+		}
+
 		ex.once.Do(func() {
 			ex.ch <- false
 		})
