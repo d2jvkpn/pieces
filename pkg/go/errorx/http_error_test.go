@@ -1,9 +1,16 @@
-package misc
+package errorx
 
 import (
 	"fmt"
 	"net/http"
 	"testing"
+)
+
+var (
+	httpErr = NewHttpError  // func(error, string, int, int)
+	resBad  = ResBadRequest // func(http.ResponseWriter, int, error)
+	resOk   = ResOk         // func(http.ResponseWriter)
+	// resJSON = ResJSON
 )
 
 func TestHttpError_t1(t *testing.T) {
@@ -14,7 +21,7 @@ func TestHttpError_t1(t *testing.T) {
 		http.StatusInternalServerError, 1,
 	)
 
-	PrintJSON(err)
+	fmt.Println(err)
 }
 
 func TestHttpError_t2(t *testing.T) {
@@ -27,7 +34,7 @@ func TestHttpError_t2(t *testing.T) {
 
 	HttpErrorResetCode(err, 10)
 
-	PrintJSON(err)
+	fmt.Println(err)
 }
 
 func TestHttpError_t3(t *testing.T) {
@@ -40,7 +47,7 @@ func TestHttpError_t3(t *testing.T) {
 
 	HttpErrorResetCode(err, 10, -5)
 
-	PrintJSON(err)
+	fmt.Println(err)
 }
 
 func TestHttpError_t4(t *testing.T) {
