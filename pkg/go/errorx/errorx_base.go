@@ -69,26 +69,12 @@ func ErrTokenExpired() (errx ErrorX) {
 	}
 }
 
-// logical error
 func ErrUnexpected() (errx ErrorX) {
 	kind := "unexpected error"
 
 	return ErrorX{
 		Kind:     kind,
 		Code:     1,
-		Message:  kind,
-		HttpCode: http.StatusInternalServerError,
-		Err:      fmt.Errorf(kind),
-	}
-}
-
-// panic detected
-func ErrUnexpected2() (errx ErrorX) {
-	kind := "unexpected error"
-
-	return ErrorX{
-		Kind:     kind,
-		Code:     2,
 		Message:  kind,
 		HttpCode: http.StatusInternalServerError,
 		Err:      fmt.Errorf(kind),
