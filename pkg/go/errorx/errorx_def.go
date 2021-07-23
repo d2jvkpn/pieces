@@ -34,7 +34,7 @@ func InvalidParameter(err error, msg string) (errx ErrorX) {
 	return errx
 }
 
-func NotFound(err error, msg string) (errx ErrorX) {
+func NotFound1(err error, msg string) (errx ErrorX) {
 	errx = ErrorX{
 		Kind:     "not found",
 		Code:     -22,
@@ -60,6 +60,7 @@ func Conflict(err error, msg string) (errx ErrorX) {
 	return errx
 }
 
+// code = 20
 func NotFound2(err error, msg string) (errx ErrorX) {
 	errx = ErrorX{
 		Kind:     "not found",
@@ -76,7 +77,7 @@ func NotFound2(err error, msg string) (errx ErrorX) {
 func InternalError(err error, msg string) (errx ErrorX) {
 	errx = ErrorX{
 		Kind:     "internal error",
-		Code:     2,
+		Code:     21,
 		HttpCode: http.StatusInternalServerError,
 		Message:  msg,
 		Err:      err,

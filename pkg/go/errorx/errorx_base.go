@@ -70,11 +70,23 @@ func ErrTokenExpired() (errx ErrorX) {
 }
 
 func ErrUnexpected() (errx ErrorX) {
-	kind := "unexpected error"
+	kind := "unexpected error 1"
 
 	return ErrorX{
 		Kind:     kind,
 		Code:     1,
+		Message:  kind,
+		HttpCode: http.StatusInternalServerError,
+		Err:      fmt.Errorf(kind),
+	}
+}
+
+func ErrPanic() (errx ErrorX) {
+	kind := "unexpected error 2"
+
+	return ErrorX{
+		Kind:     kind,
+		Code:     2,
 		Message:  kind,
 		HttpCode: http.StatusInternalServerError,
 		Err:      fmt.Errorf(kind),
