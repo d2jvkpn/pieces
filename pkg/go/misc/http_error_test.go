@@ -1,4 +1,4 @@
-package errorx
+package misc
 
 import (
 	"fmt"
