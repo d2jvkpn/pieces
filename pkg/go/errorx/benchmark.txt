@@ -1,0 +1,76 @@
+go test -bench=Logger_b1 -run=_b1$ -benchmem -count 10 -v
+goos: linux
+goarch: amd64
+pkg: github.com/d2jvkpn/pieces/pkg/go/errorx
+cpu: AMD Ryzen 7 4800H with Radeon Graphics         
+BenchmarkLogger_b1
+BenchmarkLogger_b1-16    	  459308	      2413 ns/op	     368 B/op	       5 allocs/op
+BenchmarkLogger_b1-16    	  429561	      2451 ns/op	     368 B/op	       5 allocs/op
+BenchmarkLogger_b1-16    	  454261	      2493 ns/op	     368 B/op	       5 allocs/op
+BenchmarkLogger_b1-16    	  433567	      2542 ns/op	     368 B/op	       5 allocs/op
+BenchmarkLogger_b1-16    	  493863	      2486 ns/op	     368 B/op	       5 allocs/op
+BenchmarkLogger_b1-16    	  495139	      2462 ns/op	     368 B/op	       5 allocs/op
+BenchmarkLogger_b1-16    	  487141	      2950 ns/op	     368 B/op	       5 allocs/op
+BenchmarkLogger_b1-16    	  445192	      2572 ns/op	     368 B/op	       5 allocs/op
+BenchmarkLogger_b1-16    	  478549	      2478 ns/op	     368 B/op	       5 allocs/op
+BenchmarkLogger_b1-16    	  462156	      2478 ns/op	     368 B/op	       5 allocs/op
+PASS
+ok  	github.com/d2jvkpn/pieces/pkg/go/errorx	13.028s
+
+
+go test -bench=Logger_b2 -run=_b2$ -benchmem -count 10 -v
+goos: linux
+goarch: amd64
+pkg: github.com/d2jvkpn/pieces/pkg/go/errorx
+cpu: AMD Ryzen 7 4800H with Radeon Graphics         
+BenchmarkLogger_b2
+BenchmarkLogger_b2-16    	   98565	     12680 ns/op	     375 B/op	       5 allocs/op
+BenchmarkLogger_b2-16    	  101916	     12954 ns/op	     370 B/op	       5 allocs/op
+BenchmarkLogger_b2-16    	  105943	     12858 ns/op	     370 B/op	       5 allocs/op
+BenchmarkLogger_b2-16    	   99373	     12938 ns/op	     370 B/op	       5 allocs/op
+BenchmarkLogger_b2-16    	  102889	     12970 ns/op	     370 B/op	       5 allocs/op
+BenchmarkLogger_b2-16    	  104736	     13184 ns/op	     370 B/op	       5 allocs/op
+BenchmarkLogger_b2-16    	  102496	     12914 ns/op	     370 B/op	       5 allocs/op
+BenchmarkLogger_b2-16    	  105230	     12959 ns/op	     370 B/op	       5 allocs/op
+BenchmarkLogger_b2-16    	   98084	     12956 ns/op	     370 B/op	       5 allocs/op
+BenchmarkLogger_b2-16    	   98355	     13046 ns/op	     370 B/op	       5 allocs/op
+PASS
+ok  	github.com/d2jvkpn/pieces/pkg/go/errorx	14.427s
+
+
+go test -bench=Logger_b3 -run=_b3$ -benchmem -count 10 -v
+goos: linux
+goarch: amd64
+pkg: github.com/d2jvkpn/pieces/pkg/go/errorx
+cpu: AMD Ryzen 7 4800H with Radeon Graphics         
+BenchmarkLogger_b2
+BenchmarkLogger_b2-16    	  399244	      3372 ns/op	     441 B/op	       6 allocs/op
+BenchmarkLogger_b2-16    	  426811	      4240 ns/op	     526 B/op	       8 allocs/op
+BenchmarkLogger_b2-16    	  447231	      3995 ns/op	     499 B/op	       8 allocs/op
+BenchmarkLogger_b2-16    	  463480	      3704 ns/op	     473 B/op	       7 allocs/op
+BenchmarkLogger_b2-16    	  436329	      4952 ns/op	     559 B/op	       9 allocs/op
+BenchmarkLogger_b2-16    	  360020	      5796 ns/op	     599 B/op	      10 allocs/op
+BenchmarkLogger_b2-16    	  410559	      3664 ns/op	     430 B/op	       6 allocs/op
+BenchmarkLogger_b2-16    	  347280	      5079 ns/op	     519 B/op	       8 allocs/op
+BenchmarkLogger_b2-16    	  418336	      4434 ns/op	     495 B/op	       8 allocs/op
+BenchmarkLogger_b2-16    	  416473	      4848 ns/op	     480 B/op	       7 allocs/op
+PASS
+ok  	github.com/d2jvkpn/pieces/pkg/go/errorx	19.126s
+
+
+go test -bench=Logger_b4 -run=_b4$ -benchmem -count 10 -v
+goos: linux
+goarch: amd64
+pkg: github.com/d2jvkpn/pieces/pkg/go/errorx
+cpu: AMD Ryzen 7 4800H with Radeon Graphics         
+BenchmarkLogger_b3
+BenchmarkLogger_b3-16    	   80539	     13758 ns/op	     421 B/op	       5 allocs/op
+BenchmarkLogger_b3-16    	  105159	     16163 ns/op	     498 B/op	       8 allocs/op
+BenchmarkLogger_b3-16    	  101834	     15160 ns/op	     463 B/op	       7 allocs/op
+BenchmarkLogger_b3-16    	  102460	     18439 ns/op	     577 B/op	      10 allocs/op
+BenchmarkLogger_b3-16    	   98131	     18033 ns/op	     579 B/op	      10 allocs/op
+BenchmarkLogger_b3-16    	   97705	     17752 ns/op	     559 B/op	       9 allocs/op
+BenchmarkLogger_b3-16    	  103140	     16771 ns/op	     534 B/op	       9 allocs/op
+BenchmarkLogger_b3-16    	  101229	     16554 ns/op	     511 B/op	       8 allocs/op
+BenchmarkLogger_b3-16    	   97966	     15250 ns/op	     468 B/op	       7 allocs/op
+BenchmarkLogger_b3-16    	  100143	     17373 ns/op	     585 B/op	      10 allocs/op
