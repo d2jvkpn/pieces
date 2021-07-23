@@ -24,6 +24,23 @@ func TestLogger_t1(t *testing.T) {
 	fmt.Println(">>> 4", lg.Output(2, "wow"))
 }
 
+func TestLogger_t2(t *testing.T) {
+	lg, err := NewLogger2("wk_logs/abc", "2006-01-02")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	fmt.Println(">>> 1", lg.Output(2, "wow"))
+	fmt.Println(">>> 2", lg.Output(2, "wow"))
+	fmt.Println(">>> 3", lg.Output(2, "wow"))
+
+	if err := lg.Close(); err != nil {
+		t.Fatal(err)
+	}
+
+	fmt.Println(">>> 4", lg.Output(2, "wow"))
+}
+
 // go test -bench=Logger_b1 -run=_b1$ -benchmem -count 10 -v
 func BenchmarkLogger_b1(b *testing.B) {
 	lg, err := NewLogger("wk_logs/abc", "2006-01-02")

@@ -17,7 +17,7 @@ func ParseDataFailed(err error, msg string) (errx ErrorX) {
 		Err:      err,
 	}.Check()
 
-	errx.Err = fmt.Errorf("%s: %w", callInfo(), errx.Err)
+	errx.Err = fmt.Errorf("%s: %w", CallInfo(2), errx.Err)
 	return errx
 }
 
@@ -30,7 +30,7 @@ func InvalidParameter(err error, msg string) (errx ErrorX) {
 		Err:      err,
 	}.Check()
 
-	errx.Err = fmt.Errorf("%s: %w", callInfo(), errx.Err)
+	errx.Err = fmt.Errorf("%s: %w", CallInfo(2), errx.Err)
 	return errx
 }
 
@@ -43,7 +43,7 @@ func NotFound1(err error, msg string) (errx ErrorX) {
 		Err:      err,
 	}.Check()
 
-	errx.Err = fmt.Errorf("%s: %w", callInfo(), errx.Err)
+	errx.Err = fmt.Errorf("%s: %w", CallInfo(2), errx.Err)
 	return errx
 }
 
@@ -56,7 +56,7 @@ func Conflict(err error, msg string) (errx ErrorX) {
 		Err:      err,
 	}.Check()
 
-	errx.Err = fmt.Errorf("%s: %w", callInfo(), errx.Err)
+	errx.Err = fmt.Errorf("%s: %w", CallInfo(2), errx.Err)
 	return errx
 }
 
@@ -70,7 +70,7 @@ func NotFound2(err error, msg string) (errx ErrorX) {
 		Err:      err,
 	}.Check()
 
-	errx.Err = fmt.Errorf("%s: %w", callInfo(), errx.Err)
+	errx.Err = fmt.Errorf("%s: %w", CallInfo(2), errx.Err)
 	return errx
 }
 
@@ -83,7 +83,7 @@ func InternalError(err error, msg string) (errx ErrorX) {
 		Err:      err,
 	}.Check()
 
-	errx.Err = fmt.Errorf("%s: %w", callInfo(), errx.Err)
+	errx.Err = fmt.Errorf("%s: %w", CallInfo(2), errx.Err)
 	return errx
 }
 
@@ -99,8 +99,8 @@ func (errx ErrorX) Check() (out ErrorX) {
 	return errx
 }
 
-func callInfo() string {
-	fn, file, line, _ := runtime.Caller(2)
+func CallInfo(n int) string {
+	fn, file, line, _ := runtime.Caller(n)
 	return fmt.Sprintf(
 		"%s(%s:%d)", runtime.FuncForPC(fn).Name(),
 		filepath.Base(file), line,

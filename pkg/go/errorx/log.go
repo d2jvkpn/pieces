@@ -11,11 +11,12 @@ import (
 
 type Logger struct {
 	*log.Logger
-	prefix  string
-	format  string
-	current string
-	file    *os.File
-	ch      chan bool
+	printCaller bool
+	prefix      string
+	format      string
+	current     string
+	file        *os.File
+	ch          chan bool
 }
 
 func NewLogger(prefix, format string) (lg *Logger, err error) {
@@ -47,6 +48,15 @@ func NewLogger(prefix, format string) (lg *Logger, err error) {
 	lg.ch <- true
 
 	return lg, nil
+}
+
+func NewLogger2(prefix, format string) (lg *Logger, err error) {
+	if lg, err = NewLogger(prefix, format); err != nil {
+		return nil, err
+	}
+
+	lg.printCaller = true
+	return lg, err
 }
 
 func (lg *Logger) Close() (err error) {
@@ -88,10 +98,17 @@ func (lg *Logger) Write(bts []byte) (n int, err error) {
 		return 0, err
 	}
 
-	n, err = fmt.Fprintf(
-		lg.file, "%s %s\n",
-		now.Format(RFC3339ms), strings.TrimSpace(string(bts)),
-	)
+	if lg.printCaller {
+		n, err = fmt.Fprintf(
+			lg.file, "%s %s %s\n", now.Format(RFC3339ms),
+			CallInfo(3), strings.TrimSpace(string(bts)),
+		)
+	} else {
+		n, err = fmt.Fprintf(
+			lg.file, "%s %s\n",
+			now.Format(RFC3339ms), strings.TrimSpace(string(bts)),
+		)
+	}
 
 	return n, err
 }
