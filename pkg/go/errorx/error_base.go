@@ -21,7 +21,7 @@ func (errx *ErrorX) Error() string {
 	return errx.Err.Error()
 }
 
-func LoginRequired() (errx ErrorX) {
+func ErrLoginRequired() (errx ErrorX) {
 	kind := "login required"
 
 	return ErrorX{
