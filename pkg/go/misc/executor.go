@@ -65,7 +65,9 @@ func (ex *Executor) Load(run func() error, onExit func(error)) {
 	}()
 }
 
-func (ex *Executor) Wait(dura time.Duration, sgs ...os.Signal) {
+func (ex *Executor) Wait(dura time.Duration, sgs ...os.Signal) (ok bool) {
+	var err error
+	ok = true
 	quit := make(chan os.Signal)
 
 	if len(sgs) == 0 {
@@ -77,6 +79,7 @@ func (ex *Executor) Wait(dura time.Duration, sgs ...os.Signal) {
 	select {
 	case <-quit:
 		log.Printf("Executor exit")
+		ok = false
 	case <-ex.ch:
 		log.Println("Executor failed")
 		if dura > 0 {
@@ -85,9 +88,13 @@ func (ex *Executor) Wait(dura time.Duration, sgs ...os.Signal) {
 	}
 
 	for i := range ex.exitFuncs {
-		if ex.exitFuncs[i] == nil {
-			continue
+		if err = ex.getErr(i); err != nil {
+			ok = false
 		}
-		ex.exitFuncs[i](ex.getErr(i))
+		if ex.exitFuncs[i] != nil {
+			ex.exitFuncs[i](err)
+		}
 	}
+
+	return ok
 }
