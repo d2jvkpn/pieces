@@ -18,6 +18,7 @@ type Logger struct {
 	prefix      string
 	format      string
 	current     string
+	tag         string
 	file        *os.File
 	ch          chan bool
 }
@@ -105,6 +106,7 @@ func (lg *Logger) Write(bts []byte) (n int, err error) {
 	}
 
 	buf := bytes.NewBufferString(now.Format(RFC3339ms))
+
 	if lg.printCaller {
 		buf.WriteString(CallInfo(3))
 		buf.WriteString(" ")
@@ -121,4 +123,52 @@ func (lg *Logger) Write(bts []byte) (n int, err error) {
 	n, err = wr.Write(buf.Bytes())
 	buf.Reset()
 	return
+}
+
+func (lg *Logger) Info(format string, a ...interface{}) (n int, err error) {
+	buf := bytes.NewBufferString("[INFO] ")
+	buf.Write(bytes.TrimSpace([]byte(format)))
+	buf.WriteByte('\n')
+
+	if len(a) > 0 {
+		n, err = lg.Write([]byte(fmt.Sprintf(buf.String(), a...)))
+	} else {
+		n, err = lg.Write(buf.Bytes())
+	}
+	buf.Reset()
+	return
+}
+
+func (lg *Logger) WARN(format string, a ...interface{}) (n int, err error) {
+	buf := bytes.NewBufferString("[WARN] ")
+	buf.Write(bytes.TrimSpace([]byte(format)))
+	buf.WriteByte('\n')
+
+	if len(a) > 0 {
+		n, err = lg.Write([]byte(fmt.Sprintf(buf.String(), a...)))
+	} else {
+		n, err = lg.Write(buf.Bytes())
+	}
+	buf.Reset()
+	return
+}
+
+func (lg *Logger) Error(format string, a ...interface{}) (n int, err error) {
+	format = strings.TrimSpace("[ERROR] "+format) + "\n"
+
+	if len(a) > 0 {
+		return lg.Write([]byte(fmt.Sprintf(format, a...)))
+	} else {
+		return lg.Write([]byte(format))
+	}
+}
+
+func (lg *Logger) Panic(format string, a ...interface{}) (n int, err error) {
+	format = strings.TrimSpace("[PANIC] "+format) + "\n"
+
+	if len(a) > 0 {
+		return lg.Write([]byte(fmt.Sprintf(format, a...)))
+	} else {
+		return lg.Write([]byte(format))
+	}
 }

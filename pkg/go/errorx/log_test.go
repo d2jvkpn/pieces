@@ -60,6 +60,28 @@ func TestLogger_t3(t *testing.T) {
 	fmt.Println(">>> 4", lg.Output(2, "wow"))
 }
 
+func TestLogger_t4(t *testing.T) {
+	lg, err := NewLogger2("wk_logs/abc", "2006-01-02")
+	if err != nil {
+		t.Fatal(err)
+	}
+	lg.SetStdout()
+
+	str := "world"
+	lg.Info("hello, %s\n", str)
+}
+
+func TestLogger_t5(t *testing.T) {
+	lg, err := NewLogger2("wk_logs/abc", "2006-01-02")
+	if err != nil {
+		t.Fatal(err)
+	}
+	lg.SetStdout()
+
+	str := "world"
+	lg.Printf("hello, %s\n", str)
+}
+
 // go test -bench=Logger_b1 -run=^BenchmarkLogger_b1$ -benchmem -count 10 -v
 func BenchmarkLogger_b1(b *testing.B) {
 	lg, err := NewLogger("wk_logs/abc", "2006-01-02")
@@ -74,8 +96,8 @@ func BenchmarkLogger_b1(b *testing.B) {
 	}
 }
 
-// go test -bench=Logger_B1 -run=^BenchmarkLogger_B1$ -benchmem -count 10 -v
-func BenchmarkLogger_B1(b *testing.B) {
+// go test -bench=Logger_x1 -run=^BenchmarkLogger_x1$ -benchmem -count 10 -v
+func BenchmarkLogger_x1(b *testing.B) {
 	lg, err := NewLogger2("wk_logs/abc", "2006-01-02")
 	if err != nil {
 		b.Fatal(err)
@@ -85,6 +107,44 @@ func BenchmarkLogger_B1(b *testing.B) {
 		if err = lg.Output(2, randString); err != nil {
 			b.Fatal(err)
 		}
+	}
+}
+
+// go test -bench=Logger_x2 -run=^BenchmarkLogger_x2$ -benchmem -count 10 -v
+func BenchmarkLogger_x2(b *testing.B) {
+	lg, err := NewLogger("wk_logs/abc", "2006-01-02")
+	if err != nil {
+		b.Fatal(err)
+	}
+
+	for i := 0; i < b.N; i++ {
+		lg.Info(randString)
+	}
+}
+
+// go test -bench=Logger_x3 -run=^BenchmarkLogger_x3$ -benchmem -count 10 -v
+func BenchmarkLogger_x3(b *testing.B) {
+	lg, err := NewLogger("wk_logs/abc", "2006-01-02")
+	if err != nil {
+		b.Fatal(err)
+	}
+
+	for i := 0; i < b.N; i++ {
+		lg.Write([]byte(randString + "\n"))
+	}
+}
+
+// go test -bench=Logger_x4 -run=^BenchmarkLogger_x4$ -benchmem -count 10 -v
+func BenchmarkLogger_x4(b *testing.B) {
+	lg, err := NewLogger("wk_logs/abc", "2006-01-02")
+	if err != nil {
+		b.Fatal(err)
+	}
+
+	bts := []byte(randString + "\n")
+
+	for i := 0; i < b.N; i++ {
+		lg.Write(bts)
 	}
 }
 
