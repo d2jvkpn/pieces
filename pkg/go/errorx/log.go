@@ -91,7 +91,6 @@ func (lg *Logger) rotate(now time.Time) (err error) {
 
 func (lg *Logger) Write(bts []byte) (n int, err error) {
 	RFC3339ms := "2006-01-02T15:04:05.000Z07:00" // time.RFC3339
-	str := ""
 	now := time.Now()
 
 	if ok := <-lg.ch; !ok {
@@ -105,7 +104,7 @@ func (lg *Logger) Write(bts []byte) (n int, err error) {
 		return 0, err
 	}
 
-	str = strings.TrimSpace(string(bts))
+	str := strings.TrimSpace(string(bts))
 	if lg.printCaller {
 		str = fmt.Sprintf("%s %s %s\n", now.Format(RFC3339ms), CallInfo(3), str)
 	} else {
