@@ -5,8 +5,7 @@ type ResData struct {
 	Message string                 `json:"message"`
 	Data    map[string]interface{} `json:"data"`
 
-	RequestId string `json:"requestId,omitempty"` // unique request id for log
-	Err       error  `json:"-"`                   // error for debug
+	RequestId string `json:"requestId,omitempty"`
 }
 
 // factory method
