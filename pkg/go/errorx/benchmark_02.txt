@@ -1,0 +1,38 @@
+go test -bench=Logger_b1 -run=^BenchmarkLogger_b1$ -benchmem -count 10 -v
+goos: linux
+goarch: amd64
+pkg: github.com/d2jvkpn/pieces/pkg/go/errorx
+cpu: AMD Ryzen 7 4800H with Radeon Graphics         
+BenchmarkLogger_b1
+BenchmarkLogger_b1-16    	  465044	      2455 ns/op	     472 B/op	       6 allocs/op
+BenchmarkLogger_b1-16    	  498057	      2551 ns/op	     472 B/op	       6 allocs/op
+BenchmarkLogger_b1-16    	  416600	      2659 ns/op	     472 B/op	       6 allocs/op
+BenchmarkLogger_b1-16    	  589299	      2755 ns/op	     472 B/op	       6 allocs/op
+BenchmarkLogger_b1-16    	  447068	      2820 ns/op	     472 B/op	       6 allocs/op
+BenchmarkLogger_b1-16    	  373704	      2843 ns/op	     472 B/op	       6 allocs/op
+BenchmarkLogger_b1-16    	  463336	      2813 ns/op	     472 B/op	       6 allocs/op
+BenchmarkLogger_b1-16    	  450182	      2671 ns/op	     472 B/op	       6 allocs/op
+BenchmarkLogger_b1-16    	  595584	      2585 ns/op	     472 B/op	       6 allocs/op
+BenchmarkLogger_b1-16    	  448806	      2662 ns/op	     472 B/op	       6 allocs/op
+PASS
+ok  	github.com/d2jvkpn/pieces/pkg/go/errorx	16.891s
+
+
+go test -bench=Logger_B1 -run=^BenchmarkLogger_B1$ -benchmem -count 10 -v
+goos: linux
+goarch: amd64
+pkg: github.com/d2jvkpn/pieces/pkg/go/errorx
+cpu: AMD Ryzen 7 4800H with Radeon Graphics         
+BenchmarkLogger_B1
+BenchmarkLogger_B1-16    	  205670	      5485 ns/op	    1168 B/op	      12 allocs/op
+BenchmarkLogger_B1-16    	  222789	      5124 ns/op	    1168 B/op	      12 allocs/op
+BenchmarkLogger_B1-16    	  246076	      5114 ns/op	    1168 B/op	      12 allocs/op
+BenchmarkLogger_B1-16    	  229056	      5162 ns/op	    1168 B/op	      12 allocs/op
+BenchmarkLogger_B1-16    	  246690	      5111 ns/op	    1168 B/op	      12 allocs/op
+BenchmarkLogger_B1-16    	  199503	      5119 ns/op	    1168 B/op	      12 allocs/op
+BenchmarkLogger_B1-16    	  319615	      5295 ns/op	    1168 B/op	      12 allocs/op
+BenchmarkLogger_B1-16    	  236594	      5156 ns/op	    1168 B/op	      12 allocs/op
+BenchmarkLogger_B1-16    	  259729	      5855 ns/op	    1168 B/op	      12 allocs/op
+BenchmarkLogger_B1-16    	  236818	      5706 ns/op	    1168 B/op	      12 allocs/op
+PASS
+ok  	github.com/d2jvkpn/pieces/pkg/go/errorx	14.279s

@@ -1,6 +1,7 @@
 package errorx
 
 import (
+	"bytes"
 	"fmt"
 	"io"
 	"log"
@@ -76,7 +77,6 @@ func (lg *Logger) rotate(now time.Time) (err error) {
 	if target == lg.current {
 		return nil
 	}
-
 	if err = lg.file.Close(); err != nil {
 		return err
 	}
@@ -90,7 +90,7 @@ func (lg *Logger) rotate(now time.Time) (err error) {
 }
 
 func (lg *Logger) Write(bts []byte) (n int, err error) {
-	RFC3339ms := "2006-01-02T15:04:05.000Z07:00" // time.RFC3339
+	RFC3339ms := "2006-01-02T15:04:05.000Z07:00 " // time.RFC3339
 	now := time.Now()
 
 	if ok := <-lg.ch; !ok {
@@ -104,17 +104,21 @@ func (lg *Logger) Write(bts []byte) (n int, err error) {
 		return 0, err
 	}
 
-	str := strings.TrimSpace(string(bts))
+	buf := bytes.NewBufferString(now.Format(RFC3339ms))
 	if lg.printCaller {
-		str = fmt.Sprintf("%s %s %s\n", now.Format(RFC3339ms), CallInfo(3), str)
+		buf.WriteString(CallInfo(3))
+		buf.WriteString(" ")
+	}
+	buf.Write(bts)
+
+	var wr io.Writer
+	if lg.setStdout {
+		wr = io.MultiWriter(os.Stdout, lg.file)
 	} else {
-		str = fmt.Sprintf("%s %s\n", now.Format(RFC3339ms), str)
+		wr = io.MultiWriter(lg.file)
 	}
 
-	if !lg.setStdout {
-		return fmt.Fprintf(lg.file, str)
-	} else {
-		wr := io.MultiWriter(os.Stdout, lg.file)
-		return io.WriteString(wr, str)
-	}
+	n, err = wr.Write(buf.Bytes())
+	buf.Reset()
+	return
 }

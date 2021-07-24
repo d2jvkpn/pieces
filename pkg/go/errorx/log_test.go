@@ -1,6 +1,7 @@
 package errorx
 
 import (
+	"bytes"
 	"fmt"
 	"testing"
 )
@@ -59,9 +60,23 @@ func TestLogger_t3(t *testing.T) {
 	fmt.Println(">>> 4", lg.Output(2, "wow"))
 }
 
-// go test -bench=Logger_b1 -run=_b1$ -benchmem -count 10 -v
+// go test -bench=Logger_b1 -run=^BenchmarkLogger_b1$ -benchmem -count 10 -v
 func BenchmarkLogger_b1(b *testing.B) {
 	lg, err := NewLogger("wk_logs/abc", "2006-01-02")
+	if err != nil {
+		b.Fatal(err)
+	}
+
+	for i := 0; i < b.N; i++ {
+		if err = lg.Output(2, randString); err != nil {
+			b.Fatal(err)
+		}
+	}
+}
+
+// go test -bench=Logger_B1 -run=^BenchmarkLogger_B1$ -benchmem -count 10 -v
+func BenchmarkLogger_B1(b *testing.B) {
+	lg, err := NewLogger2("wk_logs/abc", "2006-01-02")
 	if err != nil {
 		b.Fatal(err)
 	}
@@ -119,4 +134,11 @@ func BenchmarkLogger_b4(b *testing.B) {
 			<-ch
 		}()
 	}
+}
+
+func TestBuffer(t *testing.T) {
+	bts := []byte{'x', 'y', 'z'}
+	buf := bytes.NewBuffer(bts)
+	buf.WriteString("abcde")
+	fmt.Println(buf.String(), string(bts))
 }
