@@ -2,6 +2,7 @@ package errorx
 
 import (
 	"fmt"
+	"io"
 	"log"
 	"os"
 	"path/filepath"
@@ -12,6 +13,7 @@ import (
 type Logger struct {
 	*log.Logger
 	printCaller bool
+	setStdout   bool
 	prefix      string
 	format      string
 	current     string
@@ -60,9 +62,13 @@ func NewLogger2(prefix, format string) (lg *Logger, err error) {
 }
 
 func (lg *Logger) Close() (err error) {
-	<-lg.ch //!!
+	<-lg.ch //!! important
 	close(lg.ch)
 	return lg.file.Close()
+}
+
+func (lg *Logger) SetStdout() {
+	lg.setStdout = true
 }
 
 func (lg *Logger) rotate(now time.Time) (err error) {
@@ -84,7 +90,8 @@ func (lg *Logger) rotate(now time.Time) (err error) {
 }
 
 func (lg *Logger) Write(bts []byte) (n int, err error) {
-	var RFC3339ms = "2006-01-02T15:04:05.000Z07:00" // time.RFC3339
+	RFC3339ms := "2006-01-02T15:04:05.000Z07:00" // time.RFC3339
+	str := ""
 	now := time.Now()
 
 	if ok := <-lg.ch; !ok {
@@ -98,16 +105,18 @@ func (lg *Logger) Write(bts []byte) (n int, err error) {
 		return 0, err
 	}
 
+	str = strings.TrimSpace(string(bts))
 	if lg.printCaller {
-		n, err = fmt.Fprintf(
-			lg.file, "%s %s %s\n", now.Format(RFC3339ms),
-			CallInfo(3), strings.TrimSpace(string(bts)),
-		)
+		str = fmt.Sprintf("%s %s %s\n", now.Format(RFC3339ms), CallInfo(3), str)
 	} else {
-		n, err = fmt.Fprintf(
-			lg.file, "%s %s\n",
-			now.Format(RFC3339ms), strings.TrimSpace(string(bts)),
-		)
+		str = fmt.Sprintf("%s %s\n", now.Format(RFC3339ms), str)
+	}
+
+	if !lg.setStdout {
+		n, err = fmt.Fprintf(lg.file, str)
+	} else {
+		wr := io.MultiWriter(os.Stdout, lg.file)
+		n, err = io.WriteString(wr, str)
 	}
 
 	return n, err
