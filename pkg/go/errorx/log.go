@@ -113,7 +113,7 @@ func (lg *Logger) Write(bts []byte) (n int, err error) {
 	}
 
 	if !lg.setStdout {
-		n, err = fmt.Fprintf(lg.file, str)
+		n, err = fmt.Fprintf(lg.file, str) //!! make sure defer executed, not return directly
 	} else {
 		wr := io.MultiWriter(os.Stdout, lg.file)
 		n, err = io.WriteString(wr, str)
