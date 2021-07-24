@@ -139,7 +139,15 @@ func (lg *Logger) Info(format string, a ...interface{}) (n int, err error) {
 	return
 }
 
-func (lg *Logger) WARN(format string, a ...interface{}) (n int, err error) {
+func (lg *Logger) InfoBytes(bts []byte) (n int, err error) {
+	buf := bytes.NewBuffer([]byte("[INFO] "))
+	buf.Write(bts)
+	n, err = lg.Write(buf.Bytes())
+	buf.Reset()
+	return
+}
+
+func (lg *Logger) Warn(format string, a ...interface{}) (n int, err error) {
 	buf := bytes.NewBufferString("[WARN] ")
 	buf.Write(bytes.TrimSpace([]byte(format)))
 	buf.WriteByte('\n')

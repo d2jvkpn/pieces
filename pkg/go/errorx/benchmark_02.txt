@@ -97,3 +97,23 @@ BenchmarkLogger_x4-16    	  479673	      2559 ns/op	     472 B/op	       6 alloc
 BenchmarkLogger_x4-16    	  483696	      2558 ns/op	     472 B/op	       6 allocs/op
 PASS
 ok  	github.com/d2jvkpn/pieces/pkg/go/errorx	16.504s
+
+
+go test -bench=Logger_x5 -run=^BenchmarkLogger_x5$ -benchmem -count 10 -v
+goos: linux
+goarch: amd64
+pkg: github.com/d2jvkpn/pieces/pkg/go/errorx
+cpu: AMD Ryzen 7 4800H with Radeon Graphics         
+BenchmarkLogger_x5
+BenchmarkLogger_x5-16    	  334797	      3083 ns/op	     760 B/op	       7 allocs/op
+BenchmarkLogger_x5-16    	  330068	      3114 ns/op	     760 B/op	       7 allocs/op
+BenchmarkLogger_x5-16    	  351945	      3078 ns/op	     760 B/op	       7 allocs/op
+BenchmarkLogger_x5-16    	  349903	      3085 ns/op	     760 B/op	       7 allocs/op
+BenchmarkLogger_x5-16    	  420052	      2945 ns/op	     760 B/op	       7 allocs/op
+BenchmarkLogger_x5-16    	  534680	      2984 ns/op	     760 B/op	       7 allocs/op
+BenchmarkLogger_x5-16    	  566527	      2966 ns/op	     760 B/op	       7 allocs/op
+BenchmarkLogger_x5-16    	  371877	      2991 ns/op	     760 B/op	       7 allocs/op
+BenchmarkLogger_x5-16    	  416964	      2990 ns/op	     760 B/op	       7 allocs/op
+BenchmarkLogger_x5-16    	  354480	      3697 ns/op	     760 B/op	       7 allocs/op
+PASS
+ok  	github.com/d2jvkpn/pieces/pkg/go/errorx	12.755s

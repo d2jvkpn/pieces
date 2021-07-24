@@ -148,6 +148,20 @@ func BenchmarkLogger_x4(b *testing.B) {
 	}
 }
 
+// go test -bench=Logger_x5 -run=^BenchmarkLogger_x5$ -benchmem -count 10 -v
+func BenchmarkLogger_x5(b *testing.B) {
+	lg, err := NewLogger("wk_logs/abc", "2006-01-02")
+	if err != nil {
+		b.Fatal(err)
+	}
+
+	bts := []byte(randString + "\n")
+
+	for i := 0; i < b.N; i++ {
+		lg.InfoBytes(bts)
+	}
+}
+
 // go test -bench=Logger_b2 -run=_b2$ -benchmem -count 10 -v
 func BenchmarkLogger_b2(b *testing.B) {
 	lg, err := NewLogger("wk_logs/abc", "2006-01-02")
