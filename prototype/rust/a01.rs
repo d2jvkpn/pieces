@@ -7,10 +7,14 @@ fn main() {
     println!(">>> main d1: {:p}", &d1);
 
     let d2 = d1;
-    println!(">>> main d2: {:p}", &d2);
+    println!(">>> main d2: {:p}", &d2); // != &d1
 
     let d3 = d2;
-    println!(">>> main d3: {:p}", &d3);
+    println!(">>> main d3: {:p}", &d3); // != &d2
+
+    let d4 = &d3;
+    let d5 = &d3;
+    println!(">>> main d4: {:p}, d5: {:p}", d4, d5); // ==
 }
 
 struct D {
