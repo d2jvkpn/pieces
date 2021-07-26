@@ -7,9 +7,12 @@ import (
 
 func main() {
 	d := NewD()
-	fmt.Println(">>> 1 main NewD():", d)
+	fmt.Printf(">>> 1 main NewD(): %[1]v, %[1]p\n", &d)
 	time.Sleep(2 * time.Second)
-	fmt.Println(">>> 3 main NewD():", d)
+	fmt.Printf(">>> 3 main NewD(): %[1]v, %[1]p\n", &d)
+
+	d2 := NewD2()
+	fmt.Printf(">>> 3 main NewD2(): %[1]v, %[1]p\n", d2)
 }
 
 type D struct {
@@ -21,7 +24,7 @@ func NewD() (d D) {
 	go func() {
 		time.Sleep(1 * time.Second)
 		d.V = 2
-		fmt.Println(">>> 2 NewD():", d)
+		fmt.Printf(">>> 2 NewD(): %[1]v, %[1]p\n", &d)
 	}()
 	return d
 }
@@ -31,5 +34,7 @@ func NewD1() (d D) {
 }
 
 func NewD2() (d *D) {
-	return &D{V: 1}
+	d = &D{V: 1}
+	fmt.Printf(">>> NewD2(): %[1]v, %[1]p\n", d)
+	return d
 }
