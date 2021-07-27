@@ -18,13 +18,13 @@ fn main() {
         name: String::from("Max"),
         owner: &p1,
     };
-
     println!("{:?}, {:?}", d1, p1);
 
+    //
     let p2 = Person {
         name: String::from("unknown"),
     };
-    d1.owner = &p2;
 
-    println!("{:?}, {:?}", d1, p1);
+    d1.owner = &p2;
+    println!("{:?}, {:?}", d1, p2);
 }
