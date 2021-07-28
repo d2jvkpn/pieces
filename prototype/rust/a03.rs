@@ -28,3 +28,16 @@ fn main() {
     d1.owner = &p2;
     println!("{:?}, {:?}", d1, p2);
 }
+
+/* !!! returns a value referencing data owned by the current function
+fn newD<'a>() -> Dog<'a> {
+    let p1 = Person {
+        name: String::from("John"),
+    };
+
+    Dog {
+        name: String::from("Max"),
+        owner: &p1,
+    }
+}
+*/
