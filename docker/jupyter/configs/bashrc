@@ -1,5 +1,0 @@
-
-for d in $(ls -d /opt/*/ 2> /dev/null); do
-    test -d $d/bin && d=$d/bin
-    export PATH=$d:$PATH
-done

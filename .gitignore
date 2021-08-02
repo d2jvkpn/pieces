@@ -10,7 +10,7 @@
 *.tgz
 **/apps/*.zip
 **/target/
-.ipynb
+.ipynb*/
 **/__pycache__/
 **/node_modules/
 

@@ -1,4 +1,0 @@
-ipython
-jupyter
-jupyterlab
-bash_kernel

@@ -1,8 +1,0 @@
-[user]
-name = rover
-email = rover@server.domain
-
-[credential]
-helper = store
-
-[push]
