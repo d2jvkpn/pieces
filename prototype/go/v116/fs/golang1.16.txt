@@ -1,1 +1,0 @@
-https://golang.google.cn/doc/go1.16

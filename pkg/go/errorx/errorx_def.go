@@ -7,6 +7,11 @@ import (
 	"runtime"
 )
 
+// router level error(-100...): LoginRequired, InvalidToken, TokenExpired, NotAccessRight
+// preprocess error(-1..-99): ParseFailed, InvalidParameter
+// business error(1..99): NotFound, NotOperationRight, Conflict
+// business unkonwn error(100..): InternalError, Panic
+
 ///
 func ParseDataFailed(err error, msg string) (errx ErrorX) {
 	errx = ErrorX{
@@ -47,10 +52,23 @@ func NotFound1(err error, msg string) (errx ErrorX) {
 	return errx
 }
 
-func Conflict(err error, msg string) (errx ErrorX) {
+func NoRightToAccess(err error, msg string) (errx ErrorX) {
+	errx = ErrorX{
+		Kind:     "no right to access",
+		Code:     -23,
+		HttpCode: http.StatusUnauthorized,
+		Message:  msg,
+		Err:      err,
+	}.Check()
+
+	errx.Err = fmt.Errorf("%s: %w", CallInfo(2), errx.Err)
+	return errx
+}
+
+func StatusConflict(err error, msg string) (errx ErrorX) {
 	errx = ErrorX{
 		Kind:     "status conflict",
-		Code:     -23,
+		Code:     -24,
 		HttpCode: http.StatusConflict,
 		Message:  msg,
 		Err:      err,
