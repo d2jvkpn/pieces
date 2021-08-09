@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package calculatorpb;
+option go_package = "pkg/calculatorpb";
+
+
+message Number {
+	int64 value = 1;
+}
+
+service CalculatorService {
+	// PrimeNumberDecomposition
+	rpc PND(Number) returns (stream Number) {};
+
+	// client streaming
+	rpc Multiply(stream Number) returns (Number) {};
+}
