@@ -5,8 +5,8 @@ wd=$(pwd)
 
 sudo apt install sshfs
 
-mkdir sshfs_dev
+mkdir -p ~/Remote/sshfs_dev
 
-sshfs -p PORT USER@HOSTNAME:/home/USER/work $PWD/sshfs_dev
+sshfs -p ${PORT} ${USER}@${HOSTNAME}:/home/${USER}/work ~/Remote/sshfs_dev
 
-fusermount -u $PWD/sshfs_dev
+fusermount -u ~/Remote/sshfs_dev
