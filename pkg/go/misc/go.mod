@@ -1,3 +1,3 @@
 module github.com/d2jvkpn/pieces/pkg/go/misc
 
-go 1.16
+go 1.17

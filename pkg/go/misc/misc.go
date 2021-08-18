@@ -67,7 +67,7 @@ func AddHttpsScheme(a string) string {
 ///
 func ListenOSIntr(do func(), errch chan<- error, sgs ...os.Signal) {
 	// linux support syscall.SIGUSR2
-	quit := make(chan os.Signal)
+	quit := make(chan os.Signal, 1)
 
 	if len(sgs) == 0 {
 		signal.Notify(quit, os.Interrupt, syscall.SIGTERM)

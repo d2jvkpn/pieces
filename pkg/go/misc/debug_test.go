@@ -17,8 +17,17 @@ func _fn1() {
 	fmt.Printf("Hello, playground %d", j)
 }
 
-func TestWrapError(t *testing.T) {
+func wrapError2(err error) error {
+	return WrapError(err)
+}
+
+func TestWrapError_t1(t *testing.T) {
 	err := WrapError(fmt.Errorf("something is wrong"))
+	fmt.Println(err)
+}
+
+func TestWrapError_t2(t *testing.T) {
+	err := wrapError2(fmt.Errorf("something is wrong 2"))
 	fmt.Println(err)
 }
 

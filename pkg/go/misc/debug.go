@@ -16,7 +16,17 @@ func WrapError(err error) error {
 
 	pc := make([]uintptr, 20)
 	// fn, file, line, _ := runtime.Caller(1)
-	fn, file, line, _ := runtime.Caller(runtime.Callers(4, pc))
+	skip := runtime.Callers(2, pc)
+	fn, file, line, _ := runtime.Caller(skip - 2)
+	/*
+			for i := range pc {
+			if pc[i] == 0 {
+				break
+			}
+
+			fmt.Println(">>>", i, runtime.FuncForPC(pc[i]).Name())
+		}
+	*/
 
 	return fmt.Errorf(
 		"%s(%s:%d): %w", runtime.FuncForPC(fn).Name(),

@@ -68,7 +68,7 @@ func (ex *Executor) Load(run func() error, onExit func(error)) {
 func (ex *Executor) Wait(dura time.Duration, sgs ...os.Signal) (ok bool) {
 	var err error
 	ok = true
-	quit := make(chan os.Signal)
+	quit := make(chan os.Signal, 1)
 
 	if len(sgs) == 0 {
 		signal.Notify(quit, os.Interrupt, syscall.SIGTERM)
