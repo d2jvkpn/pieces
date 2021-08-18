@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-func WrapError(err error) error {
+func WrapError0(err error) error {
 	if err == nil {
 		return nil
 	}
@@ -18,15 +18,30 @@ func WrapError(err error) error {
 	// fn, file, line, _ := runtime.Caller(1)
 	skip := runtime.Callers(2, pc)
 	fn, file, line, _ := runtime.Caller(skip - 2)
-	/*
-			for i := range pc {
-			if pc[i] == 0 {
-				break
-			}
-
-			fmt.Println(">>>", i, runtime.FuncForPC(pc[i]).Name())
+	for i := range pc {
+		if pc[i] == 0 {
+			break
 		}
-	*/
+
+		fmt.Println("   ", i, runtime.FuncForPC(pc[i]).Name())
+	}
+
+	return fmt.Errorf(
+		"%s(%s:%d): %w", runtime.FuncForPC(fn).Name(),
+		filepath.Base(file), line, err,
+	)
+}
+
+func WrapError(err error, skips ...int) error {
+	if err == nil {
+		return nil
+	}
+
+	skip := 1
+	if len(skips) > 0 {
+		skip = skips[0]
+	}
+	fn, file, line, _ := runtime.Caller(skip)
 
 	return fmt.Errorf(
 		"%s(%s:%d): %w", runtime.FuncForPC(fn).Name(),
