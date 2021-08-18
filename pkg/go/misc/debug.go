@@ -14,7 +14,9 @@ func WrapError(err error) error {
 		return nil
 	}
 
-	fn, file, line, _ := runtime.Caller(1)
+	pc := make([]uintptr, 20)
+	// fn, file, line, _ := runtime.Caller(1)
+	fn, file, line, _ := runtime.Caller(runtime.Callers(4, pc))
 
 	return fmt.Errorf(
 		"%s(%s:%d): %w", runtime.FuncForPC(fn).Name(),
