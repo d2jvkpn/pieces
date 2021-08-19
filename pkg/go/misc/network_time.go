@@ -21,10 +21,6 @@ func (ser *NetworkTimeServer) Run() error {
 }
 
 func NewNetworkTimeServer(addr string, delay int64) (ser *NetworkTimeServer, err error) {
-	if !strings.HasPrefix(addr, "http") {
-		addr = "http://" + addr
-	}
-
 	if delay < 0 {
 		return nil, fmt.Errorf("invalid delay")
 	}
