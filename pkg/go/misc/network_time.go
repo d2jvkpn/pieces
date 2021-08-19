@@ -37,13 +37,18 @@ func NewNetworkTimeServer(addr string, delay int64) (ser *NetworkTimeServer, err
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		var err error
+		var (
+			d   int64
+			err error
+		)
 
-		t2 := time.Now()
+		d = delay
+		data := make(map[string]int64, 2)
+		data["t2"] = time.Now().UnixMilli()
 
 		if delayStr := r.URL.Query().Get("delay"); delayStr != "" {
-			if delay, err = strconv.ParseInt(delayStr, 10, 64); err != nil {
-				data := map[string]int64{}
+			if d, err = strconv.ParseInt(delayStr, 10, 64); err != nil {
+
 				w.WriteHeader(http.StatusBadRequest)
 
 				json.NewEncoder(w).Encode(
@@ -52,13 +57,10 @@ func NewNetworkTimeServer(addr string, delay int64) (ser *NetworkTimeServer, err
 				return
 			}
 		}
-
-		time.Sleep(time.Duration(ser.delay) * time.Millisecond)
-		t3 := time.Now()
+		time.Sleep(time.Duration(d) * time.Millisecond)
+		data["t3"] = time.Now().UnixMilli()
 
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		data := map[string]int64{"t2": t2.UnixMilli(), "t3": t3.UnixMilli()}
-
 		json.NewEncoder(w).Encode(
 			map[string]interface{}{"code": 0, "message": "ok", "data": data},
 		)
