@@ -41,7 +41,11 @@ func (err *HttpError) Error() string {
 	if err == nil {
 		return "<nil>"
 	}
-	return err.Message
+
+	return fmt.Sprintf(
+		"httpCode: %d, code: %d, message: %q, raw: %q",
+		err.HttpCode, err.Code, err.Message, err.Raw,
+	)
 }
 
 func (err *HttpError) ToResData(codes ...int) (rd *ResData) {
