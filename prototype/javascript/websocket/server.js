@@ -72,6 +72,7 @@ wss.on("connection", function (conn) {
   setTimeout(function() {
     sendData({kind: "goodbye", msg: "SEE YOU NEXT TIME"});
     console.warn(`==> ${clientId} close connection`);
+    console.warn(`<<< ${clientId} session end`);
     conn.close(4001, "TIMEOUT");
   }, 30*1000);
 
