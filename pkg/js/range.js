@@ -1,4 +1,4 @@
-function range(start, end, step) {
+function range(start, end, step=1) {
   step = step * (end - start) > 0 ? step : -step;
   let r = Math.abs(end - start);
   let s = Math.abs(step);
