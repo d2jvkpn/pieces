@@ -9,6 +9,18 @@ import (
 	"strings"
 )
 
+type Error struct {
+	Caller   string `json:"caller,omitempty"`
+	Filepath string `json:"filepath,omitempty"`
+	Line     int    `json:"line,omitempty"`
+	Err      error  `json:"err,omitempty"`
+}
+
+func (err Error) Error() string {
+	return fmt.Sprintf("%s(%s:%d): %v", err.Caller, err.Filepath, err.Line, err.Err)
+}
+
+/*
 func WrapError0(err error) error {
 	if err == nil {
 		return nil
@@ -30,7 +42,9 @@ func WrapError0(err error) error {
 		"%s(%s:%d): %w", runtime.FuncForPC(fn).Name(),
 		filepath.Base(file), line, err,
 	)
+
 }
+*/
 
 func WrapError(err error, skips ...int) error {
 	if err == nil {
@@ -43,10 +57,18 @@ func WrapError(err error, skips ...int) error {
 	}
 	fn, file, line, _ := runtime.Caller(skip)
 
-	return fmt.Errorf(
-		"%s(%s:%d): %w", runtime.FuncForPC(fn).Name(),
-		filepath.Base(file), line, err,
-	)
+	/*
+		return fmt.Errorf(
+			"%s(%s:%d): %w", runtime.FuncForPC(fn).Name(),
+			filepath.Base(file), line, err,
+		)
+	*/
+	return Error{
+		Caller:   runtime.FuncForPC(fn).Name(),
+		Filepath: filepath.Base(file),
+		Line:     line,
+		Err:      err,
+	}
 }
 
 func GetPanic(n int) {
