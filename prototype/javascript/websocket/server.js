@@ -1,9 +1,10 @@
+// import packages
 const express = require('express');
 const http = require('http');
 const ws = require('ws');
 const url = require('url');
 
-///
+/// variables
 var httpPort = 9000;
 const apiPath = "/api/time";
 const wsPath = '/ws/talk';
@@ -22,14 +23,14 @@ const wss = new WebSocketServer({ server });
 */
 
 
-///
+/// http handler
 app.get(apiPath, function(req, res){
   console.log(`>>> http request ${apiPath}: "${req.connection.remoteAddress}"`);
 
   res.json({"time": new Date()});
 });
 
-///
+/// websocket server
 wss.on("connection", function (conn) {
   let ip = conn._socket.remoteAddress;
   let port = conn._socket.remotePort;
@@ -92,7 +93,7 @@ server.on('upgrade', function upgrade(request, socket, head) {
   }
 });
 
-///
+/// run
 server.listen(httpPort, function () {
   console.log(`>>> HTTP webserver listening on "*:${httpPort}"`);
   console.log(`    wsPath: ${wsPath}, apiPath: ${apiPath}`);
