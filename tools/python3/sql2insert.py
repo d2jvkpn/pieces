@@ -51,8 +51,8 @@ password = "root"
 db = "user"
 charset = "utf8"
 """
-(tf, table, where, out) = sys.argv[1:5]
-# tf, table, where, out = "config.toml", "users", "create_timestamp >= '2021-08-31'", "users.sql"
+(tf, table, where, prefix) = sys.argv[1:5]
+# tf, table, where, prefix = "config.toml", "users", "create_timestamp >= '2021-08-31'", "users"
 config = toml.load(tf)["mysql"]
 
 charset = config.get("charset", "")
@@ -74,8 +74,10 @@ cols = ", ".join(df.columns.to_list())
 
 stats = "INSERT INTO {}.{} ({}) VALUES\n{};\n".format(config["db"], table, cols, ",\n".join(data))
 
-with open(out, "w", encoding="utf8") as f:
+with open(prefix + ".sql", "w", encoding="utf8") as f:
     f.write(stats)
+
+df.to_csv(prefix + ".tsv", sep="\t", index=False)
 
 cursor.close()
 conn.commit()
