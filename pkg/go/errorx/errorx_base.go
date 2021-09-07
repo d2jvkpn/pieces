@@ -18,7 +18,11 @@ func (errx *ErrorX) Error() string {
 		return "<nil>"
 	}
 
-	return errx.Err.Error()
+	// return errx.Err.Error()
+	return fmt.Sprintf(
+		"kind: %q, httpCode: %d, code: %d, message: %q, raw: %q",
+		errx.Kind, errx.HttpCode, errx.Code, errx.Message, errx.Err,
+	)
 }
 
 func ErrLoginRequired() (errx ErrorX) {
