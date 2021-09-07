@@ -40,3 +40,11 @@ function basename() {
 module.exports = {
   convert, now, nowStr, basename,
 }
+
+/*
+const logts = require('log-timestamp');
+
+logts(function() {
+  return "[" + timestamp.nowStr() + "] %s";
+});
+*/
