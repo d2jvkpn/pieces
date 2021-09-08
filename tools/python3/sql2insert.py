@@ -72,12 +72,15 @@ print("    read {} records".format(df.shape[0]))
 data = df.apply(r2str, axis=1).to_list()
 cols = ", ".join(df.columns.to_list())
 
-stats = "INSERT INTO {}.{} ({}) VALUES\n{};\n".format(config["db"], table, cols, ",\n".join(data))
+if len(data) > 0:
+    stats = "INSERT INTO {}.{} ({}) VALUES\n{};\n".format(config["db"], table, cols, ",\n".join(data))
 
-with open(prefix + ".sql", "w", encoding="utf8") as f:
-    f.write(stats)
+    with open(prefix + ".sql", "w", encoding="utf8") as f:
+        f.write(stats)
 
-df.to_csv(prefix + ".tsv", sep="\t", index=False)
+    df.to_csv(prefix + ".tsv", sep="\t", index=False)
+else:
+   print("no records found")
 
 cursor.close()
 conn.commit()
