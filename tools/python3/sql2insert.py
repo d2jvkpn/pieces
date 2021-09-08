@@ -80,7 +80,7 @@ if len(data) > 0:
 
     df.to_csv(prefix + ".tsv", sep="\t", index=False)
 else:
-   print("no records found")
+    print("no records found")
 
 cursor.close()
 conn.commit()
