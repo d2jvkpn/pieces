@@ -25,12 +25,18 @@ def select2df(cursor, table, where = ""):
     return d
 
 
+def r2str(record, charset="uft8"):
+    def sqlstr(s):
+        out = json.dumps(s, ensure_ascii=False)
+        return "'{}'".format(out[1:-1])
 
-def r2str(record):
     def convert(e):
         # if isinstance(e, np.int64): e = int(e)
         if isinstance(e, str):
-            return "'" + e + "'"
+            return sqlstr(e)
+        elif isinstance(e, bytes):
+           txt = e.decode(charset)
+           return sqlstr(txt)
         elif e is None:
             return "NULL"
         else:
@@ -69,7 +75,7 @@ df = df.assign(**df.select_dtypes(['datetime']).astype(str).to_dict('list'))
 
 print("    read {} records".format(df.shape[0]))
 
-data = df.apply(r2str, axis=1).to_list()
+data = df.apply(lambda x: r2str(x, charset), axis=1).to_list()
 cols = ", ".join(df.columns.to_list())
 
 if len(data) > 0:
