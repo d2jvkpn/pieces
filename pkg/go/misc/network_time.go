@@ -46,7 +46,7 @@ func NewNetworkTimeServer(addr string, delay int64) (ser *NetworkTimeServer, err
 	return ser, nil
 }
 
-func DelayFunc(delay int64) func(http.ResponseWriter, *http.Request) {
+func DelayFunc(delay int64) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var (
 			d   int64
