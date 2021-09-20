@@ -3,5 +3,6 @@ set -eu -o pipefail
 
 wd=$(pwd)
 
-logFile=$(date +"%FT%T_%s%N" | sed 's/:/-/g')
-echo ${logFile::-6}.log
+logFile=$(date +"%F_%T_%Z_%s%N" | sed 's/:/-/g')
+logFile=${logFile::-6}
+echo $logFile
