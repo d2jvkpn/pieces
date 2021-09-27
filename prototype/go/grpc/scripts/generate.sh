@@ -4,6 +4,8 @@ set -eu -o pipefail
 
 go mod init x
 
+apt install -y protobuf-compiler
+
 go get -u google.golang.org/grpc
 go get -u github.com/golang/protobuf/{proto,protoc-gen-go}
 go install google.golang.org/grpc/cmd/protoc-gen-go-grpc
