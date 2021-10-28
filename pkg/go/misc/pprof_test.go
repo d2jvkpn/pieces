@@ -8,6 +8,5 @@ import (
 func TestPprof(t *testing.T) {
 	pp := NewPprof(":5060")
 
-	pp.Run()
-	t.Fatal(pp.Err())
+	t.Fatal(pp.Run())
 }

@@ -68,7 +68,7 @@ func NewPprof(addr string) (pp *Pprof) {
 	return
 }
 
-func (pp *Pprof) Run() {
+func (pp *Pprof) Run() (err error) {
 	log.Println("Debug http listening on :" + pp.addr)
 	pp.status = "running"
 
@@ -79,6 +79,8 @@ func (pp *Pprof) Run() {
 	} else {
 		pp.status = "shutdown"
 	}
+
+	return pp.err
 }
 
 // print add, status and err in json format
