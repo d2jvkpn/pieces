@@ -3,6 +3,7 @@ package misc
 import (
 	"context"
 	"fmt"
+	"log"
 	"net/http"
 	"net/http/pprof"
 	"time"
@@ -68,6 +69,7 @@ func NewPprof(addr string) (pp *Pprof) {
 }
 
 func (pp *Pprof) Run() {
+	log.Println("Debug http listening on :" + pp.addr)
 	pp.err = pp.Server.ListenAndServe()
 
 	if pp.err != http.ErrServerClosed {
