@@ -6,7 +6,7 @@ import (
 )
 
 func TestPprof(t *testing.T) {
-	pp := NewPprof(":5060")
+	pp := NewPprof(":1030")
 
 	t.Fatal(pp.Run())
 }

@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 	"sync"
 	"time"
 )
@@ -33,6 +34,7 @@ func main() {
 		"/debug/pprof/profile",
 		"/debug/pprof/threadcreate",
 		"/debug/pprof/trace",
+		"/debug/runtime/status",
 	}
 
 	client, wg, now := new(http.Client), new(sync.WaitGroup), time.Now()
@@ -53,13 +55,13 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	download := NewDownload(client, secs, dir, wg)
+	downloadFile := NewDownloadFile(client, secs, dir, wg)
 
 	for _, p := range paths {
 		wg.Add(1)
 
 		go func(p string) {
-			if err := download(addr + p); err != nil {
+			if err := downloadFile(addr + p); err != nil {
 				log.Printf("%v\n", err)
 			}
 		}(p)
@@ -69,11 +71,12 @@ func main() {
 	log.Println("done")
 }
 
-func NewDownload(client *http.Client, secs int, dir string, wg *sync.WaitGroup) func(string) error {
+func NewDownloadFile(client *http.Client, secs int, dir string, wg *sync.WaitGroup) func(string) error {
 	return func(p string) (err error) {
 		var (
-			resp *http.Response
-			file *os.File
+			suffix string
+			file   *os.File
+			resp   *http.Response
 		)
 		defer wg.Done()
 
@@ -85,7 +88,11 @@ func NewDownload(client *http.Client, secs int, dir string, wg *sync.WaitGroup) 
 		}
 		defer resp.Body.Close()
 
-		if file, err = os.Create(filepath.Join(dir, filepath.Base(p)+".out")); err != nil {
+		if suffix = ".out"; strings.HasPrefix(resp.Header.Get("Content-Type"), "application/json") {
+			suffix = ".json"
+		}
+
+		if file, err = os.Create(filepath.Join(dir, filepath.Base(p)+suffix)); err != nil {
 			return err
 		}
 		defer file.Close()

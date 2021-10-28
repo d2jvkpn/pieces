@@ -20,6 +20,7 @@ wget -O heap.out         $addr/debug/pprof/heap?seconds=$secs &
 wget -O mutex.out        $addr/debug/pprof/mutex?seconds=$secs &
 wget -O profile.out      $addr/debug/pprof/profile?seconds=$secs &
 wget -O threadcreate.out $addr/debug/pprof/threadcreate?seconds=$secs &
+wget -O status.json      $addr/debug/runtime/status &
 
 # go tool trace trace.out
 wget -O trace.out        $addr/debug/pprof/trace?seconds=$secs &

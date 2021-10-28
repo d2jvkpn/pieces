@@ -2,10 +2,11 @@ package misc
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 	"net/http/pprof"
+	"runtime"
 	"time"
 )
 
@@ -55,6 +56,19 @@ func NewPprof(addr string) (pp *Pprof) {
 
 	mux.HandleFunc("/debug/pprof/cmdline", pprof.Cmdline)
 	mux.HandleFunc("/debug/pprof/symbol", pprof.Symbol)
+
+	mux.HandleFunc("/debug/runtime/status", func(res http.ResponseWriter, req *http.Request) {
+		res.Header().Add("Content-Type", "application/json; charset=utf-8")
+
+		memStats := new(runtime.MemStats)
+		runtime.ReadMemStats(memStats)
+		num := runtime.NumGoroutine()
+
+		json.NewEncoder(res).Encode(map[string]interface{}{
+			"numGoroutine": num,
+			"memStats":     memStats,
+		})
+	})
 
 	pp = &Pprof{addr: addr, status: "running"}
 	pp.Server = &http.Server{
