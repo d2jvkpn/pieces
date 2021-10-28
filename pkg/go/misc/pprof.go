@@ -69,7 +69,6 @@ func NewPprof(addr string) (pp *Pprof) {
 }
 
 func (pp *Pprof) Run() (err error) {
-	log.Printf(">>> Debug http listening on %q\n" + pp.addr)
 	pp.status = "running"
 
 	pp.err = pp.Server.ListenAndServe()
