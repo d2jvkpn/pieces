@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -16,6 +17,7 @@ func main() {
 	var (
 		addr string
 		secs int
+		err  error
 	)
 
 	flag.StringVar(&addr, "addr", "http://127.0.0.1:1030", "pprof server address")
@@ -33,15 +35,21 @@ func main() {
 		"/debug/pprof/trace",
 	}
 
-	client := new(http.Client)
-	wg := new(sync.WaitGroup)
-	now := time.Now()
+	client, wg, now := new(http.Client), new(sync.WaitGroup), time.Now()
 
 	dir := filepath.Join(
 		"logs",
 		fmt.Sprintf("%d_%s_pprof", now.Unix(), now.Format("2006-01-02T15-04-05")),
 	)
-	if err := os.MkdirAll(dir, 0755); err != nil {
+	if err = os.MkdirAll(dir, 0755); err != nil {
+		log.Fatalln(err)
+	}
+
+	if err = ioutil.WriteFile(
+		filepath.Join(dir, "pprof.json"),
+		[]byte(fmt.Sprintf(`{"pprof": %q}`, addr)+"\n"),
+		0600,
+	); err != nil {
 		log.Fatalln(err)
 	}
 
