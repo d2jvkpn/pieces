@@ -13,7 +13,7 @@ web browser address
   http://localhost:5060/debug/pprof/
 
 get profiles and view in browser
-  $ go tool pprof http://localhost:5060/debug/pprof/allocs?seconds=30
+  $ go tool pprof -http=:8080 http://localhost:5060/debug/pprof/allocs?seconds=30
   $ go tool pprof http://localhost:5060/debug/pprof/block?seconds=30
   $ go tool pprof http://localhost:5060/debug/pprof/goroutine?seconds=30
   $ go tool pprof http://localhost:5060/debug/pprof/heap?seconds=30
@@ -38,7 +38,7 @@ get cmdline and symbol binary data
 */
 type Pprof struct {
 	addr   string
-	server *http.Server
+	Server *http.Server
 	status string
 	err    error
 }
@@ -56,7 +56,7 @@ func NewPprof(addr string) (pp *Pprof) {
 	mux.HandleFunc("/debug/pprof/symbol", pprof.Symbol)
 
 	pp = &Pprof{addr: addr, status: "running"}
-	pp.server = &http.Server{
+	pp.Server = &http.Server{
 		Addr:        addr,
 		Handler:     mux,
 		ReadTimeout: 5 * time.Second,
@@ -64,15 +64,17 @@ func NewPprof(addr string) (pp *Pprof) {
 		MaxHeaderBytes: 1 << 23, // 8M
 	}
 
-	go func() {
-		pp.err = pp.server.ListenAndServe()
-		if pp.err != http.ErrServerClosed {
-			pp.status = "failed"
-		} else {
-			pp.status = "shutdown"
-		}
-	}()
 	return
+}
+
+func (pp *Pprof) Run() {
+	pp.err = pp.Server.ListenAndServe()
+
+	if pp.err != http.ErrServerClosed {
+		pp.status = "failed"
+	} else {
+		pp.status = "shutdown"
+	}
 }
 
 // print add, status and err in json format
@@ -95,7 +97,7 @@ func (pp *Pprof) Err() (err error) {
 // showdown server
 func (pp *Pprof) Shutdown() (err error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	if err = pp.server.Shutdown(ctx); err != nil {
+	if err = pp.Server.Shutdown(ctx); err != nil {
 		pp.status = "failed"
 	} else {
 		pp.status = "shutdown"
