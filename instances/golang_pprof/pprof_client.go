@@ -87,6 +87,9 @@ func NewDownloadFile(client *http.Client, secs int, dir string, wg *sync.WaitGro
 			return err
 		}
 		defer resp.Body.Close()
+		if resp.StatusCode != http.StatusOK {
+			return fmt.Errorf("%s status code: %d", link, resp.StatusCode)
+		}
 
 		if suffix = ".out"; strings.HasPrefix(resp.Header.Get("Content-Type"), "application/json") {
 			suffix = ".json"
