@@ -49,6 +49,10 @@ type Pprof struct {
 func NewPprof(addr string) (pp *Pprof) {
 	mux := http.NewServeMux()
 
+	mux.HandleFunc("/debug/healthy", func(res http.ResponseWriter, req *http.Request) {
+		res.Write([]byte{})
+	})
+
 	mux.HandleFunc("/debug/pprof/", pprof.Index)
 	mux.HandleFunc("/debug/pprof/profile", pprof.Profile)
 
