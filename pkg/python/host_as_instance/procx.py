@@ -1,22 +1,10 @@
 import os, sys, time, shlex, subprocess
 
-import psutil, GPUtil
+from monitor import gpu_info
 
+import psutil
 
-def gpu_info() -> dict:
-    gpus = GPUtil.getGPUs()
-    if len(gpus) == 0: return {}
-    gpu = gpus[0]
-
-    # gpu.id, gpu.name, gpu.uuid
-    return {
-      "load_percent": round(gpu.load*100, 2),
-      "memory_percent": round(gpu.memoryUsed/gpu.memoryTotal*100, 2),
-      "temperature": gpu.temperature,
-    }
-
-
-def search_process(name: str) -> [];
+def search_process(name: str) -> []:
     procs = []
     name = name.strip()
     if name == "": return procs
@@ -25,9 +13,8 @@ def search_process(name: str) -> [];
         # len(proc.children()) > 0
         if proc.name() == name: procs.append(proc)
 
-   procs.sort(key=lambda p: p.create_time(), reverse=True)
-   return procs
-
+    procs.sort(key=lambda p: p.create_time(), reverse=True)
+    return procs
 
 class ProcX:
     cmd, wd = [], ""
@@ -109,7 +96,7 @@ class ProcX:
         if not self.process.is_running(): return {"status": "terminated"}
 
         try:
-            cpu_percent = round(self.process.cpu_percent(self.__cpu_interval)/psutil.cpu_count(), 2)
+            cpu_percent = round(self.process.cpu_percent(self.__cpu_interval)/psutil.cpu_count(), 3)
         except psutil.NoSuchProcess:
             return {"status": "terminated"}
         except:
@@ -118,7 +105,7 @@ class ProcX:
 
         return {
             "staus": self.process.status(),
-            "memory_percent": round(self.process.memory_percent(), 2),
+            "memory_percent": round(self.process.memory_percent(), 3),
             "cpu_percent": cpu_percent,
             "system_gpu_info": gpu_info(),
         }
