@@ -2,7 +2,29 @@
 const ws = require('ws');
 
 /// variables
-const wsc = new ws.WebSocket('ws://127.0.0.1:9000/ws/talk');
+let addr = 'ws://127.0.0.1:9000/ws/talk';
+let pingSec = 5;
+let wsc = null;
+
+function connect() {
+  wsc = new ws.WebSocket();
+
+  function checkAlive(addr) {
+    let interval = setInterval(function() {
+      // https://developer.mozilla.org/en-US/docs/Web/API/WebSocket/readyState
+      // 0:CONNECTING, 1:OPEN, 2:CLOSING, 3:CLOSED
+      if (wsc.readyState === 3) {
+        console.log(`try to reconnect to ${addr}`);
+        clearInterval(interval);
+        connect();
+      };
+    }, pingSec * 1000);
+  }
+
+  checkAlive();
+}
+
+connect();
 
 let ping = null;
 
@@ -20,7 +42,7 @@ wsc.on("open", function () {
 
   ping = setInterval(function() {
     wsc.send(JSON.stringify({kind: "ping", msg: Date.now(), id: newId()}));
-  }, 5*1000);
+  }, pingSec*1000);
 });
 
 wsc.on("message", function (event) {
