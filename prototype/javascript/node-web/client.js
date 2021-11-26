@@ -2,6 +2,9 @@
 const ws = require('ws');
 const yargs = require('yargs');
 
+// dirty hack
+process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = 0;
+
 function newDate() {
   let now = new Date();
   let offset = now.getTimezoneOffset();
@@ -73,6 +76,10 @@ function connect() {
   wsc.on("close", function (code, reason) {
     clearInterval(ping); // must
     console.log(`<== close: ${code}, ${reason}`);
+  });
+
+  wsc.on("error", function (error) {
+    console.log(`!!! error: ${error}`);
   });
 
   function checkWsIsAlive(addr) {

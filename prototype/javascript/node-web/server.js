@@ -88,7 +88,7 @@ wss.on("connection", function (conn) {
     } catch(err) {
       let rec = {data: event.toString(), error: err.message};
 
-      console.error(`<-- ${clientId} message parse failed: ${JSON.stringify(rec)}`);
+      console.log(`!!! ${clientId} message parse failed: ${JSON.stringify(rec)}`);
       // conn.close(1008, "cannot parse to json");
       return;
     }
@@ -103,9 +103,17 @@ wss.on("connection", function (conn) {
         sendData({kind: "pong", msg: Date.now().toString(), delay: dalay, id: data.id});
       }, 1000);
     } else {
-      console.error(`!!! ${clientId} unknown kind: ${data.kind}`);
+      console.log(`!!! ${clientId} unknown kind: ${data.kind}`);
     }
   });
+
+  conn.on("close", function (code, reason) {
+    console.log(`client ${clientId} onclose: ${code} - ${reason}`);
+  })
+
+  conn.on("error", function (error) {
+    console.log(`client ${clientId} onerror: ${error}`);
+  })
 
   setTimeout(function() {
     sendData({kind: "goodbye", msg: "SEE YOU NEXT TIME"});
