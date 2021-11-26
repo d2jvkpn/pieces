@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+  hello:
+    image: registry.cn-shanghai.aliyuncs.com/d2jvkpn/node-web:latest
+    container_name: node-web
+    restart: always
+    networks: ["hello"]
+    ports: ["${PORT}:8080"]
+    environment: ["TZ=Asia/Shanghai"]
+
+networks:
+  hello: {name: hello, driver: bridge }
