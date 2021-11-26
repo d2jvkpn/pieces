@@ -4,6 +4,32 @@ const http = require('http');
 const ws = require('ws');
 const url = require('url');
 
+function newDate() {
+  let now = new Date();
+  let offset = now.getTimezoneOffset();
+
+  if (offset === 0) { return now.toISOString() };
+
+  now = new Date(now.setMinutes(now.getMinutes() - now.getTimezoneOffset()));
+
+  function padH0 (value, len=2) { return value.toString().padStart(len, '0')}
+
+  function offsetString(offset) {
+    if (offset === 0) { return "Z" }
+
+    let hour = padH0(Math.floor(Math.abs(offset) / 60));
+    let minute = padH0(Math.abs(offset) % 60);
+    return `${(offset < 0) ? "+" : "-"}${hour}:${minute}`;
+  }
+
+  return now.toISOString().slice(0, -1) + offsetString(offset);
+}
+
+var log = console.log;
+console.log = function(...args){
+  log.apply(console, [newDate()].concat(args));
+};
+
 /// variables
 var httpPort = 9000;
 const apiPath = "/api/time";
@@ -63,7 +89,7 @@ wss.on("connection", function (conn) {
       let dalay = 1000;
 
       setTimeout(function() {
-        sendData({kind: "pong", msg: Date.now(), delay: dalay, id: data.id});
+        sendData({kind: "pong", msg: Date.now().toString(), delay: dalay, id: data.id});
       }, 1000);
     } else {
       console.error(`!!! ${clientId} unknown kind: ${data.kind}`);
@@ -72,23 +98,26 @@ wss.on("connection", function (conn) {
 
   setTimeout(function() {
     sendData({kind: "goodbye", msg: "SEE YOU NEXT TIME"});
-    console.warn(`==> ${clientId} close connection`);
-    console.warn(`<<< ${clientId} session end`);
+    console.log(`==> ${clientId} close connection`);
+    console.log(`<<< ${clientId} session end`);
     conn.close(4001, "TIMEOUT");
   }, 30*1000);
-
 });
 
 ///
 server.on('upgrade', function upgrade(request, socket, head) {
-  const { pathname } = url.parse(request.url);
+  let req = url.parse(request.url, true);
 
-  if (pathname === wsPath) {
+  if (req.pathname === wsPath) {
+    if (req.query) {
+      console.log("==> id:", req.query["id"]);
+    }
+
     wss.handleUpgrade(request, socket, head, function done(conn) {
       wss.emit("connection", conn, request);
     });
   } else {
-    console.warn(`unkown upgrade url path: ${pathname}`)
+    console.log(`unkown upgrade url path: ${pathname}`);
     socket.destroy();
   }
 });
