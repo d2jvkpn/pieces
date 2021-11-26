@@ -32,7 +32,7 @@ const argv = yargs(process.argv.slice(2))
   .option("addr", {
       description: "ws address",
       // alias: "p",
-      type: "string", default: 'ws://127.0.0.1:9000/ws/talk',
+      type: "string", default: 'ws://127.0.0.1:8080/ws/talk',
   })
   .help()
   .alias("help", "h")

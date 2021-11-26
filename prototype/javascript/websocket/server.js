@@ -1,8 +1,10 @@
 // import packages
-const express = require('express');
-const http = require('http');
-const ws = require('ws');
 const url = require('url');
+const http = require('http');
+
+const express = require('express');
+const ws = require('ws');
+const yargs = require('yargs');
 
 function newDate() {
   let now = new Date();
@@ -30,8 +32,17 @@ console.log = function(...args){
   log.apply(console, [newDate()].concat(args));
 };
 
+const argv = yargs(process.argv.slice(2))
+  .option("port", {
+      description: "http listening port",
+      // alias: "p",
+      type: "integer", default: 8080,
+  })
+  .help()
+  .alias("help", "h")
+  .argv;
+
 /// variables
-var httpPort = 9000;
 const apiPath = "/api/time";
 const wsPath = '/ws/talk';
 
@@ -123,7 +134,7 @@ server.on('upgrade', function upgrade(request, socket, head) {
 });
 
 /// run
-server.listen(httpPort, function () {
-  console.log(`>>> HTTP webserver listening on "*:${httpPort}"`);
+server.listen(argv.port, function () {
+  console.log(`>>> HTTP webserver listening on "*:${argv.port}"`);
   console.log(`    wsPath: ${wsPath}, apiPath: ${apiPath}`);
 });
