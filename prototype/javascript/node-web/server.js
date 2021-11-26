@@ -68,11 +68,13 @@ app.get(apiPath, function(req, res){
 });
 
 /// websocket server
-wss.on("connection", function (conn) {
-  let ip = conn._socket.remoteAddress;
+wss.on("connection", function (conn, request) {
+  let headers = request.headers;
+  ip = headers["X-Real-IP"] ? headers["X-Real-IP"] : conn._socket.remoteAddress;
   let port = conn._socket.remotePort;
-  let clientId = `${ip}:${port}`
-  console.log(`>>> ws connection ${wsPath}: "${clientId}"`);
+  let clientId = `${ip}:${port}`;
+
+  console.log(`+++ ws connection ${wsPath}: "${clientId}"`);
 
   function sendData(data) {
     console.log(`--> ${clientId} message: ${JSON.stringify(data)}`);
@@ -108,7 +110,7 @@ wss.on("connection", function (conn) {
   });
 
   conn.on("close", function (code, reason) {
-    console.log(`client ${clientId} onclose: ${code} - ${reason}`);
+    console.log(`--- client ${clientId} onclose: ${code} - ${reason}`);
   })
 
   conn.on("error", function (error) {
@@ -128,10 +130,6 @@ server.on('upgrade', function upgrade(request, socket, head) {
   let req = url.parse(request.url, true);
 
   if (req.pathname === wsPath) {
-    if (req.query) {
-      console.log("==> id:", req.query["id"]);
-    }
-
     wss.handleUpgrade(request, socket, head, function done(conn) {
       wss.emit("connection", conn, request);
     });
