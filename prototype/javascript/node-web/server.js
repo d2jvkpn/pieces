@@ -70,9 +70,9 @@ app.get(apiPath, function(req, res){
 /// websocket server
 wss.on("connection", function (conn, request) {
   let headers = request.headers;
-  ip = headers["X-Real-IP"] ? headers["X-Real-IP"] : conn._socket.remoteAddress;
-  let port = conn._socket.remotePort;
-  let clientId = `${ip}:${port}`;
+  // console.log(`==== ${JSON.stringify(headers)}`);
+  let ip = headers["x-real-ip"] ? headers["x-real-ip"] : conn._socket.remoteAddress;
+  let clientId = `${ip}:${conn._socket.remotePort}`;
 
   console.log(`+++ ws connection ${wsPath}: "${clientId}"`);
 
