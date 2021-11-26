@@ -6,8 +6,9 @@ services:
     container_name: node-web
     restart: always
     networks: ["hello"]
-    ports: ["${PORT}:8080"]
+    ports: ["${PORT}:${PORT}"]
     environment: ["TZ=Asia/Shanghai"]
+    command: node server.js --port=${PORT}
 
 networks:
   hello: {name: hello, driver: bridge }

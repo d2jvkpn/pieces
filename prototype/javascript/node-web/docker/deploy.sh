@@ -6,7 +6,6 @@ _path=$(dirname $0 | xargs -i readlink -f {})/
 
 PORT=$1
 
-
 export PORT=${PORT}
 envsubst < ${_path}/deploy.yaml > docker-compose.yaml
 
