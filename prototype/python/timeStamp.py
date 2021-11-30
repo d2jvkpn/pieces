@@ -15,3 +15,8 @@ print(t1.isoformat(), t2.isoformat())
 d = datetime.datetime.utcnow()
 d_with_timezone = d.replace(tzinfo=pytz.UTC)
 d_with_timezone.isoformat()
+
+now = datetime.datetime.now().astimezone()
+now.strftime("%Y-%m-%dT%H-%M-%S")
+
+now.strftime("%FT%T")
