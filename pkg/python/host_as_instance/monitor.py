@@ -4,18 +4,21 @@ from datetime import datetime
 import psutil, GPUtil, argparse
 
 
-def gpu_info() -> dict:
+def gpu_info() -> list:
+    result = []
     gpus = GPUtil.getGPUs()
-    if len(gpus) == 0: return {}
-    gpu = gpus[0]
 
     # gpu.id, gpu.name, gpu.uuid
-    return {
-      "load_percent": round(gpu.load*100, 3),
-      "memory_percent": round(gpu.memoryUsed/gpu.memoryTotal*100, 3),
-      "temperature": gpu.temperature,
-    }
+    for gpu in gpus:
+        result.append ({
+          "id": gpu.id,
+          "name": gpu.name,
+          "load_percent": round(gpu.load*100, 3),
+          "memory_percent": round(gpu.memoryUsed/gpu.memoryTotal*100, 3),
+          "temperature": gpu.temperature,
+        })
 
+    return result
 
 def load_info(dur=1) -> dict():
     ns0, nr0 = psutil.net_io_counters().bytes_sent, psutil.net_io_counters().bytes_recv
@@ -35,9 +38,7 @@ def load_info(dur=1) -> dict():
       "cpu_percent": psutil.cpu_percent(),
       "memory_percent": psutil.virtual_memory().percent,
       "swap_memory_percent": psutil.swap_memory().percent,
-      "gpu_load_percent": g.get("load_percent", 0.0),
-      "gpu_memory_percent": g.get("memory_percent", 0.0),
-      "gpu_temperature": g.get("temperature", 0.0),
+      "gpus": gpu_info(),
       # "network_send_MBps": round(nsd, 3),
       # "network_recv_MBps": round(nrd, 3),
       "network_send_Mbps": round(nsd*8, 3),
