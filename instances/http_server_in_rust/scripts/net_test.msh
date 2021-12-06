@@ -1,0 +1,18 @@
+#! /usr/bin/env bash
+set -eu -o pipefail
+
+_wd=$(pwd)/
+_path=$(dirname $0 | xargs -i readlink -f {})/
+
+
+#### occuping port 8080
+netcat -k -l 8080 
+
+#### tcp connect localhost:8080
+netcat localhost 8080
+
+echo "\xFF TEST" | netcat localhost 8080
+
+curl localhost:8080
+
+# webbrowse open: http://127.0.0.1:8080/test?a=1
