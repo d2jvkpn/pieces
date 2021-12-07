@@ -116,13 +116,11 @@ fn handle(stream: &mut TcpStream, addr: SocketAddr, handler: &mut dyn Handler) {
     let req = match Request::try_from(&buffer[..]) {
         Ok(v) => v,
         Err(e) => {
-            eprintln!("    Request::try_from buffer {}: {}", addr, e);
+            eprintln!("    failed to parse request from buffer {}: {}", addr, e);
             return;
         }
     };
     // let req: &Result<Request, _> = &buffer[..].try_into();
-
-    let response = handler.handle_request(&req);
 
     //    let response = Response::new(StatusCode::Ok, Some("hello, world!\n".to_string()));
     //    dbg!(addr, req, &response);
@@ -132,8 +130,10 @@ fn handle(stream: &mut TcpStream, addr: SocketAddr, handler: &mut dyn Handler) {
     //        return;
     //    }
 
+    let response = handler.handle_request(&req);
+
     if let Err(e) = response.send(stream) {
-        eprintln!("    error write to {}: {}", addr, e);
+        eprintln!("    failed to send response to {}: {}", addr, e);
         return;
     }
 }
