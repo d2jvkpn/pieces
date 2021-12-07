@@ -40,10 +40,12 @@ impl SimpleHandler {
 
         // !! fs::canonicalize https://doc.rust-lang.org/std/fs/fn.canonicalize.html
         // return an error of file not exists, not generate full path like realpath or readlink -f
-        let path = match fs::canonicalize(&path) {
-            Ok(v) => v,
-            Err(e) => return None,
-        };
+        //        let path = match fs::canonicalize(&path) {
+        //            Ok(v) => v,
+        //            Err(e) => return None,
+        //        };
+
+        let path = fs::canonicalize(&path).ok()?;
         // dbg!(&path);
         // dbg!(&pb);
 
