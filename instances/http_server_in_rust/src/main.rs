@@ -1,6 +1,8 @@
 #![allow(unused_variables)]
 #![allow(dead_code)]
+#![allow(unused_imports)]
 
+use std::env;
 use std::process;
 
 mod http;
@@ -22,12 +24,22 @@ fn main() {
     let public_path = "./static".to_string();
     dbg!(&public_path);
 
-    let server = Server::new(addr);
-    let mut handler = WebsiteHandler::new(public_path);
+    let args: Vec<String> = env::args().collect();
+    if args.len() == 1 {
+        panic!("service required: echo or http");
+    }
 
-    if let Err(err) = server.run(&mut handler) {
-        eprintln!("server.run(handler): {:?}", err);
-        process::exit(1);
+    let server = Server::new(addr).unwrap();
+
+    match &args[1][..] {
+        "echo" => {
+            server.echo();
+        }
+        "http" => {
+            let mut handler = WebsiteHandler::new(public_path);
+            server.run(&mut handler);
+        }
+        v => panic!("unknown argument: {}", v),
     };
 }
 

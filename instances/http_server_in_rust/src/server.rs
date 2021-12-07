@@ -2,9 +2,9 @@
 #![allow(unused_imports)]
 
 use std::convert::{TryFrom, TryInto};
-use std::error;
 use std::io::{Read, Write};
 use std::net::{SocketAddr, TcpListener, TcpStream};
+use std::{error, io};
 
 use crate::http::{ParseError, Request, Response, StatusCode};
 
@@ -21,29 +21,20 @@ pub trait Handler {
 ////
 pub struct Server {
     addr: String,
+    listener: TcpListener,
 }
 
 impl Server {
-    pub fn new(addr: String) -> Server {
-        Server { addr }
+    pub fn new(addr: String) -> Result<Server, io::Error> {
+        let listener = TcpListener::bind(&addr)?;
+        Ok(Server { addr, listener })
     }
 
-    pub fn run(&self, handler: &mut dyn Handler) -> Result<(), Box<dyn error::Error>> {
-        println!("HTTP Listening on {}", self.addr);
+    pub fn run(&self, handler: &mut dyn Handler) {
+        println!("HTTP listening on {}", self.addr);
 
-        let listener = match TcpListener::bind(&self.addr) {
-            Ok(v) => v,
-            Err(e) => return Err(From::from(e)),
-        };
-
-        'outer: loop {
-            //			let res = listener.accept(); // io.Result<(TcpStream, SocketAddr)>
-            //			if res.is_err() {
-            //				continue;
-            //			}
-            //			let (stream, addr) = res.unwrap();
-
-            let (mut stream, addr) = match listener.accept() {
+        loop {
+            let (mut stream, addr) = match self.listener.accept() {
                 Ok((s, a)) => {
                     println!(">>> New tcp connection: {}", a);
                     (s, a)
@@ -54,14 +45,63 @@ impl Server {
                 }
             };
 
-            //			loop{
-            //				handle_stream(&mut stream, addr);
-            //			}
             handle(&mut stream, addr, handler);
         }
 
         // return Ok(());
     }
+
+    pub fn echo(&self) {
+        println!("Echo listening on {}", self.addr);
+
+        'outer: loop {
+            let res = self.listener.accept(); // io.Result<(TcpStream, SocketAddr)>
+            if res.is_err() {
+                continue;
+            }
+            let (mut stream, addr) = res.unwrap();
+            println!("client connected: {}", addr);
+
+            loop {
+                if let Err(e) = echo(&mut stream, addr) {
+                    println!("echo {} error: {}", addr, e);
+                    continue 'outer;
+                };
+            }
+        }
+    }
+}
+
+fn echo(stream: &mut TcpStream, addr: SocketAddr) -> Result<(), String> {
+    let mut buffer = [0; 1024];
+
+    let size = match stream.read(&mut buffer) {
+        Ok(s) => s,
+        Err(e) => {
+            return Err(format!("error read from {}: {}", addr, e));
+        }
+    };
+
+    if size == 1 && buffer[0] as u16 == 10 {
+        return Err("EOF".to_string());
+    }
+    if size == 0 {
+        return Err("disconnected".to_string());
+    }
+
+    match String::from_utf8((&buffer).to_vec()) {
+        Ok(v) => print!("    read {} bytes from {}: {}", size, addr, v),
+        Err(e) => {
+            return Err(format!("error invalid utf-8 sequence from {}: {}", addr, e));
+        }
+    };
+
+    match stream.write(&buffer[0..size]) {
+        Ok(_) => {}
+        Err(e) => return Err(format!("error write to {}: {}", addr, e)),
+    }
+
+    Ok(())
 }
 
 fn handle(stream: &mut TcpStream, addr: SocketAddr, handler: &mut dyn Handler) {
@@ -74,14 +114,6 @@ fn handle(stream: &mut TcpStream, addr: SocketAddr, handler: &mut dyn Handler) {
             return;
         }
     };
-
-    //        let text = match String::from_utf8(&buffer) {
-    //            Ok(v) => v,
-    //            Err(e) => {
-    //                eprintln!("    error invalid utf-8 sequence from {}: {}", addr, e);
-    //                return;
-    //            }
-    //        };
 
     let text = String::from_utf8_lossy(&buffer);
     let req = match Request::try_from(&buffer[..]) {
@@ -107,15 +139,4 @@ fn handle(stream: &mut TcpStream, addr: SocketAddr, handler: &mut dyn Handler) {
         eprintln!("    error write to {}: {}", addr, e);
         return;
     }
-
-    //    print!("    read {} bytes from {}: {}", size, addr, text);
-    //    match stream.write(&buffer[0..size]) {
-    //        Ok(s) => {
-    //            println!("    write {} bytes to {}", s, addr);
-    //        }
-    //        Err(e) => {
-    //            eprintln!("    error write to {}: {}", addr, e);
-    //            return;
-    //        }
-    //    }
 }
