@@ -3,11 +3,11 @@ use std::fs;
 use super::server::Handler;
 use crate::http::{Request, Response, StatusCode};
 
-pub struct WebsiteHandler {
+pub struct SimpleHandler {
     public_path: String,
 }
 
-impl WebsiteHandler {
+impl SimpleHandler {
     pub fn new(public_path: String) -> Self {
         Self { public_path }
     }
@@ -24,7 +24,7 @@ impl WebsiteHandler {
     }
 }
 
-impl Handler for WebsiteHandler {
+impl Handler for SimpleHandler {
     fn handle_request(&mut self, request: &Request) -> Response {
         //        println!(
         //            "~~~ Request.path: {}, Request.path(): {}",

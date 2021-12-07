@@ -5,7 +5,7 @@
 
 mod http;
 mod server;
-mod website_handler;
+mod simple_handler;
 
 use std::env;
 use std::process;
@@ -14,7 +14,7 @@ use http::query_string::QueryString;
 use http::{method::Method, Request}; // http::request::Request
 use http_server::hello;
 use server::Server;
-use website_handler::WebsiteHandler;
+use simple_handler::SimpleHandler;
 
 fn main() {
     // demo01();
@@ -37,7 +37,7 @@ fn main() {
             server.echo();
         }
         "http" => {
-            let mut handler = WebsiteHandler::new(public_path);
+            let mut handler = SimpleHandler::new(public_path);
             server.run(&mut handler);
         }
         v => panic!("unknown argument: {}", v),
