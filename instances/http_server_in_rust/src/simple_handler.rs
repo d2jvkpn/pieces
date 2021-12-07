@@ -29,13 +29,15 @@ impl SimpleHandler {
         Ok(SimpleHandler { public_path: pb })
     }
 
-    pub fn read_file(&self, file_path: &str) -> Option<String> {
+    pub fn read_file(&self, file_path: &str) -> Response {
         let pb = PathBuf::from(&self.public_path);
 
         let path = match file_path.strip_prefix("/static/") {
             // !!! vulnerable os file path, like ../../../
             Some(v) => pb.join(PathBuf::from(v)), // maybe /static/../Cargo.toml
-            None => return None,
+            None => {
+                return Response::new(StatusCode::NotFound, Some("invalid file path".to_string()))
+            }
         };
 
         // !! fs::canonicalize https://doc.rust-lang.org/std/fs/fn.canonicalize.html
@@ -45,19 +47,54 @@ impl SimpleHandler {
         //            Err(e) => return None,
         //        };
 
-        let path = fs::canonicalize(&path).ok()?;
+        // let path = fs::canonicalize(&path).ok()?; // Option<String>
         // dbg!(&path);
         // dbg!(&pb);
+
+        let path = match fs::canonicalize(&path) {
+            Ok(v) => v,
+            Err(_) => {
+                return Response::new(StatusCode::NotFound, Some("file not exits".to_string()))
+            }
+        };
 
         if !path.starts_with(pb) {
             eprintln!(
                 "!!! vulnerable os file path: {}",
                 path.display().to_string()
             );
-            return None; // should return http.StatusForbidden 403
+
+            return Response::new(
+                StatusCode::StatusForbidden,
+                Some("invalid file path".to_string()),
+            );
         }
 
-        fs::read_to_string(path.display().to_string()).ok()
+        // fs::read_to_string(path.display().to_string()).ok()
+        let err = match fs::read_to_string(path.display().to_string()) {
+            Ok(v) => return Response::new(StatusCode::Ok, Some(v.to_string())),
+            Err(e) => e,
+        };
+
+        // dbg!(&err);
+
+        // !! not working
+        //        match err.kind() {
+        //            io::ErrorKind::IsADirectory => Response::new(
+        //                StatusCode::NotFound,
+        //                Some("target is a directory".to_string()),
+        //            ),
+        //            _ => Response::new(StatusCode::InternalServerError, None),
+        //        }
+
+        let kind = format!("{:?}", err.kind());
+        match &kind[..] {
+            "IsADirectory" => Response::new(
+                StatusCode::NotFound,
+                Some("target is a directory".to_string()),
+            ),
+            _ => Response::new(StatusCode::InternalServerError, None),
+        }
     }
 }
 
@@ -74,11 +111,8 @@ impl Handler for SimpleHandler {
             "/" => Response::new(StatusCode::Ok, Some("<h4>Welcome</h4>".to_string())),
             "/hello" => Response::new(StatusCode::Ok, Some("<h4>Hello</h4>".to_string())),
             "/ping" => Response::new(StatusCode::Ok, Some("<h4>pong</h4>".to_string())),
-            p if p.starts_with("/static/") => match self.read_file(p) {
-                Some(v) => Response::new(StatusCode::Ok, Some(v.to_string())),
-                None => Response::new(StatusCode::NotFound, Some("file not found".to_string())),
-            },
-            _ => Response::new(StatusCode::NotFound, None),
+            p if p.starts_with("/static/") => self.read_file(p),
+            _ => Response::new(StatusCode::BadRequest, None),
         }
     }
 }
