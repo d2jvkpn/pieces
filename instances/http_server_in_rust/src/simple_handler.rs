@@ -1,4 +1,5 @@
-use std::fs;
+use std::path::PathBuf;
+use std::{fs, io};
 
 use super::server::Handler;
 use crate::http::{Request, Response, StatusCode};
@@ -8,19 +9,53 @@ pub struct SimpleHandler {
 }
 
 impl SimpleHandler {
-    pub fn new(public_path: String) -> Self {
-        Self { public_path }
+    pub fn new(public_path: &str) -> Result<SimpleHandler, String> {
+        let pb = PathBuf::from(&public_path);
+        // dbg!(&pb);
+
+        let pb = match fs::canonicalize(&pb) {
+            Ok(v) => v,
+            Err(e) => return Err(format!("fs::canonicalize -> {}", e)),
+        };
+
+        //        let pb = match pb.into_os_string().into_string() {
+        //            Ok(v) => v,
+        //            Err(e) => return Err(format!("pb into_string -> {:?}", e)),
+        //        };
+
+        let pb = pb.display().to_string();
+
+        println!("public_path: {}", pb);
+        Ok(SimpleHandler { public_path: pb })
     }
 
     pub fn read_file(&self, file_path: &str) -> Option<String> {
+        let pb = PathBuf::from(&self.public_path);
+
         let path = match file_path.strip_prefix("/static/") {
             // !!! vulnerable os file path, like ../../../
-            Some(v) => format!("{}/{}", self.public_path, v),
+            Some(v) => pb.join(PathBuf::from(v)), // maybe /static/../Cargo.toml
             None => return None,
         };
-        dbg!(&path);
 
-        fs::read_to_string(path).ok()
+        // !! fs::canonicalize https://doc.rust-lang.org/std/fs/fn.canonicalize.html
+        // return an error of file not exists, not generate full path like realpath or readlink -f
+        let path = match fs::canonicalize(&path) {
+            Ok(v) => v,
+            Err(e) => return None,
+        };
+        // dbg!(&path);
+        // dbg!(&pb);
+
+        if !path.starts_with(pb) {
+            eprintln!(
+                "!!! vulnerable os file path: {}",
+                path.display().to_string()
+            );
+            return None; // should return http.StatusForbidden 403
+        }
+
+        fs::read_to_string(path.display().to_string()).ok()
     }
 }
 
@@ -31,6 +66,7 @@ impl Handler for SimpleHandler {
         //            request.path,
         //            request.path()
         //        );
+        // dbg!(request.path());
 
         match request.path() {
             "/" => Response::new(StatusCode::Ok, Some("<h4>Welcome</h4>".to_string())),

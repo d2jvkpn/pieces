@@ -16,3 +16,7 @@ echo "\xFF TEST" | netcat localhost 8080
 curl localhost:8080
 
 # webbrowse open: http://127.0.0.1:8080/test?a=1
+
+
+#### test with a vulnerable os file path
+echo -e "GET /static/../Cargo.toml HTTP/1.1\r\n" | netcat 127.0.0.1 8080

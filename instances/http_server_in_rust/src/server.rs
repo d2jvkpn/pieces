@@ -117,7 +117,7 @@ fn handle(stream: &mut TcpStream, handler: &mut dyn Handler) -> Result<(), Strin
         return Err("disconnected".to_string());
     }
 
-    let text = String::from_utf8_lossy(&buffer);
+    // let text = String::from_utf8_lossy(&buffer);
     let req = match Request::try_from(&buffer[..]) {
         Ok(v) => v,
         Err(e) => {

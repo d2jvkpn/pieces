@@ -7,8 +7,7 @@ mod http;
 mod server;
 mod simple_handler;
 
-use std::env;
-use std::process;
+use std::{env, process};
 
 use http::query_string::QueryString;
 use http::{method::Method, Request}; // http::request::Request
@@ -22,9 +21,6 @@ fn main() {
     let addr = "127.0.0.1:8080".to_string();
     dbg!(&addr);
 
-    let public_path = "./static".to_string();
-    dbg!(&public_path);
-
     let args: Vec<String> = env::args().collect();
     if args.len() == 1 {
         panic!("service required: echo or http");
@@ -37,7 +33,7 @@ fn main() {
             server.echo();
         }
         "http" => {
-            let mut handler = SimpleHandler::new(public_path);
+            let mut handler = SimpleHandler::new("./static").unwrap();
             server.run(&mut handler);
         }
         v => panic!("unknown argument: {}", v),
