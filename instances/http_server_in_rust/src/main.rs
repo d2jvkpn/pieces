@@ -3,12 +3,12 @@
 #![allow(unused_imports)]
 #![allow(unused_labels)]
 
-use std::env;
-use std::process;
-
 mod http;
 mod server;
 mod website_handler;
+
+use std::env;
+use std::process;
 
 use http::query_string::QueryString;
 use http::{method::Method, Request}; // http::request::Request
