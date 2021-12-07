@@ -1,4 +1,4 @@
-### 2021-07-02_Learn_Rust_by_Building_Real_Applications
+### 2021-07-02 Learn Rust by Building Real Applications
 ---
 
 #### chapter 1
