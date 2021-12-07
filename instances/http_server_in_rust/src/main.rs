@@ -1,6 +1,7 @@
 #![allow(unused_variables)]
 #![allow(dead_code)]
 #![allow(unused_imports)]
+#![allow(unused_labels)]
 
 use std::env;
 use std::process;
