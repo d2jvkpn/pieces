@@ -10,7 +10,7 @@ pub trait Handler {
     fn handle_request(&mut self, request: &Request) -> Response;
 
     fn handle_bad_request(&mut self, err: &ParseError) -> Response {
-        println!("Failed to parse request: {}", err);
+        println!("failed to parse request: {}", err);
         Response::new(StatusCode::BadRequest, None)
     }
 }
@@ -27,10 +27,11 @@ impl Server {
         Ok(Server { addr, listener })
     }
 
+    // http service
     pub fn run(&self, handler: &mut dyn Handler) {
         println!("HTTP listening on {}", self.addr);
 
-        loop {
+        'outer: loop {
             let (mut stream, addr) = match self.listener.accept() {
                 Ok((s, a)) => {
                     println!(">>> New tcp connection: {}", a);
@@ -42,12 +43,14 @@ impl Server {
                 }
             };
 
-            handle(&mut stream, addr, handler);
+            if let Err(e) = handle(&mut stream, handler) {
+                eprintln!("client {} {}", addr, e);
+                continue 'outer;
+            }
         }
-
-        // return Ok(());
     }
 
+    // echo service
     pub fn echo(&self) {
         println!("Echo listening on {}", self.addr);
 
@@ -61,7 +64,7 @@ impl Server {
 
             loop {
                 if let Err(e) = echo(&mut stream, addr) {
-                    println!("echo {} error: {}", addr, e);
+                    eprintln!("client {} {}", addr, e);
                     continue 'outer;
                 };
             }
@@ -75,11 +78,12 @@ fn echo(stream: &mut TcpStream, addr: SocketAddr) -> Result<(), String> {
     let size = match stream.read(&mut buffer) {
         Ok(s) => s,
         Err(e) => {
-            return Err(format!("error read from {}: {}", addr, e));
+            return Err(format!("stream.read error: {}", e));
         }
     };
 
     if size == 1 && buffer[0] as u16 == 10 {
+        // return Err("EOF".to_string());
         return Err("EOF".to_string());
     }
     if size == 0 {
@@ -87,37 +91,37 @@ fn echo(stream: &mut TcpStream, addr: SocketAddr) -> Result<(), String> {
     }
 
     match String::from_utf8((&buffer).to_vec()) {
-        Ok(v) => print!("    read {} bytes from {}: {}", size, addr, v),
+        Ok(v) => print!("client {} read {} bytes: {}", addr, size, v),
         Err(e) => {
-            return Err(format!("error invalid utf-8 sequence from {}: {}", addr, e));
+            return Err(format!("invalid utf-8 sequence: {}", e));
         }
     };
 
     match stream.write(&buffer[0..size]) {
-        Ok(_) => {}
-        Err(e) => return Err(format!("error write to {}: {}", addr, e)),
+        Ok(_) => return Ok(()),
+        Err(e) => return Err(format!("stream.write error: {}", e)),
     }
-
-    Ok(())
 }
 
-fn handle(stream: &mut TcpStream, addr: SocketAddr, handler: &mut dyn Handler) {
+fn handle(stream: &mut TcpStream, handler: &mut dyn Handler) -> Result<(), String> {
     let mut buffer = [0; 1024];
 
     let size = match stream.read(&mut buffer) {
         Ok(s) => s,
         Err(e) => {
-            eprintln!("    error read from {}: {}", addr, e);
-            return;
+            return Err(format!("stream.read error: {}", e));
         }
     };
+
+    if size == 0 {
+        return Err("disconnected".to_string());
+    }
 
     let text = String::from_utf8_lossy(&buffer);
     let req = match Request::try_from(&buffer[..]) {
         Ok(v) => v,
         Err(e) => {
-            eprintln!("    failed to parse request from buffer {}: {}", addr, e);
-            return;
+            return Err(format!("parse request from buffer error: {}", e));
         }
     };
     // let req: &Result<Request, _> = &buffer[..].try_into();
@@ -133,7 +137,8 @@ fn handle(stream: &mut TcpStream, addr: SocketAddr, handler: &mut dyn Handler) {
     let response = handler.handle_request(&req);
 
     if let Err(e) = response.send(stream) {
-        eprintln!("    failed to send response to {}: {}", addr, e);
-        return;
+        return Err(format!("send response error: {}", e));
     }
+
+    Ok(())
 }
