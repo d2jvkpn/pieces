@@ -1,0 +1,27 @@
+#! /usr/bin/env bash
+set -eu -o pipefail
+
+_wd=$(pwd)
+_path=$(dirname $0 | xargs -i readlink -f {})
+
+cat > tmp.go <<EOF
+package main
+
+import (
+	"fmt"
+)
+
+func main() {
+	fmt.Println("Hello, world!")
+}
+EOF
+
+gofmt -r "fmt -> fmtABC" tmp.go
+
+gofmt -r "\"fmt\" -> \"a/b/c/fmt\"" tmp.go
+
+gofmt -w -r "fmt -> fmtABC" tmp.go
+
+gofmt -w -r "fmtABC -> fmt" tmp.go
+
+# gofmt -w -r "fmtABC -> fmt" ./...
