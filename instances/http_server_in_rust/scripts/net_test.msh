@@ -19,4 +19,26 @@ curl localhost:8080
 
 
 #### test with a vulnerable os file path
+# 403 invalid file path
 echo -e "GET /static/../Cargo.toml HTTP/1.1\r\n" | netcat -i 1 127.0.0.1 8080
+
+
+#### 400 invalid method
+curl -i -X POST localhost:8080
+
+#### 400 invalid path
+curl -i  localhost:8080/abc
+
+#### 200 ok...
+curl -i  localhost:8080
+curl -i  localhost:8080/hello
+curl -i  localhost:8080/ping
+
+#### 400 target is a directory
+curl -i localhost:8080/static/
+
+#### 200 Hello, world from /static!
+curl -i localhost:8080/static/hello.txt
+
+#### 400 invlid path, as convert to /Cargo.toml
+curl -i localhost:8080/static/../../Cargo.toml

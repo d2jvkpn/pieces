@@ -2,7 +2,7 @@ use std::path::PathBuf;
 use std::{fs, io};
 
 use super::server::Handler;
-use crate::http::{Request, Response, StatusCode};
+use crate::http::{method::Method, Request, Response, StatusCode};
 
 pub struct SimpleHandler {
     public_path: String,
@@ -107,12 +107,16 @@ impl Handler for SimpleHandler {
         //        );
         // dbg!(request.path());
 
+        if request.method() != &Method::GET {
+            return Response::new(StatusCode::BadRequest, Some("invlid method".to_string()));
+        }
+
         match request.path() {
             "/" => Response::new(StatusCode::Ok, Some("<h4>Welcome</h4>".to_string())),
             "/hello" => Response::new(StatusCode::Ok, Some("<h4>Hello</h4>".to_string())),
             "/ping" => Response::new(StatusCode::Ok, Some("<h4>pong</h4>".to_string())),
             p if p.starts_with("/static/") => self.read_file(p),
-            _ => Response::new(StatusCode::BadRequest, None),
+            _ => Response::new(StatusCode::BadRequest, Some("invlid path".to_string())),
         }
     }
 }
