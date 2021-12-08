@@ -57,6 +57,7 @@ name = "http_server"
 version = "0.1.0"
 dependencies = [
  "clap",
+ "path-clean",
 ]
 
 [[package]]
@@ -64,6 +65,12 @@ name = "libc"
 version = "0.2.109"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f98a04dce437184842841303488f70d0188c5f51437d2a834dc097eafa909a01"
+
+[[package]]
+name = "path-clean"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ecba01bf2678719532c5e3059e0b5f0811273d94b397088b82e3bd0a78c78fdd"
 
 [[package]]
 name = "strsim"

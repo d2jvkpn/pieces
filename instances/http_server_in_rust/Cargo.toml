@@ -9,3 +9,4 @@ homepage = "https://github.com/d2jvkpn/pieces/tree/main/instances/http_server_in
 
 [dependencies]
 clap = "2.34"
+path-clean = "0.1.0"

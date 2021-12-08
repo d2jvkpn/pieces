@@ -1,3 +1,5 @@
+use path_clean::PathClean;
+
 use std::path::PathBuf;
 use std::{fs, io};
 
@@ -34,7 +36,7 @@ impl SimpleHandler {
 
         let path = match file_path.strip_prefix("/static/") {
             // !!! vulnerable os file path, like ../../../
-            Some(v) => pb.join(PathBuf::from(v)), // maybe /static/../Cargo.toml
+            Some(v) => pb.join(PathBuf::from(v)).clean(), // maybe /static/../Cargo.toml
             None => {
                 return Response::new(StatusCode::NotFound, Some("invalid file path".to_string()))
             }
@@ -48,15 +50,16 @@ impl SimpleHandler {
         //        };
 
         // let path = fs::canonicalize(&path).ok()?; // Option<String>
+
+        //        let path = match fs::canonicalize(&path) {
+        //            Ok(v) => v,
+        //            Err(_) => {
+        //                return Response::new(StatusCode::NotFound, Some("file not exits".to_string()))
+        //            }
+        //        };
+
         // dbg!(&path);
         // dbg!(&pb);
-
-        let path = match fs::canonicalize(&path) {
-            Ok(v) => v,
-            Err(_) => {
-                return Response::new(StatusCode::NotFound, Some("file not exits".to_string()))
-            }
-        };
 
         if !path.starts_with(pb) {
             eprintln!("!!! vulnerable os file path: {}", path.display().to_string());
@@ -67,13 +70,16 @@ impl SimpleHandler {
             );
         }
 
+        if !path.exists() {
+            return Response::new(StatusCode::NotFound, Some("file not exits".to_string()));
+        }
+
         // fs::read_to_string(path.display().to_string()).ok()
         let err = match fs::read_to_string(path.display().to_string()) {
             Ok(v) => return Response::new(StatusCode::Ok, Some(v.to_string())),
             Err(e) => e,
         };
-
-        // dbg!(&err);
+        // dbg!(&e);
 
         // !! not working
         //        match err.kind() {
