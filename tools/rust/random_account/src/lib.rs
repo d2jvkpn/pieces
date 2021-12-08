@@ -1,14 +1,14 @@
 #[macro_use]
 extern crate serde_derive;
 
-#[allow(unused_imports)]
-use std::{error, fmt, fs};
-
 use chrono::prelude::{DateTime, Local, SecondsFormat};
 use clap::{App, Arg};
 use rand::distributions::Alphanumeric;
 use rand::{thread_rng, Rng}; // Values
 use toml;
+
+#[allow(unused_imports)]
+use std::{error, fmt, fs};
 
 #[derive(Default, Debug, Serialize, Deserialize, PartialEq)]
 #[serde(rename_all = "camelCase")]
@@ -21,7 +21,7 @@ pub struct Account {
 
 // pub fn run() -> Result<Account, Box<dyn error::Error>> {
 pub fn run() -> Result<Account, String> {
-    let matches = App::new("https://github.com/d2jvkpn/random_account")
+    let matches = App::new(env!("CARGO_PKG_HOMEPAGE"))
         .about("A commandline tool which generate a random account username and password")
         .author(env!("CARGO_PKG_AUTHORS"))
         .version(env!("CARGO_PKG_VERSION"))
