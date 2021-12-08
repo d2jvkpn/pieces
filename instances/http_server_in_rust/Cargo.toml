@@ -2,6 +2,7 @@
 name = "http_server"
 version = "0.1.0"
 edition = "2021"
+description = "http server in rust"
 homepage = "https://github.com/d2jvkpn/pieces/tree/main/instances/http_server_in_rust"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html

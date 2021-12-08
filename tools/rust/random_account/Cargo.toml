@@ -3,6 +3,7 @@ name = "random_account"
 version = "0.1.1"
 authors = ["d2jvkpn"]
 edition = "2021"
+description = "A commandline tool which generate a random account username and password"
 homepage = "https://github.com/d2jvkpn/pieces/tree/main/tools/rust/random_account"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html

@@ -133,11 +133,7 @@ impl<'b> TryFrom<&'b [u8]> for Request<'b> {
         //            query_string,
         //        })
 
-        Ok(Request {
-            method,
-            path: path,
-            query_string,
-        })
+        Ok(Request { method, path: path, query_string })
         // unimplemented!()
     }
 }

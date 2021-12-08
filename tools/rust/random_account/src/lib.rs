@@ -21,8 +21,8 @@ pub struct Account {
 
 // pub fn run() -> Result<Account, Box<dyn error::Error>> {
 pub fn run() -> Result<Account, String> {
-    let matches = App::new(env!("CARGO_PKG_HOMEPAGE"))
-        .about("A commandline tool which generate a random account username and password")
+    let args = App::new(env!("CARGO_PKG_HOMEPAGE"))
+        .about(env!("CARGO_PKG_DESCRIPTION"))
         .author(env!("CARGO_PKG_AUTHORS"))
         .version(env!("CARGO_PKG_VERSION"))
         .set_term_width(100)
@@ -71,24 +71,24 @@ pub fn run() -> Result<Account, String> {
         )
         .get_matches();
 
-    let site = matches.value_of("site").unwrap_or("").to_string();
-    let prefix = matches.value_of("prefix").unwrap_or("").to_string();
+    let site = args.value_of("site").unwrap_or("").to_string();
+    let prefix = args.value_of("prefix").unwrap_or("").to_string();
 
     // let length = matches.value_of("length").unwrap_or("24").parse::<usize>()?;
-    let length = match matches.value_of("length").unwrap_or("24").parse::<usize>() {
+    let length = match args.value_of("length").unwrap_or("24").parse::<usize>() {
         Ok(v) => v,
         // Err(e) => return Err(From::from(format!("parse arg --length error: {:?}", e))),
         Err(e) => return Err(format!("parse arg --length error: {:?}", e)),
     };
 
     // let password_len = matches.value_of("password_len").unwrap_or("32").parse::<usize>()?;
-    let password_len = match matches.value_of("password_length").unwrap_or("32").parse::<usize>() {
+    let password_len = match args.value_of("password_length").unwrap_or("32").parse::<usize>() {
         Ok(v) => v,
         // Err(e) => return Err(From::from(format!("parse arg --password_len error: {:?}", e))),
         Err(e) => return Err(format!("parse arg --password_length error: {:?}", e)),
     };
 
-    let save = matches.is_present("save");
+    let save = args.is_present("save");
 
     ////
     let mut account = Account::new(prefix, length, password_len);

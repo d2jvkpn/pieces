@@ -46,17 +46,12 @@ use simple_handler::SimpleHandler;
 //}
 
 fn main() {
-    let matches = App::new(env!("CARGO_PKG_HOMEPAGE"))
-        .about("http server in rust")
+    let args = App::new(env!("CARGO_PKG_HOMEPAGE"))
+        .about(env!("CARGO_PKG_DESCRIPTION"))
         .author(env!("CARGO_PKG_AUTHORS"))
         .version(env!("CARGO_PKG_VERSION"))
         .set_term_width(100)
-        .arg(
-            Arg::with_name("cmd")
-                .takes_value(true)
-                .required(true)
-                .help("service echo or http"),
-        )
+        .arg(Arg::with_name("cmd").takes_value(true).required(true).help("service echo or http"))
         .arg(
             Arg::with_name("addr")
                 .long("addr") // .short("a")
@@ -67,12 +62,8 @@ fn main() {
         )
         .get_matches();
 
-    let cmd: &str = matches.value_of("cmd").unwrap_or("");
-
-    let addr = matches
-        .value_of("addr")
-        .unwrap_or("127.0.0.1:8080")
-        .to_string();
+    let cmd: &str = args.value_of("cmd").unwrap_or("");
+    let addr = args.value_of("addr").unwrap_or("127.0.0.1:8080").to_string();
 
     let server = Server::new(addr).unwrap();
 

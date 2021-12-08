@@ -59,10 +59,7 @@ impl SimpleHandler {
         };
 
         if !path.starts_with(pb) {
-            eprintln!(
-                "!!! vulnerable os file path: {}",
-                path.display().to_string()
-            );
+            eprintln!("!!! vulnerable os file path: {}", path.display().to_string());
 
             return Response::new(
                 StatusCode::StatusForbidden,
@@ -89,10 +86,9 @@ impl SimpleHandler {
 
         let kind = format!("{:?}", err.kind());
         match &kind[..] {
-            "IsADirectory" => Response::new(
-                StatusCode::NotFound,
-                Some("target is a directory".to_string()),
-            ),
+            "IsADirectory" => {
+                Response::new(StatusCode::NotFound, Some("target is a directory".to_string()))
+            }
             _ => Response::new(StatusCode::InternalServerError, None),
         }
     }

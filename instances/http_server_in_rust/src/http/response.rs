@@ -27,11 +27,6 @@ impl Response {
 
 impl fmt::Display for Response {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "HTTP/1.1 {} {}",
-            self.status_code,
-            self.status_code.reason_phrase(),
-        )
+        write!(f, "HTTP/1.1 {} {}", self.status_code, self.status_code.reason_phrase(),)
     }
 }
