@@ -1,7 +1,7 @@
 use std::convert::{TryFrom, TryInto};
 use std::io::{Read, Write};
 use std::net::{SocketAddr, TcpListener, TcpStream};
-use std::{error, io};
+use std::{error, io, thread};
 
 use crate::http::{ParseError, Request, Response, StatusCode};
 
@@ -24,6 +24,7 @@ pub struct Server {
 impl Server {
     pub fn new(addr: String) -> Result<Server, io::Error> {
         let listener = TcpListener::bind(&addr)?;
+        // listener.set_nonblocking(true)?; // no blocking self.listener.accept()
         Ok(Server { addr, listener })
     }
 
@@ -42,10 +43,12 @@ impl Server {
                     continue;
                 }
             };
-
-            if let Err(e) = handle(&mut stream, handler) {
-                eprintln!("client {} {}", addr, e);
-                continue 'outer;
+            loop {
+                if let Err(e) = handle(&mut stream, handler) {
+                    eprintln!("client {} {}", addr, e);
+                    // continue 'outer;
+                    break;
+                }
             }
         }
     }
@@ -62,12 +65,13 @@ impl Server {
             let (mut stream, addr) = res.unwrap();
             println!("client connected: {}", addr);
 
-            loop {
+            thread::spawn(move || loop {
                 if let Err(e) = echo(&mut stream, addr) {
                     eprintln!("client {} {}", addr, e);
-                    continue 'outer;
+                    // continue 'outer;
+                    break;
                 };
-            }
+            });
         }
     }
 }
