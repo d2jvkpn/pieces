@@ -29,7 +29,7 @@ impl Server {
     }
 
     // http service
-    pub fn run(&self, handler: &mut dyn Handler) {
+    pub fn http(&self, handler: &mut dyn Handler) {
         println!("HTTP listening on {}", self.addr);
 
         'outer: loop {
@@ -53,9 +53,9 @@ impl Server {
         }
     }
 
-    // echo service
-    pub fn echo(&self) {
-        println!("Echo listening on {}", self.addr);
+    // chat service
+    pub fn chat(&self) {
+        println!("Chat listening on {}", self.addr);
 
         'outer: loop {
             let res = self.listener.accept(); // io.Result<(TcpStream, SocketAddr)>
@@ -66,7 +66,7 @@ impl Server {
             println!("client connected: {}", addr);
 
             thread::spawn(move || loop {
-                if let Err(e) = echo(&mut stream, addr) {
+                if let Err(e) = chat(&mut stream, addr) {
                     eprintln!("client {} {}", addr, e);
                     // continue 'outer;
                     break;
@@ -76,7 +76,7 @@ impl Server {
     }
 }
 
-fn echo(stream: &mut TcpStream, addr: SocketAddr) -> Result<(), String> {
+fn chat(stream: &mut TcpStream, addr: SocketAddr) -> Result<(), String> {
     let mut buffer = [0; 1024];
 
     let size = match stream.read(&mut buffer) {

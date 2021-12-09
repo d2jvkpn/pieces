@@ -51,7 +51,7 @@ fn main() {
         .author(env!("CARGO_PKG_AUTHORS"))
         .version(env!("CARGO_PKG_VERSION"))
         .set_term_width(100)
-        .arg(Arg::with_name("cmd").takes_value(true).required(true).help("service echo or http"))
+        .arg(Arg::with_name("cmd").takes_value(true).required(true).help("service chat or http"))
         .arg(
             Arg::with_name("addr")
                 .long("addr") // .short("a")
@@ -68,12 +68,12 @@ fn main() {
     let server = Server::new(addr).unwrap();
 
     match cmd {
-        "echo" => {
-            server.echo();
+        "chat" => {
+            server.chat();
         }
         "http" => {
             let mut handler = SimpleHandler::new("./static").unwrap();
-            server.run(&mut handler);
+            server.http(&mut handler);
         }
         v => panic!("unknown argument: {}", v),
     };
