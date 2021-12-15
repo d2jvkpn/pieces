@@ -24,4 +24,4 @@ gofmt -w -r "fmt -> fmtABC" tmp.go
 
 gofmt -w -r "fmtABC -> fmt" tmp.go
 
-# gofmt -w -r "fmtABC -> fmt" ./...
+# gofmt -w -r "fmtABC -> fmt" ./..

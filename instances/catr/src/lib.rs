@@ -75,17 +75,31 @@ pub fn run(config: Config) -> MyResult<()> {
     // dbg!(&config);
     // println!("{}", config.number_lines());
 
+    let mut n_failed = 0;
+
     for filename in &config.files {
         match open(&filename) {
-            Err(err) => eprintln!("Failed to open {}: {}", &filename, err),
+            Err(err) => {
+                eprintln!("!!! failed to open {}: {}", &filename, err);
+                n_failed += 1;
+            }
             Ok(buf_read) => {
                 // eprintln!("Opened {}", filename),
-                print_buf_read(&config, buf_read)?
+                match process_buf_read(&config, buf_read) {
+                    Err(e) => {
+                        n_failed += 1;
+                        eprintln!("{}", e);
+                    }
+                    _ => {}
+                }
             }
         }
     }
 
-    Ok(())
+    match n_failed {
+        0 => Ok(()),
+        n => Err(From::from(format!("!!! catr {} file{} failed", n, if n > 1 { "s" } else { "" }))),
+    }
 }
 
 pub fn open(filename: &str) -> MyResult<Box<dyn BufRead>> {
@@ -103,7 +117,7 @@ pub fn open(filename: &str) -> MyResult<Box<dyn BufRead>> {
     }
 }
 
-pub fn print_buf_read(config: &Config, buf_read: Box<dyn BufRead>) -> MyResult<()> {
+pub fn process_buf_read(config: &Config, buf_read: Box<dyn BufRead>) -> MyResult<()> {
     let mut last_num = 0;
 
     for (index, result) in buf_read.lines().enumerate() {
