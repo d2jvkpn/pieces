@@ -1,3 +1,5 @@
+#![allow(dead_code)]
+
 use std::{error, fs};
 
 use assert_cmd::Command;

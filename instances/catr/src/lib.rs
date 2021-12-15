@@ -6,11 +6,22 @@ use flate2::bufread::GzDecoder;
 
 type MyResult<T> = Result<T, Box<dyn error::Error>>;
 
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub struct Config {
     files: Vec<String>,
     number_lines: bool,
     number_nonblank_lines: bool,
+}
+
+#[allow(dead_code)]
+impl Config {
+    fn new() -> Config {
+        Config { ..Default::default() }
+    }
+
+    fn number_lines(&self) -> bool {
+        return self.number_lines;
+    }
 }
 
 pub fn get_args() -> MyResult<Config> {
@@ -45,7 +56,7 @@ pub fn get_args() -> MyResult<Config> {
 
     Ok(Config {
         files: matches.values_of_lossy("files").unwrap(),
-        number_lines: matches.is_present("number"),
+        number_lines: matches.is_present("number_lines"),
         number_nonblank_lines: matches.is_present("number_nonblank"),
     })
 }
