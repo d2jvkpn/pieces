@@ -32,3 +32,7 @@ EOF
 cargo add clap flate2
 
 cargo add --dev assert_cmd predicates rand
+
+cargo test test_config # test both lib.rs/test_config and tests/test.rs/test_config
+
+cargo test -- --test catr

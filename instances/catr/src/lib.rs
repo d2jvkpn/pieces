@@ -8,20 +8,30 @@ type MyResult<T> = Result<T, Box<dyn error::Error>>;
 
 #[derive(Debug, Default)]
 pub struct Config {
-    files: Vec<String>,
-    number_lines: bool,
-    number_nonblank_lines: bool,
+    pub files: Vec<String>,
+    pub number_lines: bool,
+    pub number_nonblank_lines: bool,
 }
 
 #[allow(dead_code)]
 impl Config {
-    fn new() -> Config {
+    pub fn new() -> Config {
         Config { ..Default::default() }
     }
 
-    fn number_lines(&self) -> bool {
+    pub fn number_lines(&self) -> bool {
         return self.number_lines;
     }
+}
+
+#[test]
+fn test_config() {
+    let config = Config::new();
+
+    assert_eq!(config.files.len(), 0);
+    assert_eq!(config.number_lines, false);
+    assert_eq!(config.number_lines(), false);
+    assert_eq!(config.number_nonblank_lines, false);
 }
 
 pub fn get_args() -> MyResult<Config> {
@@ -62,7 +72,8 @@ pub fn get_args() -> MyResult<Config> {
 }
 
 pub fn run(config: Config) -> MyResult<()> {
-    dbg!(&config);
+    // dbg!(&config);
+    // println!("{}", config.number_lines());
 
     for filename in &config.files {
         match open(&filename) {
