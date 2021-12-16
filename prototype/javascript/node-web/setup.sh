@@ -9,6 +9,6 @@ echo '{}' > package.json
 npm install express ws yargs
 
 exit
-curl -i https://node-web.domain.example/api/time
+curl -i https://node-web.domain.example/api/open/time
 
-node client.js --addr wss://node-web.domain.example/ws/talk
+node client.js --addr wss://node-web.domain.example/ws/open/talk
