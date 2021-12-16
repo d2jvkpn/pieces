@@ -85,12 +85,9 @@ pub fn run(config: Config) -> MyResult<()> {
             }
             Ok(buf_read) => {
                 // eprintln!("Opened {}", filename),
-                match process_buf_read(&config, buf_read) {
-                    Err(e) => {
-                        n_failed += 1;
-                        eprintln!("{}", e);
-                    }
-                    _ => {}
+                if let Err(e) = process_buf_read(&config, buf_read) {
+                    n_failed += 1;
+                    eprintln!("{}", e);
                 }
             }
         }
@@ -108,12 +105,19 @@ pub fn open(filename: &str) -> MyResult<Box<dyn BufRead>> {
         _ => Box::new(BufReader::new(fs::File::open(filename)?)),
     };
 
-    match filename {
-        filename if filename.ends_with(".gz") => {
-            let reader = io::BufReader::new(file);
-            Ok(Box::new(io::BufReader::new(GzDecoder::new(reader))))
-        }
-        _ => Ok(file),
+    //    match filename {
+    //        filename if filename.ends_with(".gz") => {
+    //            let reader = io::BufReader::new(file);
+    //            Ok(Box::new(io::BufReader::new(GzDecoder::new(reader))))
+    //        }
+    //        _ => Ok(file),
+    //    }
+
+    if filename.ends_with(".gz") {
+        let reader = io::BufReader::new(file);
+        Ok(Box::new(io::BufReader::new(GzDecoder::new(reader))))
+    } else {
+        Ok(file)
     }
 }
 

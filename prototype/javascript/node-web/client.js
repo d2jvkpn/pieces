@@ -62,7 +62,7 @@ function connect() {
   wsc.on("open", function () {
     let msg = "My name is Evol";
     console.log(`--> message: hello, ${msg}`);
-    wsc.send(JSON.stringify({kind: "hello", msg: msg}));
+    wsc.send(JSON.stringify({kind: "hello", msg: msg, name: "Evol"}));
 
 //    ping = setInterval(function() {
 //      wsc.send(JSON.stringify({kind: "ping", msg: Date.now().toString(), id: newId()}));
