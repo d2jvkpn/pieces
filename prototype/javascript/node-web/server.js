@@ -43,8 +43,8 @@ const argv = yargs(process.argv.slice(2))
   .argv;
 
 /// variables
-const apiPath = "/api/time";
-const wsPath = '/ws/talk';
+const apiPath = "/api/open/time";
+const wsPath = '/ws/open/talk';
 
 const app = express();
 const server = http.Server(app);
@@ -108,6 +108,10 @@ wss.on("connection", function (conn, request) {
       console.log(`!!! ${clientId} unknown kind: ${data.kind}`);
     }
   });
+
+  conn.on("ping", function (event) {
+    console.log(`<-- client ${clientId} ping: ${event.toString() || "~"}`);
+  })
 
   conn.on("close", function (code, reason) {
     console.log(`--- client ${clientId} onclose: ${code} - ${reason}`);

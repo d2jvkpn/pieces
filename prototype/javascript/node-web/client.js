@@ -35,7 +35,7 @@ const argv = yargs(process.argv.slice(2))
   .option("addr", {
       description: "ws address",
       // alias: "p",
-      type: "string", default: 'ws://127.0.0.1:8080/ws/talk',
+      type: "string", default: 'ws://127.0.0.1:8080/ws/open/talk',
   })
   .help()
   .alias("help", "h")
@@ -64,13 +64,22 @@ function connect() {
     console.log(`--> message: hello, ${msg}`);
     wsc.send(JSON.stringify({kind: "hello", msg: msg}));
 
+//    ping = setInterval(function() {
+//      wsc.send(JSON.stringify({kind: "ping", msg: Date.now().toString(), id: newId()}));
+//    }, pingSecs*1000);
+
     ping = setInterval(function() {
-      wsc.send(JSON.stringify({kind: "ping", msg: Date.now().toString(), id: newId()}));
+      console.log(`--> ping: ~`);
+      wsc.ping();
     }, pingSecs*1000);
   });
 
   wsc.on("message", function (event) {
     console.log('<-- message:', event.toString());
+  });
+
+  wsc.on("pong", function (event) {
+    console.log(`<-- pong: ${event.toString() || "~"}`);
   });
 
   wsc.on("close", function (code, reason) {
