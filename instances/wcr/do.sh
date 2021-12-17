@@ -4,7 +4,9 @@ set -eu -o pipefail
 _wd=$(pwd)
 _path=$(dirname $0 | xargs -i readlink -f {})
 
-mkdir -p tests/inputs
+
+####
+mkdir -p tests/{inputs,expected}
 
 touch tests/inputs/empty.txt
 
@@ -19,3 +21,11 @@ seggir samkundu, sú var nýt fæstum,
 æxtu einmæli, yggr var þeim síðan
 ok it sama sonum Gjúka, er váru sannráðnir.
 EOF
+
+wc tests/inputs/fox.txt > tests/expected/fox.txt.out
+wc -c tests/inputs/fox.txt > tests/expected/fox.txt.c.out
+
+####
+cargo test --tests tests::test_format_field
+
+cargo test -- tests::test_format_field --exact

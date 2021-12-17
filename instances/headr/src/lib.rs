@@ -108,9 +108,9 @@ pub fn run(config: Config) -> MyResult<()> {
                 n_failed += 1;
             }
 
-            Ok(mut buf_read) => {
+            Ok(mut reader) => {
                 println!("==> {} <==", filename);
-                if let Err(e) = process_buf_read(&config, &mut buf_read) {
+                if let Err(e) = process_buf_read(&config, &mut reader) {
                     eprintln!("!!! {}", e);
                     n_failed += 1;
                 };
@@ -141,10 +141,10 @@ pub fn open(filename: &str) -> MyResult<Box<dyn BufRead>> {
     }
 }
 
-fn process_buf_read(config: &Config, buf_read: &mut dyn BufRead) -> MyResult<()> {
+fn process_buf_read(config: &Config, reader: &mut dyn BufRead) -> MyResult<()> {
     if let Some(num_bytes) = config.bytes {
         let mut buffer = vec![0; num_bytes];
-        let mut handle = buf_read.take(num_bytes as u64);
+        let mut handle = reader.take(num_bytes as u64);
         let n = handle.read(&mut buffer)?;
 
         // !! awlways add a new line at the end
@@ -155,7 +155,7 @@ fn process_buf_read(config: &Config, buf_read: &mut dyn BufRead) -> MyResult<()>
     let mut line = String::new();
 
     for _ in 0..config.lines {
-        let bytes = buf_read.read_line(&mut line)?;
+        let bytes = reader.read_line(&mut line)?;
         if bytes == 0 {
             break;
         }

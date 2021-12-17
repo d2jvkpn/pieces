@@ -83,9 +83,9 @@ pub fn run(config: Config) -> MyResult<()> {
                 eprintln!("!!! failed to open {}: {}", &filename, err);
                 n_failed += 1;
             }
-            Ok(buf_read) => {
+            Ok(reader) => {
                 // eprintln!("Opened {}", filename),
-                if let Err(e) = process_buf_read(&config, buf_read) {
+                if let Err(e) = process_buf_read(&config, reader) {
                     n_failed += 1;
                     eprintln!("{}", e);
                 }
@@ -121,10 +121,10 @@ pub fn open(filename: &str) -> MyResult<Box<dyn BufRead>> {
     }
 }
 
-pub fn process_buf_read(config: &Config, buf_read: Box<dyn BufRead>) -> MyResult<()> {
+pub fn process_buf_read(config: &Config, reader: Box<dyn BufRead>) -> MyResult<()> {
     let mut last_num = 0;
 
-    for (index, result) in buf_read.lines().enumerate() {
+    for (index, result) in reader.lines().enumerate() {
         let line = result?;
 
         if config.number_lines {
