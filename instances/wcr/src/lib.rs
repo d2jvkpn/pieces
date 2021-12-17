@@ -36,7 +36,7 @@ impl fmt::Display for FileInfo {
 impl FileInfo {
     pub fn format_field(&self, config: &Config) -> String {
         fn ff(value: usize, show: bool) -> String {
-            // same as fn format_field
+            // same as function format_field
             return if show { format!("{:>8}", value) } else { "".to_string() };
         }
 
@@ -97,14 +97,13 @@ pub fn get_args() -> MyResult<Config> {
         )
         .get_matches();
 
-    //    Ok(Config {
-    //        ..Default::default()
-    //    })
+    //    Ok(Config {..Default::default() })
 
     let mut lines = matches.is_present("lines");
     let mut words = matches.is_present("words");
     let mut chars = matches.is_present("chars");
     let mut bytes = matches.is_present("bytes");
+    let files = matches.values_of_lossy("files").unwrap();
 
     // Iterator::any, all, filter, map, find, position, cmp, min_by, max_by
     if [lines, words, bytes, chars].iter().all(|v| v == &false) {
@@ -114,7 +113,7 @@ pub fn get_args() -> MyResult<Config> {
         chars = false;
     }
 
-    Ok(Config { files: matches.values_of_lossy("files").unwrap(), lines, words, bytes, chars })
+    Ok(Config { files, lines, words, bytes, chars })
 }
 
 pub fn run(config: Config) -> MyResult<()> {
@@ -138,11 +137,7 @@ pub fn run(config: Config) -> MyResult<()> {
         };
     }
 
-    if n_failed == 0 {
-        Ok(())
-    } else {
-        Err(From::from(n_failed.to_string()))
-    }
+    return if n_failed == 0 { Ok(()) } else { Err(From::from(n_failed.to_string())) };
 }
 
 pub fn open(filename: &str) -> MyResult<Box<dyn BufRead>> {
