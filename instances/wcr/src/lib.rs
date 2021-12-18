@@ -137,7 +137,10 @@ pub fn run(config: Config) -> MyResult<()> {
         };
     }
 
-    return if n_failed == 0 { Ok(()) } else { Err(From::from(n_failed.to_string())) };
+    match n_failed {
+        0 => Ok(()),
+        n => Err(From::from(format!("{} failed", n))),
+    }
 }
 
 pub fn open(filename: &str) -> MyResult<Box<dyn BufRead>> {

@@ -26,8 +26,10 @@ wc tests/inputs/fox.txt > tests/expected/fox.txt.out
 wc -c tests/inputs/fox.txt > tests/expected/fox.txt.c.out
 
 ####
-cargo test --tests tests::test_format_field
+cargo test test_format_field # test all match
 
-cargo test -- tests::test_format_field --exact
+cargo test test_format_field
+
+cargo test tests::test_format_field -- --exact
 
 echo -e "hello, world" | cargo run -- tests/inputs/* -
