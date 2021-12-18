@@ -77,22 +77,35 @@ fn parse_positive_int(val: &str) -> MyResult<usize> {
     }
 }
 
-#[test]
-fn test_parse_positive_int() {
-    // 3 is an OK integerlet
-    let res = parse_positive_int("3");
-    assert!(res.is_ok());
-    assert_eq!(res.unwrap(), 3);
+#[cfg(test)]
+pub mod tests {
+    #![allow(dead_code)]
 
-    // Any string is an error
-    let res = parse_positive_int("foo");
-    assert!(res.is_err());
-    assert_eq!(res.unwrap_err().to_string(), "foo".to_string());
+    use super::parse_positive_int;
 
-    // A zero is an error
-    let res = parse_positive_int("0");
-    assert!(res.is_err());
-    assert_eq!(res.unwrap_err().to_string(), "0".to_string());
+    #[test]
+    pub fn test_parse_positive_int() {
+        // 3 is an OK integerlet
+        let res = parse_positive_int("3");
+        assert!(res.is_ok());
+        assert_eq!(res.unwrap(), 3);
+
+        // Any string is an error
+        let res = parse_positive_int("foo");
+        assert!(res.is_err());
+        assert_eq!(res.unwrap_err().to_string(), "foo".to_string());
+
+        // A zero is an error
+        let res = parse_positive_int("0");
+        assert!(res.is_err());
+        assert_eq!(res.unwrap_err().to_string(), "0".to_string());
+    }
+
+    #[test]
+    fn test_xx_1() {
+        let a = 1;
+        assert_eq!(a + 1, 2);
+    }
 }
 
 ///
@@ -120,9 +133,7 @@ pub fn run(config: Config) -> MyResult<()> {
 
     match n_failed {
         0 => Ok(()),
-        n => {
-            Err(From::from(format!("!!! headr {} file{} failed", n, if n > 1 { "s" } else { "" })))
-        }
+        n => Err(From::from(format!("headr {} file{} failed", n, if n > 1 { "s" } else { "" }))),
     }
 }
 

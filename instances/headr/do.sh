@@ -22,3 +22,13 @@ touch tests/inputs/empty.txt
 
 ####
 cargo test parse_positive_int
+
+cargo test --test parse_positive_int
+
+cargo test test_xx # runs test_xx_1 and test_xx_2
+
+cargo test --test test_xx_1 # run test_xx_1 only
+
+cargo test tests::test_xx_1 -- --exact # specify module
+
+cargo test test_xx_2 -- --exact # specify module
