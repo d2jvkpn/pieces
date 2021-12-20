@@ -1,5 +1,7 @@
-use std::io::{self, BufRead, BufReader, Read};
-use std::{env, error, fs};
+use std::{
+    env, error, fs,
+    io::{self, BufRead, BufReader, Read},
+};
 
 use clap::{App, Arg};
 use flate2::bufread::GzDecoder;
