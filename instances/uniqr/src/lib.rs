@@ -66,7 +66,7 @@ pub fn run(config: Config) -> MyResult<()> {
         };
 
         if config.count {
-            write!(out_file, "{:>4} {}", count, text)?;1
+            write!(out_file, "{:>4} {}", count, text)?;
         } else {
             write!(out_file, "{}", text)?;
         }
