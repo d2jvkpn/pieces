@@ -27,24 +27,28 @@ def df2tsv(df, name, gz=False, index=False):
 parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 parser.add_argument("-toml", default="config.toml", help="toml config file")
 parser.add_argument("-sect", default="mysql", help="mysql sect name in config")
-parser.add_argument("-db", required=True, help="target database")
+parser.add_argument("-db", required=False, help="target database")
 parser.add_argument("-tables", nargs="+", required=True, help='mysql tables')
 parser.add_argument("-export_df", type=bool, default =False, help="export table as data frame")
 parser.add_argument("-where", default="", help="mysql select with where, work with -export_df true")
+parser.add_argument("-outdir", required=False, help="target database")
 args = parser.parse_args()
 
 tf, sect = args.toml, args.sect
 db, tables = args.db, args.tables
 export_df, where = args.export_df, args.where
+outdir = args.outdir
 
 with open(tf, "r") as f: config = toml.load(tf)
+
+if db is None: db = config[sect]["db"]
 
 c = config[sect]
 conn = pymysql.connect(host = c["host"], user = c["username"], port = c["port"], \
    password = c["password"], charset = c.get("charset", "utf8mb4"), db = db)
 
 now, joinDir = datetime.now().astimezone(), os.path.join
-outdir =  "mysql_{}_{}_{}".format(db, now.strftime("%FT%H%M"), int(now.timestamp()))
+if outdir is None: outdir =  "mysql_{}_{}_{}".format(db, now.strftime("%FT%H%M"), int(now.timestamp()))
 os.makedirs(outdir, mode=511, exist_ok=True)
 
 
