@@ -47,9 +47,9 @@ use simple_handler::SimpleHandler;
 
 fn main() {
     let args = App::new(env!("CARGO_PKG_HOMEPAGE"))
-        .about(env!("CARGO_PKG_DESCRIPTION"))
-        .author(env!("CARGO_PKG_AUTHORS"))
         .version(env!("CARGO_PKG_VERSION"))
+        .author(env!("CARGO_PKG_AUTHORS"))
+        .about(env!("CARGO_PKG_DESCRIPTION"))
         .set_term_width(100)
         .arg(Arg::with_name("cmd").takes_value(true).required(true).help("service chat or http"))
         .arg(

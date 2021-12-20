@@ -16,11 +16,8 @@ impl Response {
     }
 
     pub fn send(&self, w: &mut dyn io::Write) -> io::Result<()> {
-        let body = match &self.body {
-            Some(v) => v,
-            None => "",
-        };
-
+        let d = String::from("");
+        let body = self.body.as_ref().unwrap_or(&d);
         write!(w, "{}\r\n\r\n{}", self, body)
     }
 }

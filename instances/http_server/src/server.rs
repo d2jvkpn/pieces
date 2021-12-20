@@ -1,7 +1,10 @@
-use std::convert::{TryFrom, TryInto};
-use std::io::{Read, Write};
-use std::net::{SocketAddr, TcpListener, TcpStream};
-use std::{error, io, thread};
+use std::{
+    convert::{TryFrom, TryInto},
+    error,
+    io::{self, Read, Write},
+    net::{SocketAddr, TcpListener, TcpStream},
+    thread,
+};
 
 use crate::http::{ParseError, Request, Response, StatusCode};
 
@@ -81,9 +84,7 @@ fn chat(stream: &mut TcpStream, addr: SocketAddr) -> Result<(), String> {
 
     let size = match stream.read(&mut buffer) {
         Ok(s) => s,
-        Err(e) => {
-            return Err(format!("stream.read error: {}", e));
-        }
+        Err(e) => return Err(format!("stream.read error: {}", e)),
     };
 
     if size == 1 && buffer[0] as u16 == 10 {
@@ -96,9 +97,7 @@ fn chat(stream: &mut TcpStream, addr: SocketAddr) -> Result<(), String> {
 
     match String::from_utf8((&buffer).to_vec()) {
         Ok(v) => print!("client {} read {} bytes: {}", addr, size, v),
-        Err(e) => {
-            return Err(format!("invalid utf-8 sequence: {}", e));
-        }
+        Err(e) => return Err(format!("invalid utf-8 sequence: {}", e)),
     };
 
     match stream.write(&buffer[0..size]) {
@@ -112,9 +111,7 @@ fn handle(stream: &mut TcpStream, handler: &mut dyn Handler) -> Result<(), Strin
 
     let size = match stream.read(&mut buffer) {
         Ok(s) => s,
-        Err(e) => {
-            return Err(format!("stream.read error: {}", e));
-        }
+        Err(e) => return Err(format!("stream.read error: {}", e)),
     };
 
     if size == 0 {

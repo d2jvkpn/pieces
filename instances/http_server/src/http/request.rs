@@ -1,7 +1,9 @@
-use std::convert::TryFrom;
 // use std::error::Error;
-use std::fmt;
-use std::str::{self, Utf8Error};
+use std::{
+    convert::TryFrom,
+    fmt,
+    str::{self, Utf8Error},
+};
 
 use super::method::{Method, MethodError};
 use super::query_string::QueryString;
@@ -109,10 +111,8 @@ impl<'b> TryFrom<&'b [u8]> for Request<'b> {
         let (path, text) = get_next_word(text).ok_or(ParseError::InvalidRequest)?;
 
         let (path, query_string) = match path.find('?') {
-            Some(i) => {
-                // println!("~~~ {}, {}", i, path);
-                (&path[..i], Some(QueryString::from(&path[i + 1..])))
-            }
+            // println!("~~~ {}, {}", i, path);
+            Some(i) => (&path[..i], Some(QueryString::from(&path[i + 1..]))),
             None => (path, None),
         };
         //        let mut query_string = None;

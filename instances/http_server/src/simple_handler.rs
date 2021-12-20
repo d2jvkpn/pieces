@@ -1,10 +1,9 @@
-use path_clean::PathClean;
-
-use std::path::PathBuf;
-use std::{fs, io};
+use std::{fs, io, path::PathBuf};
 
 use super::server::Handler;
 use crate::http::{method::Method, Request, Response, StatusCode};
+
+use path_clean::PathClean;
 
 pub struct SimpleHandler {
     public_path: String,
