@@ -14,10 +14,7 @@ impl SimpleHandler {
         let pb = PathBuf::from(&public_path);
         // dbg!(&pb);
 
-        let pb = match fs::canonicalize(&pb) {
-            Ok(v) => v,
-            Err(e) => return Err(format!("fs::canonicalize -> {}", e)),
-        };
+        let pb = fs::canonicalize(&pb).map_err(|e| format!("fs::canonicalize -> {}", e))?;
 
         //        let pb = match pb.into_os_string().into_string() {
         //            Ok(v) => v,

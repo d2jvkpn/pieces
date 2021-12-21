@@ -82,10 +82,7 @@ impl Server {
 fn handle_chat(stream: &mut TcpStream, addr: SocketAddr) -> Result<(), String> {
     let mut buffer = [0; 1024];
 
-    let size = match stream.read(&mut buffer) {
-        Ok(s) => s,
-        Err(e) => return Err(format!("stream.read error: {}", e)),
-    };
+    let size = stream.read(&mut buffer).map_err(|e| format!("stream.read error: {}", e))?;
 
     if size == 1 && buffer[0] as u16 == 10 {
         // return Err("EOF".to_string());
@@ -100,31 +97,22 @@ fn handle_chat(stream: &mut TcpStream, addr: SocketAddr) -> Result<(), String> {
         Err(e) => return Err(format!("invalid utf-8 sequence: {}", e)),
     };
 
-    match stream.write(&buffer[0..size]) {
-        Ok(_) => return Ok(()),
-        Err(e) => return Err(format!("stream.write error: {}", e)),
-    }
+    stream.write(&buffer[0..size]).map_err(|e| format!("stream.write error: {}", e))?;
+    Ok(())
 }
 
 fn handle_http(stream: &mut TcpStream, handler: &mut dyn Handler) -> Result<(), String> {
     let mut buffer = [0; 1024];
 
-    let size = match stream.read(&mut buffer) {
-        Ok(s) => s,
-        Err(e) => return Err(format!("stream.read error: {}", e)),
-    };
+    let size = stream.read(&mut buffer).map_err(|e| format!("stream.read error: {}", e))?;
 
     if size == 0 {
         return Err("disconnected".to_string());
     }
 
     // let text = String::from_utf8_lossy(&buffer);
-    let req = match Request::try_from(&buffer[..]) {
-        Ok(v) => v,
-        Err(e) => {
-            return Err(format!("parse request from buffer error: {}", e));
-        }
-    };
+    let req = Request::try_from(&buffer[..])
+        .map_err(|e| format!("parse request from buffer error: {}", e))?;
     // let req: &Result<Request, _> = &buffer[..].try_into();
 
     //    let response = Response::new(StatusCode::Ok, Some("hello, world!\n".to_string()));
@@ -135,11 +123,10 @@ fn handle_http(stream: &mut TcpStream, handler: &mut dyn Handler) -> Result<(), 
     //        return;
     //    }
 
-    let response = handler.handle_request(&req);
-
-    if let Err(e) = response.send(stream) {
-        return Err(format!("send response error: {}", e));
-    }
+    //    if let Err(e) = handler.handle_request(&req).send(stream) {
+    //        return Err(format!("send response error: {}", e));
+    //    }
+    handler.handle_request(&req).send(stream).map_err(|e| format!("send response error: {}", e))?;
 
     Ok(())
 }

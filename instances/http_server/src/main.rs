@@ -84,10 +84,10 @@ fn demo01() {
 
     // let get = Method::GET("abcd".to_string()); GET(String)
     // let delete = Method::DELETE(100); DELETE(i64)
-    let get = Method::GET;
-    let delete = Method::DELETE;
-    let post = Method::POST;
-    let put = Method::PUT;
+    //    let get = Method::GET;
+    //    let delete = Method::DELETE;
+    //    let post = Method::POST;
+    //    let put = Method::PUT;
 
     let request = Request {
         method: Method::GET,
