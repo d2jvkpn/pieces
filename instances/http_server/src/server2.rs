@@ -45,9 +45,8 @@ async fn handle(stream: Arc<TcpStream>, addr: net::SocketAddr) {
 }
 
 async fn handle_stream(stream: Arc<TcpStream>) -> Res<()> {
-    let mut stream = &*stream;
+    let (mut stream, mut buffer) = (&*stream, [0; 1024]);
     let mut reader = BufReader::new(stream);
-    let mut buffer = [0; 1024];
 
     match reader.read(&mut buffer).await {
         // no need to check v == 0 when client closed the connection
@@ -59,6 +58,5 @@ async fn handle_stream(stream: Arc<TcpStream>) -> Res<()> {
         .map_err(|e| format!("parse request from buffer error: {}", e))?;
 
     stream.write_all("HTTP/1.1 200 Ok\r\n\r\nHello, world!\n".as_bytes()).await?;
-
     Ok(())
 }
