@@ -1,17 +1,13 @@
-#![allow(unused_imports)]
-#![allow(dead_code)]
-
 use std::{thread, time};
 
 use async_std::task;
 use chrono;
-use futures::{executor, future, join, Future};
+use futures::{executor, future, join};
 use tokio;
 
 fn main() {
     println!(">>> future01");
     let f01 = xx01();
-
     executor::block_on(f01);
     /*
     >>> future01
@@ -75,7 +71,7 @@ async fn a03(name: &str) -> String {
 
 async fn xx01() {
     // Here I specify the type of the error as (); otherwise the compiler can't infer it
-    // wrapped as async a function
+    // wrapped as a async function
     let future01 = future::ok::<String, ()>(a01("job1"));
     let future02 = future::ok::<String, ()>(a01("job2"));
     // let a = future.await;
