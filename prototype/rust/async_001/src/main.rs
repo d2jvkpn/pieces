@@ -83,7 +83,8 @@ async fn xx01() {
     let future02 = a01x("job2");
     // let a = future.await;
     // println!("{:?}", a);
-    let (r01, r02) = join!(future01, future02); // Ok("hello"), "hello"
+    let (r01, r02) = join!(future01, future02);
+    // Ok("hello"), "hello"
     println!("{} xx01: r01 = {:?}, r02 = {:?}", now(), r01, r02);
 }
 
