@@ -76,7 +76,7 @@ fn main() {
             let server = Server::new(&addr).unwrap();
             server.http(&mut handler);
         }
-        "http_v2" => server2::http(addr.to_string()).unwrap(),
+        "http_v2" => server2::http(&addr).unwrap(),
         v => panic!("unknown argument: {}", v),
     };
 }

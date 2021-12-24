@@ -13,9 +13,9 @@ use async_std::{
 
 type Res<T> = result::Result<T, Box<dyn error::Error + Send + Sync>>;
 
-pub fn http(addr: String) -> Result<(), Box<dyn error::Error>> {
-    let fut = accept_loop(&addr);
-    println!(">>> Listening on {}", &addr);
+pub fn http(addr: &str) -> Result<(), Box<dyn error::Error>> {
+    let fut = accept_loop(addr);
+    println!(">>> Listening on {}", addr);
 
     if let Err(e) = task::block_on(fut) {
         return Err(e);
@@ -23,14 +23,15 @@ pub fn http(addr: String) -> Result<(), Box<dyn error::Error>> {
     Ok(())
 }
 
-async fn accept_loop(addr: impl ToSocketAddrs) -> Res<()> {
+// addr: impl ToSocketAddrs
+async fn accept_loop(addr: &str) -> Res<()> {
     let listener = TcpListener::bind(addr).await?;
 
     while let Some(stream) = listener.incoming().next().await {
         let stream = stream?;
-        let addr = stream.peer_addr()?;
-        println!("<-- Accepting connection from: {}", addr);
-        let _handle = task::spawn(handle(Arc::new(stream), addr));
+        let client_addr = stream.peer_addr()?;
+        println!("<-- Accepting connection from: {}", client_addr);
+        let _handle = task::spawn(handle(Arc::new(stream), client_addr));
     }
 
     Ok(())
@@ -45,7 +46,6 @@ async fn handle(stream: Arc<TcpStream>, addr: net::SocketAddr) {
 
 async fn handle_stream(stream: Arc<TcpStream>) -> Res<()> {
     let mut stream = &*stream;
-
     let mut reader = BufReader::new(stream);
     let mut buffer = [0; 1024];
 
