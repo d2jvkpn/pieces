@@ -29,23 +29,35 @@ async fn accept_loop(addr: &str) -> Res<()> {
 
     while let Some(stream) = listener.incoming().next().await {
         let stream = stream?;
-        let client_addr = stream.peer_addr()?;
-        println!("<-- Accepting connection from: {}", client_addr);
-        let _handle = task::spawn(handle(Arc::new(stream), client_addr));
+        let _handle = task::spawn(handle(stream));
     }
 
     Ok(())
 }
 
-async fn handle(stream: Arc<TcpStream>, addr: net::SocketAddr) {
-    if let Err(e) = handle_stream(stream).await {
+// can't reuse a connection
+async fn handle(stream: TcpStream) {
+    // addr: net::SocketAddr
+    let addr = match stream.peer_addr() {
+        Ok(v) => v,
+        Err(e) => {
+            println!("get peer_addr error: {}", e);
+            return;
+        }
+    };
+    println!("<-- Accepting connection from: {}", addr);
+
+    if let Err(e) = handle_stream(Arc::new(stream)).await {
         println!("{} error: {}", addr, e);
+        return;
     }
+
     println!("{} close connection", addr);
 }
 
 async fn handle_stream(stream: Arc<TcpStream>) -> Res<()> {
-    let (mut stream, mut buffer) = (&*stream, [0; 1024]);
+    let mut stream = &*stream;
+    let mut buffer = [0; 1024];
     let mut reader = BufReader::new(stream);
 
     match reader.read(&mut buffer).await {
@@ -54,8 +66,10 @@ async fn handle_stream(stream: Arc<TcpStream>) -> Res<()> {
         Err(e) => Err(e)?,
     }
 
-    let req = Request::try_from(&buffer[..])
-        .map_err(|e| format!("parse request from buffer error: {}", e))?;
+    println!("read message: {}", String::from_utf8_lossy(&buffer));
+
+    //    let req = Request::try_from(&buffer[..])
+    //        .map_err(|e| format!("parse request from buffer error: {}", e))?;
 
     stream.write_all("HTTP/1.1 200 Ok\r\n\r\nHello, world!\n".as_bytes()).await?;
     Ok(())
