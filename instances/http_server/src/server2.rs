@@ -45,14 +45,14 @@ async fn handle(stream: TcpStream) {
             return;
         }
     };
-    println!("<-- Accepting connection from: {}", addr);
+    println!("+++ Accepting connection from: {}", addr);
 
     if let Err(e) = handle_stream(Arc::new(stream)).await {
-        println!("{} error: {}", addr, e);
+        println!("--- {} error: {}", addr, e);
         return;
     }
 
-    println!("{} close connection", addr);
+    println!("--- {} close connection", addr);
 }
 
 async fn handle_stream(stream: Arc<TcpStream>) -> Res<()> {
@@ -66,7 +66,7 @@ async fn handle_stream(stream: Arc<TcpStream>) -> Res<()> {
         Err(e) => Err(e)?,
     }
 
-    println!("read message: {}", String::from_utf8_lossy(&buffer));
+    println!("<-- read message: {}", String::from_utf8_lossy(&buffer));
 
     //    let req = Request::try_from(&buffer[..])
     //        .map_err(|e| format!("parse request from buffer error: {}", e))?;
