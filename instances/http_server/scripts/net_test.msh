@@ -37,6 +37,8 @@ curl -i  localhost:8080
 curl -i  localhost:8080/hello
 curl -i  localhost:8080/ping
 
+echo -e "GET /hello HTTP/1.1\r\n" | netcat -i 1 127.0.0.1 8080
+
 #### 400 target is a directory
 curl -i localhost:8080/static/
 

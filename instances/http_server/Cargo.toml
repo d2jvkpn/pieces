@@ -8,5 +8,6 @@ homepage = "https://github.com/d2jvkpn/pieces/tree/main/instances/http_server"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+async-std = "1.10.0"
 clap = "2.34"
 path-clean = "0.1.0"

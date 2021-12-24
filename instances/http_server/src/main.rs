@@ -12,6 +12,7 @@ use std::{env, process};
 // project packages
 mod http;
 mod server;
+mod server2;
 mod simple_handler;
 
 use http::query_string::QueryString;
@@ -51,7 +52,7 @@ fn main() {
         .author(env!("CARGO_PKG_AUTHORS"))
         .about(env!("CARGO_PKG_DESCRIPTION"))
         .set_term_width(100)
-        .arg(Arg::with_name("cmd").takes_value(true).required(true).help("service chat or http"))
+        .arg(Arg::with_name("cmd").takes_value(true).required(true).help("choose a service"))
         .arg(
             Arg::with_name("addr")
                 .long("addr") // .short("a")
@@ -64,17 +65,18 @@ fn main() {
 
     let cmd: &str = args.value_of("cmd").unwrap_or("");
     let addr = args.value_of("addr").unwrap_or("127.0.0.1:8080").to_string();
-
-    let server = Server::new(addr).unwrap();
+    let mut handler = SimpleHandler::new("./static").unwrap();
 
     match cmd {
         "chat" => {
-            server.chat();
+            let server = Server::new(&addr).unwrap();
+            server.chat()
         }
-        "http" => {
-            let mut handler = SimpleHandler::new("./static").unwrap();
+        "http_v1" => {
+            let server = Server::new(&addr).unwrap();
             server.http(&mut handler);
         }
+        "http_v2" => server2::http(addr.to_string()).unwrap(),
         v => panic!("unknown argument: {}", v),
     };
 }

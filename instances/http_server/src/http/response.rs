@@ -6,8 +6,8 @@ use super::status_code::StatusCode;
 ////
 #[derive(Debug)]
 pub struct Response {
-    status_code: StatusCode,
-    body: Option<String>,
+    pub status_code: StatusCode,
+    pub body: Option<String>,
 }
 
 impl Response {

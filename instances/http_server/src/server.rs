@@ -25,20 +25,20 @@ pub struct Server {
 }
 
 impl Server {
-    pub fn new(addr: String) -> Result<Server, io::Error> {
+    pub fn new(addr: &str) -> Result<Server, io::Error> {
         let listener = TcpListener::bind(&addr)?;
         // listener.set_nonblocking(true)?; // no blocking self.listener.accept()
-        Ok(Server { addr, listener })
+        Ok(Server { addr: addr.to_string(), listener })
     }
 
     // http service
-    pub fn http(&self, handler: &mut dyn Handler) {
+    pub fn http(&self, handler: &mut (dyn Handler + Send + Sync)) {
         println!("HTTP listening on {}", self.addr);
 
         'outer: loop {
             let (mut stream, addr) = match self.listener.accept() {
                 Ok((s, a)) => {
-                    println!(">>> New tcp connection: {}", a);
+                    println!(">>> Accepting connection from: {}", a);
                     (s, a)
                 }
                 Err(e) => {
