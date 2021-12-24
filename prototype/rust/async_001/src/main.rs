@@ -9,7 +9,7 @@ fn main() {
     println!(">>> future01");
     let f01 = xx01();
     executor::block_on(f01);
-    /*
+    /* OUTPUT:
     >>> future01
     job1 start
     job1 end
@@ -21,7 +21,7 @@ fn main() {
     println!(">>> future02");
     let f02 = xx02();
     executor::block_on(f02);
-    /*
+    /* OUTPUT:
     >>> future02
     job3 start
     job4 start
@@ -33,7 +33,7 @@ fn main() {
     println!(">>> future03");
     // !! not a future
     xx03();
-    /*
+    /* OUTPUT:
     >>> future03
     job5 start
     job6 start
