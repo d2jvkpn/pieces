@@ -50,6 +50,7 @@ async fn handle_stream(stream: Arc<TcpStream>) -> Res<()> {
     let mut buffer = [0; 1024];
 
     match reader.read(&mut buffer).await {
+        // no need to check v == 0 when client closed the connection
         Ok(v) => { /*println!("{}", v)*/ }
         Err(e) => Err(e)?,
     }
