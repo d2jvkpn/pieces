@@ -15,7 +15,7 @@ fn main() {
     job1 end
     job2 start
     job2 end
-    xx01: r01 = Ok("hello"), r02 = Ok("hello")
+    xx01: r01 = Ok("hello"), r02 = "hello"
     */
 
     println!(">>> future02");
@@ -55,6 +55,13 @@ fn a01(name: &str) -> String {
     String::from("hello")
 }
 
+async fn a01x(name: &str) -> String {
+    println!("{} {} start", now(), name);
+    thread::sleep(time::Duration::new(5, 0));
+    println!("{} {} end", now(), name);
+    String::from("hello")
+}
+
 async fn a02(name: &str) -> String {
     println!("{} {} start", now(), name);
     task::sleep(time::Duration::new(5, 0)).await;
@@ -73,11 +80,10 @@ async fn xx01() {
     // Here I specify the type of the error as (); otherwise the compiler can't infer it
     // wrapped as a async function
     let future01 = future::ok::<String, ()>(a01("job1"));
-    let future02 = future::ok::<String, ()>(a01("job2"));
+    let future02 = a01x("job2");
     // let a = future.await;
     // println!("{:?}", a);
-    let (r01, r02) = join!(future01, future02);
-    // execute in sequential
+    let (r01, r02) = join!(future01, future02); // Ok("hello"), "hello"
     println!("{} xx01: r01 = {:?}, r02 = {:?}", now(), r01, r02);
 }
 
