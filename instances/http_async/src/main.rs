@@ -43,27 +43,27 @@ async fn connection_loop(stream: TcpStream, addr: net::SocketAddr) -> Res<()> {
     let reader = BufReader::new(&stream);
     let mut lines = reader.lines();
 
-    // the first message
-    let name = match lines.next().await {
+    // the first message as username
+    let username = match lines.next().await {
         None => Err("peer disconnected immediately")?,
         Some(line) => line?,
     };
-    println!("~~~ {} username: {}", addr, name);
+    println!("~~~ {} username: {}", addr, username);
 
     while let Some(line) = lines.next().await {
         let line = line?;
         let (dest, msg) = match line.find(':') {
             None => {
-                println!("~~~ {}: {}", name, line);
+                println!("~~~ {}: {}", username, line);
                 continue;
             }
             Some(idx) => (&line[..idx], line[idx + 1..].trim()),
         };
 
-        let dest: Vec<String> = dest.split(',').map(|name| name.trim().to_string()).collect();
+        let dest: Vec<String> = dest.split(',').map(|v| v.trim().to_string()).collect();
         let msg: String = msg.to_string();
 
-        println!("~~~ {}: des={:?}, msg={}", name, dest, msg);
+        println!("~~~ {}: des={:?}, msg={}", username, dest, msg);
     }
 
     Ok(())
