@@ -57,16 +57,17 @@ async fn handle(stream: TcpStream) {
 
 async fn handle_stream(stream: Arc<TcpStream>) -> Res<()> {
     let mut stream = &*stream;
-    let mut buffer = [0; 1024];
-    let mut reader = BufReader::new(stream);
+    //    let mut buffer = [0; 1024];
+    //    let mut reader = BufReader::new(stream);
+    //    match reader.read(&mut buffer).await {
+    //        // no need to check v == 0 when client closed the connection
+    //        Ok(v) => { println!("{}", v) }
+    //        Err(e) => Err(e)?,
+    //    }
 
-    match reader.read(&mut buffer).await {
-        // no need to check v == 0 when client closed the connection
-        Ok(v) => { /*println!("{}", v)*/ }
-        Err(e) => Err(e)?,
-    }
-
-    println!("<-- read message: {}", String::from_utf8_lossy(&buffer));
+    let mut buffer = vec![0u8; 1024];
+    let size = stream.read(&mut buffer).await?;
+    println!("<-- read message(size={}): {}", size, String::from_utf8_lossy(&buffer));
 
     //    let req = Request::try_from(&buffer[..])
     //        .map_err(|e| format!("parse request from buffer error: {}", e))?;
