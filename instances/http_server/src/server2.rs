@@ -84,7 +84,7 @@ async fn handle_stream2(stream: Arc<TcpStream>) -> Res<()> {
     while let Some(line) = lines.next().await {
         let line = line?;
         println!("<-- {}", line);
-        stream.write_all(("response: ".to_owned() + &line + "\n").as_bytes()).await?;
+        stream.write_all(("<-- response: ".to_owned() + &line + "\n").as_bytes()).await?;
     }
 
     Ok(())
