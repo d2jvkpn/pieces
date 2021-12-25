@@ -32,7 +32,7 @@ impl Server {
     }
 
     // http service
-    pub fn http(&self, handler: &mut (dyn Handler + Send + Sync)) {
+    pub fn http(&self, handler: &mut dyn Handler) {
         println!("HTTP listening on {}", self.addr);
 
         'outer: loop {

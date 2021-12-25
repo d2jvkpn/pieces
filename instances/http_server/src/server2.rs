@@ -47,7 +47,7 @@ async fn handle(stream: TcpStream) {
     };
     println!("+++ Accepting connection from: {}", addr);
 
-    if let Err(e) = handle_stream(Arc::new(stream)).await {
+    if let Err(e) = handle_stream2(Arc::new(stream)).await {
         println!("--- {} error: {}", addr, e);
         return;
     }
@@ -55,7 +55,7 @@ async fn handle(stream: TcpStream) {
     println!("--- {} close connection", addr);
 }
 
-async fn handle_stream(stream: Arc<TcpStream>) -> Res<()> {
+async fn handle_stream1(stream: Arc<TcpStream>) -> Res<()> {
     let mut stream = &*stream;
     //    let mut buffer = [0; 1024];
     //    let mut reader = BufReader::new(stream);
@@ -73,5 +73,19 @@ async fn handle_stream(stream: Arc<TcpStream>) -> Res<()> {
     //        .map_err(|e| format!("parse request from buffer error: {}", e))?;
 
     stream.write_all("HTTP/1.1 200 Ok\r\n\r\nHello, world!\n".as_bytes()).await?;
+    Ok(())
+}
+
+async fn handle_stream2(stream: Arc<TcpStream>) -> Res<()> {
+    let mut stream = &*stream;
+    let reader = BufReader::new(stream);
+    let mut lines = reader.lines();
+
+    while let Some(line) = lines.next().await {
+        let line = line?;
+        println!("<-- {}", line);
+        stream.write_all(("response: ".to_owned() + &line + "\n").as_bytes()).await?;
+    }
+
     Ok(())
 }
