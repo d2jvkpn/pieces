@@ -29,7 +29,7 @@ async fn accept_loop(addr: &str) -> Res<()> {
 
     while let Some(stream) = listener.incoming().next().await {
         let stream = stream?;
-        let _handle = task::spawn(handle(stream));
+        let _xx = task::spawn(handle(stream));
     }
 
     Ok(())
@@ -81,10 +81,42 @@ async fn handle_stream2(stream: Arc<TcpStream>) -> Res<()> {
     let reader = BufReader::new(stream);
     let mut lines = reader.lines();
 
+    let mut s = 0_usize;
+    let mut blocks = vec![];
     while let Some(line) = lines.next().await {
         let line = line?;
-        println!("<-- {}", line);
-        stream.write_all(("<-- response: ".to_owned() + &line + "\n").as_bytes()).await?;
+        if line != "" {
+            s += line.len() + 1;
+            blocks.push(line);
+            continue;
+        }
+        println!("size={}, {:?}", s, blocks);
+        // stream.write_all(("<-- response: ".to_owned() + &line + "\n").as_bytes()).await?;
+        stream
+            .write_all((format!("read {} messages, size={}\n", blocks.len(), s)).as_bytes())
+            .await?;
+        s = 0;
+        blocks.clear();
+    }
+    Ok(())
+}
+
+async fn handle_stream3(stream: Arc<TcpStream>) -> Res<()> {
+    let mut stream = &*stream;
+    let mut reader = BufReader::new(stream);
+
+    // let mut buffer = vec![0u8; 1024];
+    // while let Ok(v) = reader.read_until(b'\n', &mut buffer).await {}
+    // println!("<-- {}", String::from_utf8_lossy(&buffer));
+
+    let mut buffer = String::new();
+    while let Ok(v) = reader.read_to_string(&mut buffer).await {
+        if v == 0 {
+            break;
+        }
+        println!("size: {}", v);
+        println!("<-- {}", buffer);
+        stream.write_all("ok".as_bytes()).await?;
     }
 
     Ok(())
