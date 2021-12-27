@@ -17,7 +17,6 @@ func main() {
 		idx        int
 		target, fp string
 		err        error
-		file       *os.File
 		start      time.Time
 	)
 
@@ -30,13 +29,8 @@ func main() {
 	target, fp = flag.Args()[0], flag.Args()[1]
 	start = time.Now()
 
-	if file, err = os.Open(fp); err != nil {
-		log.Fatal(err)
-	}
-	defer file.Close()
-
-	if idx, err = SearchText([]byte(target), file, debug); err != nil {
-		fmt.Fprintf(os.Stderr, "SearchText: %v\n", err)
+	if idx, err = SearchInFile(target, fp, debug); err != nil {
+		fmt.Fprintf(os.Stderr, "SearchInFile: %v\n", err)
 		os.Exit(1)
 	}
 	log.Printf("Elapsed: %s\n", time.Now().Sub(start))
@@ -48,7 +42,21 @@ func main() {
 	}
 }
 
-func SearchText(target []byte, r io.Reader, debug bool) (idx int, err error) {
+func SearchInFile(target string, fp string, debug bool) (int, error) {
+	var (
+		err  error
+		file *os.File
+	)
+
+	if file, err = os.Open(fp); err != nil {
+		return -1, err
+	}
+	defer file.Close()
+
+	return SearchText([]byte(target), file, debug)
+}
+
+func SearchText(bts []byte, r io.Reader, debug bool) (idx int, err error) {
 	var (
 		// k: number of bytes try to read, t: temporary value
 		// n: bytes read, s: search position
@@ -58,13 +66,13 @@ func SearchText(target []byte, r io.Reader, debug bool) (idx int, err error) {
 	)
 
 	reader = bufio.NewReader(r)
-	k = len(target)                // k = 4 or len(target) + 1
+	k = len(bts)                   // k = 4 or len(bts) + 1
 	buffer = make([]byte, 0, 1024) // 10, 24, 32, 1024
 
 	if debug {
 		log.Printf(
 			">>> target=%q, k=%d, len(target)=%d, cap(data) =%d\n",
-			target, len(target), k, cap(buffer),
+			bts, len(bts), k, cap(buffer),
 		)
 	}
 
@@ -99,10 +107,10 @@ func SearchText(target []byte, r io.Reader, debug bool) (idx int, err error) {
 		if t = len(buffer) - k - n; t < 0 { // search from the end of buffer
 			t = 0
 		}
-		if s = bytes.Index(buffer[t:], target); s >= 0 {
+		if s = bytes.Index(buffer[t:], bts); s >= 0 {
 			idx = idx + s + t
 			if debug {
-				log.Printf("<<< found %q: range=[%d:%d]\n", target, idx, idx+n)
+				log.Printf("<<< found %q: range=[%d:%d]\n", bts, idx, idx+n)
 			}
 			return idx, nil
 		}
