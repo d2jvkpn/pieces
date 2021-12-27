@@ -80,12 +80,14 @@ func SearchText(target []byte, r io.Reader, debug bool) (idx int, err error) {
 		if n, err = io.ReadFull(reader, buffer[t:(t+k)]); err != nil {
 			// !! ErrUnexpectedEOF means that EOF was encountered in the middle of reading a
 			//    fixed-size block or data structure
-			if err == io.EOF || err == io.ErrUnexpectedEOF {
-				log.Printf("    n=%d, length=%d\n", n, len(buffer))
-				return -1, nil
-			} else { // invalid utf8...
+			if err != io.EOF && err != io.ErrUnexpectedEOF {
 				return -1, err
 			}
+
+			if debug {
+				log.Printf("    n=%d, length=%d\n", n, len(buffer))
+			}
+			return -1, nil
 		}
 
 		buffer = buffer[:len(buffer)+n] // !! extend buffer
