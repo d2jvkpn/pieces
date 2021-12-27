@@ -8,6 +8,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"time"
 )
 
 func main() {
@@ -17,6 +18,7 @@ func main() {
 		target, fp string
 		err        error
 		file       *os.File
+		start      time.Time
 	)
 
 	flag.BoolVar(&debug, "debug", false, "debug mode")
@@ -26,6 +28,8 @@ func main() {
 	}
 
 	target, fp = flag.Args()[0], flag.Args()[1]
+	start = time.Now()
+
 	if file, err = os.Open(fp); err != nil {
 		log.Fatal(err)
 	}
@@ -34,11 +38,15 @@ func main() {
 	if idx, err = SearchText([]byte(target), file, debug); err != nil {
 		fmt.Fprintf(os.Stderr, "SearchText: %v\n", err)
 		os.Exit(1)
-	} else if idx == -1 {
+	}
+	log.Printf("Elapsed: %s\n", time.Now().Sub(start))
+
+	if idx == -1 {
 		fmt.Println("NotFound: -1")
 	} else {
 		fmt.Printf("Index: %d\n", idx)
 	}
+
 }
 
 func SearchText(target []byte, r io.Reader, debug bool) (idx int, err error) {
@@ -77,12 +85,10 @@ func SearchText(target []byte, r io.Reader, debug bool) (idx int, err error) {
 				return -1, err
 			}
 		}
-		if debug {
-			log.Printf("    n=%d\n", n)
-		}
 
 		data = data[:len(data)+n] // !! extend data
 		if debug {
+			log.Printf("    n=%d\n", n)
 			log.Printf("    read to data[%d:%d]: %q\n", len(data)-n, len(data), string(data))
 		}
 
