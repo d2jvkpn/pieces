@@ -59,14 +59,16 @@ fn search_text(bts: &[u8], read: impl io::Read, debug: bool) -> Result<i64, io::
             Err(e) => return Err(e),
         };
 
-        let slice = buffer.to_vec().into_iter().filter(|v| *v != 0).collect::<Vec<_>>();
+        // let slice = buffer.to_vec().into_iter().filter(|v| *v != 0).collect::<Vec<_>>();
         // println!("{:?}", String::from_utf8_lossy(&slice).trim_matches(char::from(0)));
-        cache.extend_from_slice(&slice);
+        // cache.extend_from_slice(&slice);
+        let t = buffer.iter().filter(|&v| *v != 0).count();
+        cache.extend_from_slice(&buffer[..t]);
 
         if debug {
             eprintln!(
                 "    slice.len()={}, cache.len()={}\n    cache={:?}",
-                slice.len(),
+                t, // slice.len()
                 cache.len(),
                 String::from_utf8_lossy(&cache)
             );
