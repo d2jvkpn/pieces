@@ -60,6 +60,7 @@ func SearchText(target []byte, r io.Reader, debug bool) (idx int, err error) {
 	reader = bufio.NewReader(r)
 	k = len(target)                // k = 4 or len(target) + 1
 	buffer = make([]byte, 0, 1024) // 10, 24, 32, 1024
+
 	if debug {
 		log.Printf(
 			">>> target=%q, k=%d, len(target)=%d, cap(data) =%d\n",
