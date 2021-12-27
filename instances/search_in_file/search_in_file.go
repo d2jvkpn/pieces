@@ -21,7 +21,7 @@ func main() {
 		start      time.Time
 	)
 
-	flag.BoolVar(&debug, "debug", false, "debug mode")
+	flag.BoolVar(&debug, "debug", false, "run in debug mode")
 	flag.Parse()
 	if flag.NArg() < 2 {
 		log.Fatalln("required <match> <file>")
