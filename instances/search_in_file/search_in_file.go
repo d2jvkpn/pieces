@@ -60,9 +60,9 @@ func SearchText(bts []byte, r io.Reader, bufsize int, debug bool) (idx int, err 
 	var (
 		// k: number of bytes try to read, t: temporary value
 		// n: bytes read, s: search position
-		k, t, n, s int
-		buffer     []byte
-		reader     *bufio.Reader
+		k, t, n, s   int
+		buffer, tail []byte
+		reader       *bufio.Reader
 	)
 
 	reader = bufio.NewReader(r)
@@ -80,14 +80,19 @@ func SearchText(bts []byte, r io.Reader, bufsize int, debug bool) (idx int, err 
 
 	for {
 		if t = len(buffer); t+k > cap(buffer) {
-			idx += len(buffer)
-			t, buffer = 0, buffer[:0]
+			tail = buffer[t-k : t] // !! left shift
+			idx += t - k
+			buffer = make([]byte, 0, bufsize)
+			buffer = append(buffer, tail...)
 		}
 		if debug {
 			log.Printf("~~~ read to buffer: t=%d, k=%d\n", t, k)
 		}
 
-		if n, err = io.ReadFull(reader, buffer[t:(t+k)]); err != nil {
+		if t = len(buffer) + k; t > cap(buffer) {
+			t = cap(buffer)
+		}
+		if n, err = io.ReadFull(reader, buffer[len(buffer):t]); err != nil {
 			// !! ErrUnexpectedEOF means that EOF was encountered in the middle of reading a
 			//    fixed-size block or data structure
 			if err != io.EOF && err != io.ErrUnexpectedEOF {
