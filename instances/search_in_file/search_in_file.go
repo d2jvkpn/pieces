@@ -66,9 +66,7 @@ func SearchText(bts []byte, r io.Reader, bufsize int, debug bool) (idx int, err 
 	)
 
 	reader = bufio.NewReader(r)
-	k = len(bts)                      // k = 4 or len(bts) + 1
-	buffer = make([]byte, 0, bufsize) // 10, 24, 32, 1024
-
+	k, buffer = len(bts), make([]byte, 0, bufsize)
 	if k > bufsize {
 		return -1, fmt.Errorf("target bytes too long")
 	}
