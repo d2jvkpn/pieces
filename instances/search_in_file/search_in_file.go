@@ -53,10 +53,10 @@ func SearchInFile(target string, fp string, debug bool) (int, error) {
 	}
 	defer file.Close()
 
-	return SearchText([]byte(target), file, debug)
+	return SearchText([]byte(target), file, 1024, debug)
 }
 
-func SearchText(bts []byte, r io.Reader, debug bool) (idx int, err error) {
+func SearchText(bts []byte, r io.Reader, bufsize int, debug bool) (idx int, err error) {
 	var (
 		// k: number of bytes try to read, t: temporary value
 		// n: bytes read, s: search position
@@ -66,10 +66,10 @@ func SearchText(bts []byte, r io.Reader, debug bool) (idx int, err error) {
 	)
 
 	reader = bufio.NewReader(r)
-	k = len(bts)                   // k = 4 or len(bts) + 1
-	buffer = make([]byte, 0, 1024) // 10, 24, 32, 1024
+	k = len(bts)                      // k = 4 or len(bts) + 1
+	buffer = make([]byte, 0, bufsize) // 10, 24, 32, 1024
 
-	if k > 1024 {
+	if k > bufsize {
 		return -1, fmt.Errorf("target bytes too long")
 	}
 
