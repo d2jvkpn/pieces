@@ -86,6 +86,7 @@ func SearchText(bts []byte, r io.Reader, bufsize int, debug bool) (idx int, err 
 			// buffer = append(buffer, tail...)
 			buffer = append(buffer[:0], tail...) // avoid allocation
 		}
+
 		if debug {
 			log.Printf("~~~ read to buffer: t=%d, k=%d\n", t, k)
 		}
@@ -107,6 +108,7 @@ func SearchText(bts []byte, r io.Reader, bufsize int, debug bool) (idx int, err 
 		}
 
 		buffer = buffer[:len(buffer)+n] // !! extend buffer
+
 		if debug {
 			log.Printf("    n=%d, length=%d\n", n, len(buffer))
 			log.Printf("    buffer=%q\n", string(buffer[:len(buffer)]))
@@ -117,9 +119,11 @@ func SearchText(bts []byte, r io.Reader, bufsize int, debug bool) (idx int, err 
 		}
 		if s = bytes.Index(buffer[t:], bts); s >= 0 {
 			idx = idx + s + t
+
 			if debug {
 				log.Printf("<<< found %q: range=[%d:%d]\n", bts, idx, idx+n)
 			}
+
 			return idx, nil
 		}
 	}

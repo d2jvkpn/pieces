@@ -2,7 +2,7 @@ use std::{
     env,
     fs::File,
     io::{self, Read},
-    str,
+    // str,
 };
 
 fn main() {
@@ -47,6 +47,7 @@ fn search_text(bts: &[u8], read: impl io::Read, debug: bool) -> Result<i64, io::
             cache.clear();
             cache.extend_from_slice(&tail);
         }
+
         if debug {
             eprintln!("~~~ fill [{}:{}]: index={}", cache.len(), cache.len() + SIZE, index);
         }
@@ -62,6 +63,7 @@ fn search_text(bts: &[u8], read: impl io::Read, debug: bool) -> Result<i64, io::
         let slice = buffer.to_vec().into_iter().filter(|v| *v != 0).collect::<Vec<_>>();
         // println!("{:?}", String::from_utf8_lossy(&slice).trim_matches(char::from(0)));
         cache.extend_from_slice(&slice);
+
         if debug {
             eprintln!(
                 "    slice.len()={}, cache.len()={}\n    cache={:?}",
@@ -78,7 +80,8 @@ fn search_text(bts: &[u8], read: impl io::Read, debug: bool) -> Result<i64, io::
     }
 
     if debug {
-        eprintln!("<<< cache={:?}", str::from_utf8(&cache).unwrap());
+        // eprintln!("<<< cache={:?}", str::from_utf8(&cache));
+        eprintln!("<<< cache={:?}", String::from_utf8_lossy(&cache[..]));
     }
 
     return if tag == 1 { Ok(index) } else { Ok(-1) };
