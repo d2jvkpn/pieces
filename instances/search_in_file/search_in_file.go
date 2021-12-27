@@ -12,11 +12,11 @@ import (
 
 func main() {
 	var (
-		debug  bool
-		idx    int
-		target string
-		err    error
-		file   *os.File
+		debug      bool
+		idx        int
+		target, fp string
+		err        error
+		file       *os.File
 	)
 
 	flag.BoolVar(&debug, "debug", false, "debug mode")
@@ -25,8 +25,8 @@ func main() {
 		log.Fatalln("required <match> <file>")
 	}
 
-	target = flag.Args()[0]
-	if file, err = os.Open(flag.Args()[1]); err != nil {
+	target, fp = flag.Args()[0], flag.Args()[1]
+	if file, err = os.Open(fp); err != nil {
 		log.Fatal(err)
 	}
 	defer file.Close()
@@ -35,7 +35,7 @@ func main() {
 		fmt.Fprintf(os.Stderr, "SearchText: %v\n", err)
 		os.Exit(1)
 	} else if idx == -1 {
-		fmt.Println("NotFound: -1") // os.Exit(0)
+		fmt.Println("NotFound: -1")
 	} else {
 		fmt.Printf("Index: %d\n", idx)
 	}
@@ -43,19 +43,18 @@ func main() {
 
 func SearchText(target []byte, r io.Reader, debug bool) (idx int, err error) {
 	var (
-		// k: number of bytes try to read, t: temporary value, n: bytes read, s: search position
-		k, t, n, s int
-		data       []byte
-		reader     *bufio.Reader
+		k, t   int // k: number of bytes try to read, t: temporary value
+		n, s   int // n: bytes read, s: search position
+		data   []byte
+		reader *bufio.Reader
 	)
 
 	reader = bufio.NewReader(r)
 	k = len(target)              // k = 4 or len(target) + 1
 	data = make([]byte, 0, 1024) // 10, 24, 32, 1024
-
 	if debug {
 		log.Printf(
-			"target=%q, k=%d, len(target)=%d, cap(data) =%d\n",
+			">>> target=%q, k=%d, len(target)=%d, cap(data) =%d\n",
 			target, len(target), k, cap(data),
 		)
 	}
@@ -64,6 +63,9 @@ func SearchText(target []byte, r io.Reader, debug bool) (idx int, err error) {
 		if t = len(data); t+k > cap(data) {
 			idx += len(data)
 			t, data = 0, data[:0]
+		}
+		if debug {
+			log.Printf("~~~ t=%d, k=%d\n", t, k)
 		}
 
 		if n, err = io.ReadFull(reader, data[t:(t+k)]); err != nil {
@@ -76,7 +78,7 @@ func SearchText(target []byte, r io.Reader, debug bool) (idx int, err error) {
 			}
 		}
 		if debug {
-			log.Printf("~~~ t=%d, k=%d, n=%d\n", t, k, n)
+			log.Printf("    n=%d\n", n)
 		}
 
 		data = data[:len(data)+n]         // !! extend data
@@ -92,7 +94,7 @@ func SearchText(target []byte, r io.Reader, debug bool) (idx int, err error) {
 		}
 
 		if debug {
-			log.Printf("    read data[%d:%d] bytes: %q\n", len(data)-n, len(data), string(data))
+			log.Printf("    read to data[%d:%d]: %q\n", len(data)-n, len(data), string(data))
 		}
 	}
 }
