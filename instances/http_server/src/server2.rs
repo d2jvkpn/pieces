@@ -122,7 +122,7 @@ async fn handle_stream3(stream: Arc<TcpStream>) -> Res<()> {
         response.body = Some(path);
         let d = String::from("");
         let body = response.body.as_ref().unwrap_or(&d);
-        let res_str = format!("{}\r\n\r\n{}\r\n", response, body);
+        let res_str = format!("{}\r\n\r\n{}\n", response, body);
         println!("{}", res_str);
         stream.write_all(res_str.as_bytes()).await?;
         s = 0;
@@ -138,6 +138,7 @@ fn handle_request(req_str: &str) -> (String, Response) {
     };
 
     let path = request.path().to_string();
+
     if request.method() != &Method::GET {
         let response = Response::new(StatusCode::BadRequest, Some("invlid method".to_string()));
         return (path, response);
