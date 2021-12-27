@@ -81,20 +81,20 @@ func SearchText(target []byte, r io.Reader, debug bool) (idx int, err error) {
 			log.Printf("    n=%d\n", n)
 		}
 
-		data = data[:len(data)+n]         // !! extend data
+		data = data[:len(data)+n] // !! extend data
+		if debug {
+			log.Printf("    read to data[%d:%d]: %q\n", len(data)-n, len(data), string(data))
+		}
+
 		if t = len(data) - k - n; t < 0 { // search from the end of data
 			t = 0
 		}
-
-		if s = bytes.Index(data[t:], target); s > 0 {
+		if s = bytes.Index(data[t:], target); s >= 0 {
 			if debug {
 				log.Printf("    found %q: data[%d:%d]\n", target, t, t+len(target))
 			}
 			return idx + s + t, nil
 		}
 
-		if debug {
-			log.Printf("    read to data[%d:%d]: %q\n", len(data)-n, len(data), string(data))
-		}
 	}
 }

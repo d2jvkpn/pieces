@@ -16,3 +16,5 @@ go run search_in_file.go "eem" a01.txt
 go run search_in_file.go "eee"$'\n'"f" a01.txt
 
 go run search_in_file.go -debug eee a01.txt
+
+go run search_in_file.go -debug eee$'\n'ff a01.txt
