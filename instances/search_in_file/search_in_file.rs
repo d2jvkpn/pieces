@@ -24,9 +24,10 @@ fn main() {
 // Err(e) => io::Error, Ok(-1) => NotFound, Ok(>=0) => Found
 fn search_text(bts: &[u8], read: impl io::Read, debug: bool) -> Result<i64, io::Error> {
     const SIZE: usize = 32; // must to be a const for creating an array
-    let (mut index, mut t) = (0, 2 * bts.len());
+    let (mut index, mut t, mut tag) = (0, 2 * bts.len(), 0_i8);
     let mut cache: Vec<u8> = Vec::with_capacity(if t > SIZE { t } else { SIZE });
     let mut reader = io::BufReader::new(read);
+    let mut buffer = [0; SIZE];
 
     if debug {
         eprintln!(
@@ -38,7 +39,6 @@ fn search_text(bts: &[u8], read: impl io::Read, debug: bool) -> Result<i64, io::
         );
     }
 
-    let mut tag: i8 = 0;
     while tag == 0 {
         if cache.len() + SIZE > cache.capacity() {
             t = cache.len() - SIZE; // left shift
@@ -52,8 +52,7 @@ fn search_text(bts: &[u8], read: impl io::Read, debug: bool) -> Result<i64, io::
             eprintln!("~~~ fill [{}:{}]: index={}", cache.len(), cache.len() + SIZE, index);
         }
 
-        let mut buffer = [0; SIZE];
-
+        buffer.iter_mut().for_each(|x| *x = 0);
         match reader.read_exact(&mut buffer) {
             Ok(_) => {}
             Err(ref e) if e.kind() == io::ErrorKind::UnexpectedEof => tag = -1,
