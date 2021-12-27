@@ -86,7 +86,7 @@ func SearchText(target string, r io.Reader, debug bool) (idx int, err error) {
 
 		if s = bytes.Index(data[t:], []byte(target)); s > 0 {
 			if debug {
-				log.Printf("found %q: data[%d:%d]\n", target, t, t+len(target))
+				log.Printf("    found %q: data[%d:%d]\n", target, t, t+len(target))
 			}
 			return idx + s + t, nil
 		}
