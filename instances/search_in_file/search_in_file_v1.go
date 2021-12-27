@@ -46,13 +46,12 @@ func main() {
 		}
 
 		if n, err = io.ReadFull(reader, data[t:(t+k)]); err != nil {
-			switch err {
-			case io.EOF:
+			if err == io.EOF {
 				log.Println("io.EOF")
-				return
-			case io.ErrUnexpectedEOF:
-				break // continue loop
-			default:
+				break
+			} else if err == io.ErrUnexpectedEOF {
+				break
+			} else {
 				log.Fatal(err)
 			}
 		}

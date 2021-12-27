@@ -67,12 +67,9 @@ func SearchText(r io.Reader, target string, debug bool) (idx int, err error) {
 		}
 
 		if n, err = io.ReadFull(reader, data[t:(t+k)]); err != nil {
-			switch err {
-			case io.EOF:
+			if err == io.EOF {
 				return -1, nil
-			case io.ErrUnexpectedEOF:
-				break // continue the loop
-			default:
+			} else { // io.ErrUnexpectedEOF, invalid utf8...
 				return -1, err
 			}
 		}
