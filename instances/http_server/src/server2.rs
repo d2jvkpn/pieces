@@ -1,6 +1,6 @@
 use std::{error, io, marker, net, process, result};
 
-use crate::http::{ParseError, Request, Response, StatusCode};
+use crate::http::{method::Method, ParseError, Request, Response, StatusCode};
 use crate::server;
 
 use async_std::{
@@ -47,7 +47,7 @@ async fn handle(stream: TcpStream) {
     };
     println!("+++ Accepting connection from: {}", addr);
 
-    if let Err(e) = handle_stream2(Arc::new(stream)).await {
+    if let Err(e) = handle_stream3(Arc::new(stream)).await {
         println!("--- {} error: {}", addr, e);
         return;
     }
@@ -78,31 +78,6 @@ async fn handle_stream1(stream: Arc<TcpStream>) -> Res<()> {
 
 async fn handle_stream2(stream: Arc<TcpStream>) -> Res<()> {
     let mut stream = &*stream;
-    let reader = BufReader::new(stream);
-    let mut lines = reader.lines();
-
-    let mut s = 0_usize;
-    let mut blocks = vec![];
-    while let Some(line) = lines.next().await {
-        let line = line?;
-        if line != "" {
-            s += line.len() + 1;
-            blocks.push(line);
-            continue;
-        }
-        println!("size={}, {:?}", s, blocks);
-        // stream.write_all(("<-- response: ".to_owned() + &line + "\n").as_bytes()).await?;
-        stream
-            .write_all((format!("read {} messages, size={}\n", blocks.len(), s)).as_bytes())
-            .await?;
-        s = 0;
-        blocks.clear();
-    }
-    Ok(())
-}
-
-async fn handle_stream3(stream: Arc<TcpStream>) -> Res<()> {
-    let mut stream = &*stream;
     let mut reader = BufReader::new(stream);
 
     // let mut buffer = vec![0u8; 1024];
@@ -120,4 +95,61 @@ async fn handle_stream3(stream: Arc<TcpStream>) -> Res<()> {
     }
 
     Ok(())
+}
+
+async fn handle_stream3(stream: Arc<TcpStream>) -> Res<()> {
+    let mut stream = &*stream;
+    let reader = BufReader::new(stream);
+    let mut lines = reader.lines();
+
+    let mut s = 0_usize;
+    let mut blocks = vec![];
+    while let Some(line) = lines.next().await {
+        let line = line?;
+        if line != "" {
+            s += line.len() + 1;
+            blocks.push(line);
+            continue;
+        }
+
+        if blocks.len() == 0 {
+            return Ok(());
+        }
+        blocks[0].push_str("\r\n\r\n");
+        println!("size={}, {:?}", s, blocks);
+
+        let (path, mut response) = handle_request(&blocks[0]);
+        response.body = Some(path);
+        let d = String::from("");
+        let body = response.body.as_ref().unwrap_or(&d);
+        let res_str = format!("{}\r\n\r\n{}\r\n", response, body);
+        println!("{}", res_str);
+        stream.write_all(res_str.as_bytes()).await?;
+        s = 0;
+        blocks.clear();
+    }
+    Ok(())
+}
+
+fn handle_request(req_str: &str) -> (String, Response) {
+    let request = match Request::try_from(req_str.as_bytes()) {
+        Ok(v) => v,
+        Err(e) => return ("".to_string(), Response::new(StatusCode::BadRequest, None)),
+    };
+
+    let path = request.path().to_string();
+    if request.method() != &Method::GET {
+        let response = Response::new(StatusCode::BadRequest, Some("invlid method".to_string()));
+        return (path, response);
+    }
+
+    let response = match request.path() {
+        "/" => Response::new(StatusCode::Ok, Some("<h4>Welcome</h4>".to_string())),
+        "/hello" => Response::new(StatusCode::Ok, Some("<h4>Hello</h4>".to_string())),
+        "/ping" => Response::new(StatusCode::Ok, Some("<h4>pong</h4>".to_string())),
+        // p if p.starts_with("/static/") => self.read_file(p),
+        _ => Response::new(StatusCode::BadRequest, Some("invlid path".to_string())),
+    };
+
+    (path, response)
 }

@@ -47,3 +47,9 @@ curl -i localhost:8080/static/hello.txt
 
 #### 400 invlid path, as convert to /Cargo.toml
 curl -i localhost:8080/static/../../Cargo.toml
+
+####
+echo -e "GET /ping HTTP/1.1\r\n\r\nGET /ping HTTP/1.1\r\n\r\n" | netcat localhost 8080
+
+# get response, but blocked, ignore this, https://reqbin.com/req/c-ulfpjfcv/curl-command-with-close-connection-header
+curl -i  localhost:8080/hello
