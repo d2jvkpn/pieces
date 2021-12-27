@@ -50,7 +50,7 @@ func SearchText(r io.Reader, target string, debug bool) (idx int, err error) {
 	)
 
 	reader = bufio.NewReader(r)
-	k = len(target)              // k = 4, one for \n
+	k = len(target)              // k = 4 or len(target) + 1
 	data = make([]byte, 0, 1024) // 10, 24, 32, 1024
 
 	if debug {
@@ -85,7 +85,6 @@ func SearchText(r io.Reader, target string, debug bool) (idx int, err error) {
 			}
 			return idx + s + t, nil
 		}
-
 		if debug {
 			log.Printf("read data[%d:%d] bytes: %q\n", len(data)-n, len(data), string(data))
 		}
