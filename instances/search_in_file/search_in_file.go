@@ -50,10 +50,11 @@ func main() {
 
 func SearchText(target []byte, r io.Reader, debug bool) (idx int, err error) {
 	var (
-		k, t   int // k: number of bytes try to read, t: temporary value
-		n, s   int // n: bytes read, s: search position
-		buffer []byte
-		reader *bufio.Reader
+		// k: number of bytes try to read, t: temporary value
+		// n: bytes read, s: search position
+		k, t, n, s int
+		buffer     []byte
+		reader     *bufio.Reader
 	)
 
 	reader = bufio.NewReader(r)
@@ -101,6 +102,5 @@ func SearchText(target []byte, r io.Reader, debug bool) (idx int, err error) {
 			}
 			return idx, nil
 		}
-
 	}
 }
