@@ -46,37 +46,36 @@ func main() {
 	} else {
 		fmt.Printf("Index: %d\n", idx)
 	}
-
 }
 
 func SearchText(target []byte, r io.Reader, debug bool) (idx int, err error) {
 	var (
 		k, t   int // k: number of bytes try to read, t: temporary value
 		n, s   int // n: bytes read, s: search position
-		data   []byte
+		buffer []byte
 		reader *bufio.Reader
 	)
 
 	reader = bufio.NewReader(r)
-	k = len(target)              // k = 4 or len(target) + 1
-	data = make([]byte, 0, 1024) // 10, 24, 32, 1024
+	k = len(target)                // k = 4 or len(target) + 1
+	buffer = make([]byte, 0, 1024) // 10, 24, 32, 1024
 	if debug {
 		log.Printf(
 			">>> target=%q, k=%d, len(target)=%d, cap(data) =%d\n",
-			target, len(target), k, cap(data),
+			target, len(target), k, cap(buffer),
 		)
 	}
 
 	for {
-		if t = len(data); t+k > cap(data) {
-			idx += len(data)
-			t, data = 0, data[:0]
+		if t = len(buffer); t+k > cap(buffer) {
+			idx += len(buffer)
+			t, buffer = 0, buffer[:0]
 		}
 		if debug {
 			log.Printf("~~~ t=%d, k=%d\n", t, k)
 		}
 
-		if n, err = io.ReadFull(reader, data[t:(t+k)]); err != nil {
+		if n, err = io.ReadFull(reader, buffer[t:(t+k)]); err != nil {
 			// !! ErrUnexpectedEOF means that EOF was encountered in the middle of reading a
 			//    fixed-size block or data structure
 			if err == io.EOF || err == io.ErrUnexpectedEOF {
@@ -86,20 +85,21 @@ func SearchText(target []byte, r io.Reader, debug bool) (idx int, err error) {
 			}
 		}
 
-		data = data[:len(data)+n] // !! extend data
+		buffer = buffer[:len(buffer)+n] // !! extend buffer
 		if debug {
 			log.Printf("    n=%d\n", n)
-			log.Printf("    read to data[%d:%d]: %q\n", len(data)-n, len(data), string(data))
+			log.Printf("    read to data[%d:%d]: %q\n", len(buffer)-n, len(buffer), string(buffer))
 		}
 
-		if t = len(data) - k - n; t < 0 { // search from the end of data
+		if t = len(buffer) - k - n; t < 0 { // search from the end of buffer
 			t = 0
 		}
-		if s = bytes.Index(data[t:], target); s >= 0 {
+		if s = bytes.Index(buffer[t:], target); s >= 0 {
+			idx = idx + s + t
 			if debug {
-				log.Printf("    found %q: data[%d:%d]\n", target, t, t+len(target))
+				log.Printf("<<< found %q: range=[%d:%d]\n", target, idx, idx+n)
 			}
-			return idx + s + t, nil
+			return idx, nil
 		}
 
 	}
