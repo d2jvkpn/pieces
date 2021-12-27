@@ -69,6 +69,10 @@ func SearchText(bts []byte, r io.Reader, debug bool) (idx int, err error) {
 	k = len(bts)                   // k = 4 or len(bts) + 1
 	buffer = make([]byte, 0, 1024) // 10, 24, 32, 1024
 
+	if k > 1024 {
+		return -1, fmt.Errorf("target bytes too long")
+	}
+
 	if debug {
 		log.Printf(
 			">>> target=%q, k=%d, len(target)=%d, cap(data) =%d\n",
