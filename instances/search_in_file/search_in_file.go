@@ -31,7 +31,7 @@ func main() {
 	}
 	defer file.Close()
 
-	if idx, err = SearchText(target, file, debug); err != nil {
+	if idx, err = SearchText([]byte(target), file, debug); err != nil {
 		fmt.Fprintf(os.Stderr, "SearchText: %v\n", err)
 		os.Exit(1)
 	} else if idx == -1 {
@@ -41,7 +41,7 @@ func main() {
 	}
 }
 
-func SearchText(target string, r io.Reader, debug bool) (idx int, err error) {
+func SearchText(target []byte, r io.Reader, debug bool) (idx int, err error) {
 	var (
 		// k: number of bytes try to read, t: temporary value, n: bytes read, s: search position
 		k, t, n, s int
@@ -84,7 +84,7 @@ func SearchText(target string, r io.Reader, debug bool) (idx int, err error) {
 			t = 0
 		}
 
-		if s = bytes.Index(data[t:], []byte(target)); s > 0 {
+		if s = bytes.Index(data[t:], target); s > 0 {
 			if debug {
 				log.Printf("    found %q: data[%d:%d]\n", target, t, t+len(target))
 			}
