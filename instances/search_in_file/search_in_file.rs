@@ -1,6 +1,6 @@
 use std::{
     env,
-    fs::File,
+    fs,
     io::{self, Read},
     // str,
     process,
@@ -14,14 +14,26 @@ fn main() {
     }
 
     let (target, fp) = (&args[1], &args[2]);
-    eprintln!("target={:?}, fp={}", target, fp);
+    // eprintln!("target={:?}, fp={}", target, fp);
 
-    let file = File::open(fp).unwrap();
+    // let file = fs::File::open(&fp).map_err(|e| format!("open {}: {}", &fp, e)).unwrap();
+    let file = match fs::File::open(&fp) {
+        Ok(v) => v,
+        Err(e) => {
+            eprintln!("open file {}: {}", &fp, e);
+            process::exit(1);
+        }
+    };
+
     let bts = target.as_bytes();
     let app_debug = env::var("APP_Debug").unwrap_or("".to_string()) == "true";
 
     match search_text(bts, file, app_debug) {
-        Err(e) => Err(e).unwrap(),
+        Err(e) => {
+            //Err(e).unwrap();
+            eprintln!("search_text error: {}", e);
+            process::exit(1);
+        }
         Ok(v) if v == -1 => println!("NotFound: -1"),
         Ok(v) => println!("Index: {}", v),
     }
