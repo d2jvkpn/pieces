@@ -25,10 +25,8 @@ fn main() {
         }
     };
 
-    let bts = target.as_bytes();
     let app_debug = env::var("APP_Debug").unwrap_or("".to_string()) == "true";
-
-    match search_text(bts, file, app_debug) {
+    match search_text(target.as_bytes(), file, app_debug) {
         Err(e) => {
             //Err(e).unwrap();
             eprintln!("search_text error: {}", e);
