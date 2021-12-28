@@ -3,10 +3,16 @@ use std::{
     fs::File,
     io::{self, Read},
     // str,
+    process,
 };
 
 fn main() {
     let args: Vec<String> = env::args().collect();
+    if args.len() < 3 {
+        eprintln!("required <match> <file>");
+        process::exit(1);
+    }
+
     let (target, fp) = (&args[1], &args[2]);
     eprintln!("target={:?}, fp={}", target, fp);
 
