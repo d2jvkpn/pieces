@@ -9,7 +9,6 @@ fn main() {
     }
 
     let (target, fp) = (&args[1], &args[2]);
-    // eprintln!("target={:?}, fp={}", target, fp);
 
     // let file = fs::File::open(&fp).map_err(|e| format!("open {}: {}", &fp, e)).unwrap();
     let file = match fs::File::open(&fp) {
