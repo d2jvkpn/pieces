@@ -53,9 +53,10 @@ fn search_text(bts: &[u8], read: impl io::Read, debug: bool) -> Result<i64, io::
     while tag == 0 {
         if cache.len() + SIZE > cache.capacity() {
             index += cache.len() as i64;
-            let tail = cache[(cache.len() - SIZE)..].to_vec(); // left shift
-            cache.clear();
-            cache.extend_from_slice(&tail);
+            // let tail = cache[(cache.len() - SIZE)..].to_vec(); // left shift
+            // cache.clear();
+            // cache.extend_from_slice(&tail);
+            cache.drain(..(cache.len() - SIZE));
         }
 
         if debug {
