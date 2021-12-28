@@ -1,10 +1,5 @@
-use std::{
-    env,
-    fs,
-    io::{self, Read},
-    // str,
-    process,
-};
+use std::io::{self, Read};
+use std::{env, fs, process}; // str
 
 fn main() {
     let args: Vec<String> = env::args().collect();
