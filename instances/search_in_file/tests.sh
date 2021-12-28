@@ -18,6 +18,7 @@ go run search_in_file.go "eem" a01.txt
 go run search_in_file.go "eee"$'\n'"f" a01.txt
 
 go run search_in_file.go -debug eee a01.txt
+go run search_in_file.go -debug zzz a01.txt
 
 go run search_in_file.go -debug eee$'\n'ff a01.txt
 
@@ -26,9 +27,11 @@ mkdir -p target
 rustfmt search_in_file.rs
 rustc search_in_file.rs -o target/search_in_file
 
-APP_Debug=true target/search_in_file eee$'\n'ff a01.txt
 APP_Debug=true target/search_in_file e a01.txt
 APP_Debug=true target/search_in_file ee a01.txt
+APP_Debug=true target/search_in_file zzz a01.txt
+APP_Debug=true target/search_in_file zz$'\n' a01.txt
+APP_Debug=true target/search_in_file eee$'\n'ff a01.txt
 
 APP_Debug=true target/search_in_file ex a01.txt
 

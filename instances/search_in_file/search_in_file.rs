@@ -24,10 +24,11 @@ fn main() {
 // Err(e) => io::Error, Ok(-1) => NotFound, Ok(>=0) => Found
 fn search_text(bts: &[u8], read: impl io::Read, debug: bool) -> Result<i64, io::Error> {
     const SIZE: usize = 32; // must to be a const for creating an array
-    let (mut index, mut t, mut tag) = (0, 2 * bts.len(), 0_i8);
-    let mut cache: Vec<u8> = Vec::with_capacity(if t > SIZE { t } else { SIZE });
+    let (mut index, k, mut tag) = (0_i64, bts.len(), 0_i8);
+    let mut cache: Vec<u8> = Vec::with_capacity(if 8 * k > 4 * SIZE { 8 * k } else { 4 * SIZE });
     let mut reader = io::BufReader::new(read);
     let mut buffer = [0; SIZE];
+    // ?? can't BuffRead read to a vec as I can do in Golang
 
     if debug {
         eprintln!(
@@ -41,20 +42,25 @@ fn search_text(bts: &[u8], read: impl io::Read, debug: bool) -> Result<i64, io::
 
     while tag == 0 {
         if cache.len() + SIZE > cache.capacity() {
-            t = cache.len() - SIZE; // left shift
-            index += t as i64;
-            let tail = cache[t..].to_vec();
+            index += cache.len() as i64;
+            let tail = cache[(cache.len() - SIZE)..].to_vec(); // left shift
             cache.clear();
             cache.extend_from_slice(&tail);
         }
 
         if debug {
-            eprintln!("~~~ fill [{}:{}]: index={}", cache.len(), cache.len() + SIZE, index);
+            eprintln!(
+                "~~~ read to cache: [{}:{}], index={}",
+                cache.len(),
+                cache.len() + SIZE,
+                index
+            );
         }
 
         buffer.iter_mut().for_each(|x| *x = 0);
         match reader.read_exact(&mut buffer) {
             Ok(_) => {}
+            // don't continue next loop
             Err(ref e) if e.kind() == io::ErrorKind::UnexpectedEof => tag = -1,
             Err(e) => return Err(e),
         };
@@ -62,27 +68,27 @@ fn search_text(bts: &[u8], read: impl io::Read, debug: bool) -> Result<i64, io::
         // let slice = buffer.to_vec().into_iter().filter(|v| *v != 0).collect::<Vec<_>>();
         // println!("{:?}", String::from_utf8_lossy(&slice).trim_matches(char::from(0)));
         // cache.extend_from_slice(&slice);
-        t = buffer.iter().filter(|&v| *v != 0).count();
-        cache.extend_from_slice(&buffer[..t]);
+        let s = buffer.iter().filter(|&v| *v != 0).count();
+        cache.extend_from_slice(&buffer[..s]);
 
         if debug {
             eprintln!(
-                "    slice.len()={}, cache.len()={}\n    cache={:?}",
-                t, // slice.len()
+                "    save to cache: [{}:{}]\n    cache={:?}",
+                cache.len() - s,
                 cache.len(),
-                String::from_utf8_lossy(&cache)
+                String::from_utf8_lossy(&cache),
+                // eprintln!("<<< cache={:?}", str::from_utf8(&cache));
             );
         }
 
-        if let Some(s) = find_subseq(&cache, bts) {
-            index += s as i64;
-            tag = 1;
+        let mut t = cache.len() as i64 - k as i64 - s as i64;
+        if t < 0 {
+            t = 0;
         }
-    }
-
-    if debug {
-        // eprintln!("<<< cache={:?}", str::from_utf8(&cache));
-        eprintln!("<<< cache={:?}", String::from_utf8_lossy(&cache[..]));
+        if let Some(s) = find_subseq(&cache[t as usize..], bts) {
+            index += t + (s as i64);
+            tag = 1; // don't continue next loop
+        }
     }
 
     return if tag == 1 { Ok(index) } else { Ok(-1) };

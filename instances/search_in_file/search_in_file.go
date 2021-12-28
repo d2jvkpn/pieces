@@ -14,7 +14,7 @@ import (
 func main() {
 	var (
 		debug      bool
-		idx        int
+		index      int
 		target, fp string
 		err        error
 		start      time.Time
@@ -29,16 +29,16 @@ func main() {
 	target, fp = flag.Args()[0], flag.Args()[1]
 	start = time.Now()
 
-	if idx, err = SearchInFile(target, fp, debug); err != nil {
+	if index, err = SearchInFile(target, fp, debug); err != nil {
 		fmt.Fprintf(os.Stderr, "SearchInFile: %v\n", err)
 		os.Exit(1)
 	}
 	log.Printf("Elapsed: %s\n", time.Now().Sub(start))
 
-	if idx == -1 {
+	if index == -1 {
 		fmt.Println("NotFound: -1")
 	} else {
-		fmt.Printf("Index: %d\n", idx)
+		fmt.Printf("Index: %d\n", index)
 	}
 }
 
@@ -56,7 +56,7 @@ func SearchInFile(target string, fp string, debug bool) (int, error) {
 	return SearchText([]byte(target), file, debug)
 }
 
-func SearchText(bts []byte, r io.Reader, debug bool) (idx int, err error) {
+func SearchText(bts []byte, r io.Reader, debug bool) (index int, err error) {
 	var (
 		ok bool
 		// k: number of bytes try to read, t: temporary value
@@ -77,14 +77,14 @@ func SearchText(bts []byte, r io.Reader, debug bool) (idx int, err error) {
 	for ok {
 		if t = len(buffer); t+k > cap(buffer) {
 			tail = buffer[t-k : t] // !! left shift
-			idx += t - k
+			index += t - k
 			// buffer = make([]byte, 0, bufsize)
 			// buffer = append(buffer, tail...)
 			buffer = append(buffer[:0], tail...) // avoid allocation
 		}
 
 		if debug {
-			log.Printf("~~~ read to buffer: [%d:%d]\n", t, t+k)
+			log.Printf("~~~ read to buffer: [%d:%d], index=%d\n", t, t+k, index)
 		}
 
 		if t = len(buffer) + k; t > cap(buffer) {
@@ -102,7 +102,7 @@ func SearchText(bts []byte, r io.Reader, debug bool) (idx int, err error) {
 		buffer = buffer[:len(buffer)+n] // !! extend buffer
 
 		if debug {
-			log.Printf("    n=%d, length=%d\n", n, len(buffer))
+			log.Printf("    save to buffer: [%d:%d]\n", len(buffer)-n, len(buffer))
 			log.Printf("    buffer=%q\n", string(buffer[:len(buffer)]))
 		}
 
@@ -110,13 +110,13 @@ func SearchText(bts []byte, r io.Reader, debug bool) (idx int, err error) {
 			t = 0
 		}
 		if s = bytes.Index(buffer[t:], bts); s >= 0 {
-			idx = idx + s + t
+			index += (s + t)
 
 			if debug {
-				log.Printf("<<< found %q: range=[%d:%d]\n", bts, idx, idx+n)
+				log.Printf("<<< found %q: range=[%d:%d]\n", bts, index, index+n)
 			}
 
-			return idx, nil
+			return index, nil
 		}
 	}
 
