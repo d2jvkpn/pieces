@@ -73,17 +73,14 @@ fn search_text(bts: &[u8], read: impl io::Read, debug: bool) -> Result<i64, io::
             // eprintln!("<<< cache={:?}", str::from_utf8(&cache));
         }
 
-        let mut t = cache.len() as i64 - k as i64 - s as i64;
-        if t < 0 {
-            t = 0;
-        }
-        if let Some(s) = find_subseq(&cache[t as usize..], bts) {
-            index += t + (s as i64);
+        let t = if cache.len() < k + s { 0 } else { (cache.len() - k - s) as usize };
+        if let Some(s) = find_subseq(&cache[t..], bts) {
+            index += (t + s) as i64;
             tag = 1; // don't continue next loop
 
             if debug {
                 let target = String::from_utf8_lossy(&bts);
-                eprintln!("<<< found {}: range=[{}:{}]", target, index, index + k as i64);
+                eprintln!("<<< found {:?}: range=[{}:{}]", target, index, index + k as i64);
             }
         }
     }
