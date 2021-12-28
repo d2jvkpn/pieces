@@ -3,7 +3,7 @@ fn main() {
     buffer[0] = 65;
 
     println!(
-        "notzeros={}, buffer={:?}",
+        "buffer notzeros={}, buffer={:?}",
         buffer.iter().filter(|&v| *v != 0).count(),
         String::from_utf8_lossy(&buffer).trim_matches(char::from(0)),
     );
@@ -13,7 +13,17 @@ fn main() {
     slice[0] = 65;
 
     println!(
-        "notzeros={}, buffer={:?}",
+        "buffer notzeros={}, buffer={:?}",
+        buffer.iter().filter(|&v| *v != 0).count(),
+        String::from_utf8_lossy(&buffer).trim_matches(char::from(0)),
+    );
+
+    let v = &mut buffer.to_vec(); // clone of buffer
+    v[1] = 66;
+    println!("v={:?}, buffer[1]={}", v, buffer[1]); // v=[65, 66, 0, 0, 0, 65, 0, 0, 0, 0], buffer[1]=0
+
+    println!(
+        "buffer notzeros={}, buffer={:?}",
         buffer.iter().filter(|&v| *v != 0).count(),
         String::from_utf8_lossy(&buffer).trim_matches(char::from(0)),
     );
