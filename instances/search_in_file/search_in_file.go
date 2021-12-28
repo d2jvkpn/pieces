@@ -53,10 +53,10 @@ func SearchInFile(target string, fp string, debug bool) (int, error) {
 	}
 	defer file.Close()
 
-	return SearchText([]byte(target), file, 32, debug)
+	return SearchText([]byte(target), file, debug)
 }
 
-func SearchText(bts []byte, r io.Reader, bufsize int, debug bool) (idx int, err error) {
+func SearchText(bts []byte, r io.Reader, debug bool) (idx int, err error) {
 	var (
 		// k: number of bytes try to read, t: temporary value
 		// n: bytes read, s: search position
@@ -66,16 +66,11 @@ func SearchText(bts []byte, r io.Reader, bufsize int, debug bool) (idx int, err 
 	)
 
 	reader = bufio.NewReader(r)
-	k, buffer = 2*len(bts), make([]byte, 0, bufsize)
-	if k < bufsize {
-		k = bufsize
-	}
+	k = len(bts)
+	buffer = make([]byte, 0, 8*k)
 
 	if debug {
-		log.Printf(
-			">>> target=%q, k=%d, len(target)=%d, cap(data) =%d\n",
-			bts, len(bts), k, cap(buffer),
-		)
+		log.Printf(">>> target=%q, k=%d, cap(buffer)=%d\n", bts, k, cap(buffer))
 	}
 
 	for {
@@ -88,7 +83,7 @@ func SearchText(bts []byte, r io.Reader, bufsize int, debug bool) (idx int, err 
 		}
 
 		if debug {
-			log.Printf("~~~ read to buffer: t=%d, k=%d\n", t, k)
+			log.Printf("~~~ read to buffer: [%d:%d]\n", t, t+k)
 		}
 
 		if t = len(buffer) + k; t > cap(buffer) {
@@ -104,6 +99,7 @@ func SearchText(bts []byte, r io.Reader, bufsize int, debug bool) (idx int, err 
 			if debug {
 				log.Printf("    n=%d, length=%d\n", n, len(buffer))
 			}
+
 			return -1, nil
 		}
 
