@@ -49,12 +49,8 @@ fn search_text(bts: &[u8], read: impl io::Read, debug: bool) -> Result<i64, io::
         }
 
         if debug {
-            eprintln!(
-                "~~~ read to cache: [{}:{}], index={}",
-                cache.len(),
-                cache.len() + SIZE,
-                index
-            );
+            let t = cache.len() + SIZE;
+            eprintln!("~~~ read to cache: [{}:{}], index={}", cache.len(), t, index);
         }
 
         buffer.iter_mut().for_each(|x| *x = 0);
@@ -72,13 +68,9 @@ fn search_text(bts: &[u8], read: impl io::Read, debug: bool) -> Result<i64, io::
         cache.extend_from_slice(&buffer[..s]);
 
         if debug {
-            eprintln!(
-                "    save to cache: [{}:{}]\n    cache={:?}",
-                cache.len() - s,
-                cache.len(),
-                String::from_utf8_lossy(&cache),
-                // eprintln!("<<< cache={:?}", str::from_utf8(&cache));
-            );
+            eprintln!("    save to cache: [{}:{}]", cache.len() - s, cache.len());
+            eprintln!("    cache={:?}", String::from_utf8_lossy(&cache));
+            // eprintln!("<<< cache={:?}", str::from_utf8(&cache));
         }
 
         let mut t = cache.len() as i64 - k as i64 - s as i64;
@@ -88,6 +80,11 @@ fn search_text(bts: &[u8], read: impl io::Read, debug: bool) -> Result<i64, io::
         if let Some(s) = find_subseq(&cache[t as usize..], bts) {
             index += t + (s as i64);
             tag = 1; // don't continue next loop
+
+            if debug {
+                let target = String::from_utf8_lossy(&bts);
+                eprintln!("<<< found {}: range=[{}:{}]", target, index, index + k as i64);
+            }
         }
     }
 
