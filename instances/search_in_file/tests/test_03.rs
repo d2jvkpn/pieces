@@ -1,7 +1,6 @@
 fn main() {
     let mut buffer = [0; 10];
     buffer[0] = 65;
-
     println!(
         "buffer notzeros={}, buffer={:?}",
         buffer.iter().filter(|&v| *v != 0).count(),
@@ -20,7 +19,8 @@ fn main() {
 
     let v = &mut buffer.to_vec(); // clone of buffer
     v[1] = 66;
-    println!("v={:?}, buffer[1]={}", v, buffer[1]); // v=[65, 66, 0, 0, 0, 65, 0, 0, 0, 0], buffer[1]=0
+    // v=[65, 66, 0, 0, 0, 65, 0, 0, 0, 0], buffer[1]=0
+    println!("v={:?}, buffer[1]={}", v, buffer[1]);
 
     println!(
         "buffer notzeros={}, buffer={:?}",
