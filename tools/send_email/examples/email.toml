@@ -1,0 +1,15 @@
+[send]
+smtpAddr = "smtp.ym.163.com"
+smtpPort = 25
+
+sender = "name@example.com"
+password = "xxxxxxxx"
+recipients = ["100@example.com", "110@example.com"]
+
+title = "test gomail"
+body = '''
+Hello, receiver:
+  Wish you a nice day!
+'''
+
+attachs = ["demo/hello.txt"]

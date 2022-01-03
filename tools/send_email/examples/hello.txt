@@ -1,0 +1,2 @@
+Hello, receiver:
+  Wish you a nice day!

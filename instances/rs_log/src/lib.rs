@@ -14,7 +14,7 @@ impl User {
     }
 
     pub fn sign_in(&self, pass: &str) {
-        if pass != self.pass {
+        if pass == self.pass {
             info!("Signing in user: {}", self.name);
         } else {
             error!("Login failed for user: {}", self.name);
