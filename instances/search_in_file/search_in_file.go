@@ -17,7 +17,7 @@ func main() {
 		index      int
 		target, fp string
 		err        error
-		start      time.Time
+		startTime  time.Time
 	)
 
 	flag.BoolVar(&debug, "debug", false, "run in debug mode")
@@ -27,13 +27,13 @@ func main() {
 	}
 
 	target, fp = flag.Args()[0], flag.Args()[1]
-	start = time.Now()
+	startTime = time.Now()
 
 	if index, err = SearchInFile(target, fp, debug); err != nil {
 		fmt.Fprintf(os.Stderr, "SearchInFile: %v\n", err)
 		os.Exit(1)
 	}
-	log.Printf("Elapsed: %s\n", time.Now().Sub(start))
+	log.Printf("Elapsed: %s\n", time.Now().Sub(startTime))
 
 	if index == -1 {
 		fmt.Println("NotFound: -1")

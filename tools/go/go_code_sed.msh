@@ -16,7 +16,9 @@ func main() {
 }
 EOF
 
-gofmt -r "fmt -> fmtABC" tmp.go
+go fmt tmp.go
+
+gofmt -r '"fmt" -> "fmtABC"' tmp.go
 
 gofmt -r "\"fmt\" -> \"a/b/c/fmt\"" tmp.go
 
