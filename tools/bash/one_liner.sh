@@ -1,6 +1,6 @@
 #! /usr/bin/env bash
 set -eu -o pipefail
+_wd=$(pwd)
+_path=$(dirname $0 | xargs -i readlink -f {})
 
-wd=$(pwd)
-
-python3 -c "import time; time.sleep(10)"
+python3 -c "import time; print('start'); time.sleep(10); print('done')"
