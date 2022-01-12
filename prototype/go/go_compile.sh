@@ -3,7 +3,7 @@ set -eu -o pipefail
 
 wd=$(pwd)
 
-echo """
+cat > tmp.go << EOF
 package main
 
 import (
@@ -12,11 +12,11 @@ import (
 
 func main() {
 	fmt.Println("Hello, world!")
-	
+
 	a := 1
 	b := 2
 	fmt.Println(a+b)
 }
-""" > tmp.go
+EOF
 
 go tool compile -S -N -l tmp.go

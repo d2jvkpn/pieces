@@ -117,3 +117,5 @@ func QuoteString(str string) string {
 	}
 	return fmt.Sprintf("%q", str)
 }
+
+func 
