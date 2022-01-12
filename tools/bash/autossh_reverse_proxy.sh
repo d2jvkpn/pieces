@@ -8,17 +8,18 @@ _path=$(dirname $0 | xargs -i readlink -f {})
 
 export AUTOSSH_LOGFILE="$0.log"
 
+REMOTE_User=hello
 REMOTE_IP=1.2.3.4
 REMOTE_SSHPort=22
-REMOTE_AccessPort=2001
-LOCAL_SSHPort=10022
+REMOTE_Port=2001
+LOCAL_Port=10022
 
-autossh -p $REMOTE_SSHPort -f -N -R localhost:$REMOTE_AccessPort:localhost:$LOCAL_SSHPort \
+autossh -p $REMOTE_SSHPort -f -N -R localhost:$REMOTE_Port:localhost:$LOCAL_Port \
   -o "ServerAliveInterval 5"   \
   -o "ServerAliveCountMax 2"    \
   -o "ExitOnForwardFailure yes" \
-  root@$REMOTE_IP
+  $REMOTE_User@$REMOTE_IP
 
 exit
 # on remote machine
-ssh -p $REMOTE_AccessPort hello@localhost
+ssh -p $REMOTE_Port hello@localhost
