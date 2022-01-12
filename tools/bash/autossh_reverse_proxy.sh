@@ -14,7 +14,7 @@ REMOTE_SSHPort=22
 REMOTE_Port=2001
 LOCAL_Port=10022
 
-autossh -p $REMOTE_SSHPort -f -N -R localhost:$REMOTE_Port:localhost:$LOCAL_Port \
+autossh -f -N -R localhost:$REMOTE_Port:localhost:$LOCAL_Port -p $REMOTE_SSHPort \
   -o "ServerAliveInterval 5"   \
   -o "ServerAliveCountMax 2"    \
   -o "ExitOnForwardFailure yes" \
