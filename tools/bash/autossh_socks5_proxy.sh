@@ -1,5 +1,8 @@
 #! /usr/bin/env bash
 
+_wd=$(pwd)
+_path=$(dirname $0 | xargs -i readlink -f {})
+
 ## crontab -l
 # @reboot bash /path/to/autossh_socks5_proxy.sh
 
