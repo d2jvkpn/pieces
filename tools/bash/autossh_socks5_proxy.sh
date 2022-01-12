@@ -7,7 +7,6 @@ _path=$(dirname $0 | xargs -i readlink -f {})
 # @reboot bash /path/to/autossh_socks5_proxy.sh
 
 export AUTOSSH_LOGFILE="$0.log"
-export AUTOSSH_PIDFILE="$0.pid"
 
 REMOTE_SSHPort=22
 REMOTE_IP=1.2.3.4
