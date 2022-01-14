@@ -1,12 +1,14 @@
 #! /usr/bin/env bash
 
 _wd=$(pwd)
-_path=$(dirname $0 | xargs -i readlink -f {})
+_self=$(readlink -f $0)
+_path=$(dirname ${_self})
 
 ## crontab -l
 # @reboot bash /path/to/autossh_socks5_proxy.sh
 
-export AUTOSSH_LOGFILE="$0.log"
+export AUTOSSH_LOGFILE="${_self}.log"
+export AUTOSSH_PIDFILE="${_self}.pid"
 
 REMOTE_User=hello
 REMOTE_SSHPort=22
