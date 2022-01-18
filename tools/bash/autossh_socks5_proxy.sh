@@ -1,5 +1,5 @@
 #! /usr/bin/env bash
-
+set -eu -o pipefail
 _wd=$(pwd)
 _self=$(readlink -f $0)
 _path=$(dirname ${_self})
@@ -7,7 +7,7 @@ _path=$(dirname ${_self})
 ## crontab -l
 # @reboot bash /path/to/autossh_socks5_proxy.sh
 
-export AUTOSSH_LOGFILE="${_self}.log"
+export AUTOSSH_LOGFILE="${_self}.$(date +%F_%s).log"
 export AUTOSSH_PIDFILE="${_self}.pid"
 
 REMOTE_User=hello

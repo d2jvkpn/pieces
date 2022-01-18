@@ -1,5 +1,5 @@
 #! /bin/bash
-
+set -eu -o pipefail
 _wd=$(pwd)
 _self=$(readlink -f $0)
 _path=$(dirname $0 | xargs -i readlink -f {})
@@ -7,7 +7,7 @@ _path=$(dirname $0 | xargs -i readlink -f {})
 ## cronjob
 # @reboot bash /path/to/autossh_reverse_proxy.sh
 
-export AUTOSSH_LOGFILE="${_self}.log"
+export AUTOSSH_LOGFILE="${_self}.$(date +%F_%s).log"
 export AUTOSSH_PIDFILE="${_self}.pid"
 
 REMOTE_User=hello
