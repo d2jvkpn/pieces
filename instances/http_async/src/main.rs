@@ -57,8 +57,8 @@ async fn connection_loop(mut stream: TcpStream, addr: net::SocketAddr) -> Res<()
         let line = line?;
         let (dest, msg) = match line.find(':') {
             None => {
-                println!("~~~ {}: {}", username, line);
-                stream.write_all(format!(">>> GOT: {}\n", line).as_bytes()).await?;
+                println!("~~~ {}: {:?}", username, line);
+                stream.write_all(format!(">>> {:?}\n", line).as_bytes()).await?;
                 continue;
             }
             Some(idx) => (&line[..idx], line[idx + 1..].trim()),
@@ -67,9 +67,9 @@ async fn connection_loop(mut stream: TcpStream, addr: net::SocketAddr) -> Res<()
         let dest: Vec<String> = dest.split(',').map(|v| v.trim().to_string()).collect();
         let msg: String = msg.to_string();
 
-        stream.write_all(format!(">>> GOT: {}\n", line).as_bytes()).await?;
+        stream.write_all(format!(">>> {:?}\n", line).as_bytes()).await?;
 
-        println!("~~~ {}: des={:?}, msg={:}", username, dest, msg);
+        println!("~~~ {}: des={:?}, msg={:?}", username, dest, msg);
     }
 
     println!("{} disconnected", username);
