@@ -5,9 +5,9 @@ _self=$(readlink -f $0)
 _path=$(dirname ${_self})
 
 
-nc localhost 8080
+echo -e 'Rover\nooo\nAlice: Hey!\n' | nc localhost 8080
+
 exit
 Rover
 ooo
 Alic: Hey!
-
