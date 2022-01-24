@@ -11,9 +11,9 @@ import (
 
 func main() {
 	var (
-		wd, localPath   string
-		prefix, address string
-		err             error
+		wd, localPath string
+		address       string
+		err           error
 	)
 
 	///
@@ -22,7 +22,6 @@ func main() {
 	}
 
 	flag.StringVar(&localPath, "path", wd, "local directory path")
-	flag.StringVar(&prefix, "prefix", "/", "http path prefix")
 	flag.StringVar(&address, "address", ":8000", "serve address")
 	flag.Parse()
 
@@ -32,10 +31,7 @@ func main() {
 
 	///
 	mux := http.NewServeMux()
-	mux.Handle(prefix, http.StripPrefix(
-		"/"+strings.Trim(prefix, "/"),
-		http.FileServer(http.Dir(localPath)),
-	))
+	mux.Handle("/", http.FileServer(http.Dir(localPath)))
 
 	server := &http.Server{
 		Addr:    address,

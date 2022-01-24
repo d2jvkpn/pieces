@@ -13,3 +13,6 @@ GOOS=linux   GOARCH=amd64 go build -o target/httpfileserver
 GOOS=windows GOARCH=amd64 go build -o target/httpfileserver.exe
 
 target/httpfileserver -path target/tmp -address :8000
+
+curl localhost:8000
+wget -O target/hello.txt http://localhost:8000/hello.txt
