@@ -41,9 +41,8 @@ async fn accept_loop(addr: impl ToSocketAddrs) -> Res<()> {
 }
 
 async fn connection_loop(mut stream: TcpStream, addr: net::SocketAddr) -> Res<()> {
-    let reader = BufReader::new(stream.clone());
     // let mut writer = BufWriter::new(&stream);
-    let mut lines = reader.lines();
+    let mut lines = BufReader::new(stream.clone()).lines();
 
     // the first message as username
     let username = match lines.next().await {
