@@ -1,9 +1,10 @@
 // https://book.async.rs/tutorial/receiving_messages.html
+#![allow(unused_imports)]
 
 use std::{error, net, process, result};
 
 use async_std::{
-    io::BufReader,
+    io::{BufReader, BufWriter},
     net::{TcpListener, TcpStream, ToSocketAddrs},
     prelude::*,
     task,
@@ -39,8 +40,9 @@ async fn accept_loop(addr: impl ToSocketAddrs) -> Res<()> {
     Ok(())
 }
 
-async fn connection_loop(stream: TcpStream, addr: net::SocketAddr) -> Res<()> {
-    let reader = BufReader::new(&stream);
+async fn connection_loop(mut stream: TcpStream, addr: net::SocketAddr) -> Res<()> {
+    let reader = BufReader::new(stream.clone());
+    // let mut writer = BufWriter::new(&stream);
     let mut lines = reader.lines();
 
     // the first message as username
@@ -49,12 +51,14 @@ async fn connection_loop(stream: TcpStream, addr: net::SocketAddr) -> Res<()> {
         Some(line) => line?,
     };
     println!("~~~ {} username: {}", addr, username);
+    stream.write_all(format!(":) Hello, {}!\n", username).as_bytes()).await?;
 
     while let Some(line) = lines.next().await {
         let line = line?;
         let (dest, msg) = match line.find(':') {
             None => {
                 println!("~~~ {}: {}", username, line);
+                stream.write_all(format!(">>> GOT: {}\n", line).as_bytes()).await?;
                 continue;
             }
             Some(idx) => (&line[..idx], line[idx + 1..].trim()),
@@ -63,8 +67,11 @@ async fn connection_loop(stream: TcpStream, addr: net::SocketAddr) -> Res<()> {
         let dest: Vec<String> = dest.split(',').map(|v| v.trim().to_string()).collect();
         let msg: String = msg.to_string();
 
-        println!("~~~ {}: des={:?}, msg={}", username, dest, msg);
+        stream.write_all(format!(">>> GOT: {}\n", line).as_bytes()).await?;
+
+        println!("~~~ {}: des={:?}, msg={:}", username, dest, msg);
     }
 
+    println!("{} disconnected", username);
     Ok(())
 }
