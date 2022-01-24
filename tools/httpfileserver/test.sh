@@ -9,6 +9,7 @@ mkdir -p target/tmp
 echo "hello, world!" > target/tmp/hello.txt
 truncate -s 1G target/tmp/a.data
 
-go build -o target/httpfileserver
+GOOS=linux   GOARCH=amd64 go build -o target/httpfileserver
+GOOS=windows GOARCH=amd64 go build -o target/httpfileserver.exe
 
 target/httpfileserver -path target/tmp -address :8000
