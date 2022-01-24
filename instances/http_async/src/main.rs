@@ -34,7 +34,7 @@ async fn accept_loop(addr: impl ToSocketAddrs) -> Res<()> {
         let stream = stream?;
         let addr = stream.peer_addr()?;
         println!("<-- Accepting connection from: {}", addr);
-        let _handle = task::spawn(connection_loop(stream, addr));
+        task::spawn(connection_loop(stream, addr));
     }
 
     Ok(())
