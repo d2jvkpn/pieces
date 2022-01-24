@@ -8,6 +8,13 @@ _path=$(dirname ${_self})
 echo -e 'Rover\nooo\nAlice: Hey!\n' | nc localhost 8080
 
 exit
+cat | nc localhost 8080 <<EOF
+Rover
+ooo
+Aluce: Hey
+EOF
+
+exit
 Rover
 ooo
 Alic: Hey!
