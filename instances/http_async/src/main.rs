@@ -3,12 +3,9 @@
 
 use std::{error, net, process, result};
 
-use async_std::{
-    io::{BufReader, BufWriter},
-    net::{TcpListener, TcpStream, ToSocketAddrs},
-    prelude::*,
-    task,
-};
+use async_std::io::{BufReader, BufWriter};
+use async_std::net::{TcpListener, TcpStream, ToSocketAddrs};
+use async_std::{prelude::*, task};
 
 type Res<T> = result::Result<T, Box<dyn error::Error + Send + Sync>>;
 
