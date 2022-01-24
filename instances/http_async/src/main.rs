@@ -54,7 +54,12 @@ async fn connection_loop(mut stream: TcpStream, addr: net::SocketAddr) -> Res<()
     stream.write_all(format!(":) Hello, {}!\n", username).as_bytes()).await?;
 
     while let Some(line) = lines.next().await {
-        let line = line?;
+        let line = match line {
+            Ok(line) if line.is_empty() => continue,
+            Ok(line) => line,
+            Err(e) => Err(e)?,
+        };
+
         let (dest, msg) = match line.find(':') {
             None => {
                 println!("~~~ {}: {:?}", username, line);
@@ -72,6 +77,6 @@ async fn connection_loop(mut stream: TcpStream, addr: net::SocketAddr) -> Res<()
         println!("~~~ {}: des={:?}, msg={:?}", username, dest, msg);
     }
 
-    println!("{} disconnected", username);
+    println!("--> {} disconnected", username);
     Ok(())
 }
