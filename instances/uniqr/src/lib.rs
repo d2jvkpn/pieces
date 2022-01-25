@@ -1,7 +1,5 @@
-use std::{
-    env, error, fs,
-    io::{self, BufRead, BufReader, Write},
-};
+use std::io::{self, BufRead, BufReader, Write};
+use std::{env, error, fs};
 
 use clap::{App, Arg};
 

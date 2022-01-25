@@ -1,7 +1,5 @@
-use std::{
-    env, error, fmt, fs,
-    io::{self, BufRead, BufReader},
-};
+use std::io::{self, BufRead, BufReader};
+use std::{env, error, fmt, fs};
 
 use clap::{App, Arg};
 use flate2::bufread::GzDecoder;
