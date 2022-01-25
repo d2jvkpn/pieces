@@ -111,7 +111,7 @@ async fn handle_stream3(mut stream: TcpStream, addr: String) -> Res<()> {
             return Ok(());
         }
         blocks[0].push_str("\r\n\r\n");
-        println!("{} read: size={}, {:?}", addr, s, blocks);
+        println!("<-- {} read: size={}, {:?}", addr, s, blocks);
 
         // Handle "Keep-Alive: timeout=5, max=1000" or "Connection: close"
         let (path, mut response) = handle_request(&blocks[0]);
@@ -119,7 +119,7 @@ async fn handle_stream3(mut stream: TcpStream, addr: String) -> Res<()> {
         let d = String::from("");
         let body = response.body.as_ref().unwrap_or(&d);
         let res_str = format!("{}\r\n\r\n{}\n", response, body);
-        println!("{} {} {}", addr, path, response.body.unwrap_or("".to_string()));
+        println!("--> {} {} {}", addr, path, response.body.unwrap_or("".to_string()));
         stream.write_all(res_str.as_bytes()).await?;
         s = 0;
         blocks.clear();
