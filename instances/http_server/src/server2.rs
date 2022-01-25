@@ -3,13 +3,9 @@ use std::{error, io, marker, net, process, result};
 use crate::http::{method::Method, ParseError, Request, Response, StatusCode};
 use crate::server;
 
-use async_std::{
-    io::{BufReader, BufWriter},
-    net::{TcpListener, TcpStream, ToSocketAddrs},
-    prelude::*,
-    sync::Arc,
-    task,
-};
+use async_std::io::{BufReader, BufWriter};
+use async_std::net::{TcpListener, TcpStream, ToSocketAddrs};
+use async_std::{prelude::*, sync::Arc, task};
 
 type Res<T> = result::Result<T, Box<dyn error::Error + Send + Sync>>;
 
@@ -29,7 +25,7 @@ async fn accept_loop(addr: &str) -> Res<()> {
 
     while let Some(stream) = listener.incoming().next().await {
         let stream = stream?;
-        let _xx = task::spawn(handle(stream));
+        task::spawn(handle(stream));
     }
 
     Ok(())
@@ -47,7 +43,7 @@ async fn handle(stream: TcpStream) {
     };
     println!("+++ Accepting connection from: {}", addr);
 
-    if let Err(e) = handle_stream3(Arc::new(stream), addr.to_string()).await {
+    if let Err(e) = handle_stream3(stream, addr.to_string()).await {
         println!("--- {} error: {}", addr, e);
         return;
     }
@@ -55,8 +51,7 @@ async fn handle(stream: TcpStream) {
     println!("--- {} close connection", addr);
 }
 
-async fn handle_stream1(stream: Arc<TcpStream>, addr: String) -> Res<()> {
-    let mut stream = &*stream;
+async fn handle_stream1(mut stream: TcpStream, addr: String) -> Res<()> {
     //    let mut buffer = [0; 1024];
     //    let mut reader = BufReader::new(stream);
     //    match reader.read(&mut buffer).await {
@@ -76,9 +71,8 @@ async fn handle_stream1(stream: Arc<TcpStream>, addr: String) -> Res<()> {
     Ok(())
 }
 
-async fn handle_stream2(stream: Arc<TcpStream>, addr: String) -> Res<()> {
-    let mut stream = &*stream;
-    let mut reader = BufReader::new(stream);
+async fn handle_stream2(mut stream: TcpStream, addr: String) -> Res<()> {
+    let mut reader = BufReader::new(stream.clone());
 
     // let mut buffer = vec![0u8; 1024];
     // while let Ok(v) = reader.read_until(b'\n', &mut buffer).await {}
@@ -97,9 +91,8 @@ async fn handle_stream2(stream: Arc<TcpStream>, addr: String) -> Res<()> {
     Ok(())
 }
 
-async fn handle_stream3(stream: Arc<TcpStream>, addr: String) -> Res<()> {
-    let mut stream = &*stream;
-    let reader = BufReader::new(stream);
+async fn handle_stream3(mut stream: TcpStream, addr: String) -> Res<()> {
+    let reader = BufReader::new(stream.clone());
     let mut lines = reader.lines();
 
     let mut s = 0_usize;

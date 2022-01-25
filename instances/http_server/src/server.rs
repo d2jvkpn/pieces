@@ -1,10 +1,7 @@
-use std::{
-    convert::{TryFrom, TryInto},
-    error,
-    io::{self, Read, Write},
-    net::{SocketAddr, TcpListener, TcpStream},
-    thread,
-};
+use std::convert::{TryFrom, TryInto};
+use std::io::{self, Read, Write};
+use std::net::{SocketAddr, TcpListener, TcpStream};
+use std::{error, thread};
 
 use crate::http::{ParseError, Request, Response, StatusCode};
 

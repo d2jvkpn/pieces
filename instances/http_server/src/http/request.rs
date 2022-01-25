@@ -1,9 +1,6 @@
 // use std::error::Error;
-use std::{
-    convert::TryFrom,
-    fmt,
-    str::{self, Utf8Error},
-};
+use std::str::{self, Utf8Error};
+use std::{convert::TryFrom, fmt};
 
 use super::method::{Method, MethodError};
 use super::query_string::QueryString;

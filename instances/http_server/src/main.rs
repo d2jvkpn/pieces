@@ -3,9 +3,6 @@
 #![allow(unused_imports)]
 #![allow(unused_labels)]
 
-// third part packages
-use clap::{App, Arg};
-
 // std packags
 use std::{env, process};
 
@@ -20,6 +17,9 @@ use http::{method::Method, Request}; // http::request::Request
 use http_server::hello;
 use server::Server;
 use simple_handler::SimpleHandler;
+
+// third part packages
+use clap::{App, Arg};
 
 //fn main() {
 //    // demo01();
@@ -52,7 +52,13 @@ fn main() {
         .author(env!("CARGO_PKG_AUTHORS"))
         .about(env!("CARGO_PKG_DESCRIPTION"))
         .set_term_width(100)
-        .arg(Arg::with_name("cmd").takes_value(true).required(true).help("choose a service"))
+        .arg(
+            Arg::with_name("cmd")
+                .takes_value(true)
+                .possible_values(&["chat", "http_v1", "http_v2"])
+                .required(true)
+                .help("choose a service"),
+        )
         .arg(
             Arg::with_name("addr")
                 .long("addr") // .short("a")
