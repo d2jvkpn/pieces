@@ -1,5 +1,5 @@
 # pieces
-Miscellaneous pieces of coding works written in Golang, Rust, Bash, Python, Javascript, Julia, etc.
+Miscellaneous pieces of coding works written in Golang, Rust, Bash, Julia, Python, Javascript, etc.
 
 
 #### Introduction
