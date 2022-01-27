@@ -29,9 +29,13 @@ async fn accept_loop(addr: impl ToSocketAddrs) -> Res<()> {
 
     while let Some(stream) = listener.incoming().next().await {
         let stream = stream?;
-        let addr = stream.peer_addr()?;
-        println!("<-- Accepting connection from: {}", addr);
-        task::spawn(connection_loop(stream, addr));
+        match stream.peer_addr() {
+            Err(e) => eprintln!("<-- incoming error: {}", e),
+            Ok(addr) => {
+                println!("<-- Accepting connection from: {}", addr);
+                task::spawn(connection_loop(stream, addr));
+            }
+        }
     }
 
     Ok(())
