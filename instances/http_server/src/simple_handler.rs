@@ -66,33 +66,37 @@ impl SimpleHandler {
             );
         }
 
-        if !path.exists() {
-            return Response::new(StatusCode::NotFound, Some("file not exits".to_string()));
-        }
+        //        if !path.exists() {
+        //            return Response::new(StatusCode::NotFound, Some("file not exits".to_string()));
+        //        }
 
         // fs::read_to_string(path.display().to_string()).ok()
         let err = match fs::read_to_string(path.display().to_string()) {
             Ok(v) => return Response::new(StatusCode::Ok, Some(v.to_string())),
             Err(e) => e,
         };
-        // dbg!(&e);
+        dbg!(&err);
 
         // !! not working
-        //        match err.kind() {
-        //            io::ErrorKind::IsADirectory => Response::new(
-        //                StatusCode::NotFound,
-        //                Some("target is a directory".to_string()),
-        //            ),
-        //            _ => Response::new(StatusCode::InternalServerError, None),
-        //        }
-
-        let kind = format!("{:?}", err.kind());
-        match &kind[..] {
-            "IsADirectory" => {
+        match err.kind() {
+            io::ErrorKind::IsADirectory => {
                 Response::new(StatusCode::NotFound, Some("target is a directory".to_string()))
+            }
+            io::ErrorKind::NotFound => {
+                Response::new(StatusCode::NotFound, Some("file not exists".to_string()))
             }
             _ => Response::new(StatusCode::InternalServerError, None),
         }
+
+        //        let kind = format!("{:?}", err.kind());
+        //        match &kind[..] {
+        //            "IsADirectory" => {
+        //                Response::new(StatusCode::NotFound, Some("target is a directory".to_string()))
+        //            }
+        //            _ => Response::new(StatusCode::InternalServerError, None),
+        //        }
+
+        // let Some(e) = err.downcast_ref::<std::io::Error>()
     }
 }
 

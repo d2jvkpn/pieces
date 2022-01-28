@@ -2,6 +2,7 @@
 #![allow(dead_code)]
 #![allow(unused_imports)]
 #![allow(unused_labels)]
+#![feature(io_error_more)] // support nightly-only experimental API, io::ErrorKind::IsADirectory
 
 // std packags
 use std::{env, process};
