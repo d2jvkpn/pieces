@@ -118,4 +118,17 @@ func QuoteString(str string) string {
 	return fmt.Sprintf("%q", str)
 }
 
-func 
+func FileSize2Str(n int64) string {
+	switch {
+	case n <= 0:
+		return "0"
+	case n < 1<<10:
+		return fmt.Sprintf("%dB", n)
+	case n >= 1<<10 && n < 1<<20:
+		return fmt.Sprintf("%dK", n>>10)
+	case n >= 1<<20 && n < 1<<30:
+		return fmt.Sprintf("%dM", n>>20)
+	default:
+		return fmt.Sprintf("%dG", n>>30)
+	}
+}
