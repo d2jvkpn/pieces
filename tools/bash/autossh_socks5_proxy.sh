@@ -7,7 +7,8 @@ _path=$(dirname ${_self})
 ## crontab -l
 # @reboot bash /path/to/autossh_socks5_proxy.sh
 
-export AUTOSSH_LOGFILE="${_self}.$(date +%F_%s).log"
+# export AUTOSSH_LOGFILE="${_self}.$(date +%F_%s).log"
+export AUTOSSH_LOGFILE=$(readlink -f $0).$(date +%Y-%m).log
 export AUTOSSH_PIDFILE="${_self}.pid"
 
 REMOTE_User=hello
