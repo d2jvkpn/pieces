@@ -8,12 +8,12 @@ import (
 )
 
 func main() {
-	fmt.Println(TwoSumSorted([]int{1, 2, 3, 4, 5}, 7))
-	fmt.Println(TwoSumSorted([]int{1, 3, 7, 9, 11}, 13))
-	fmt.Println(TwoSumSorted([]int{1, 7, 8, 9}, 16))
+	fmt.Println(twoSumSorted([]int{1, 2, 3, 4, 5}, 7))
+	fmt.Println(twoSumSorted([]int{1, 3, 7, 9, 11}, 13))
+	fmt.Println(twoSumSorted([]int{1, 7, 8, 9}, 16))
 }
 
-func TwoSumSorted(nums []int, target int) []int {
+func twoSumSorted(nums []int, target int) []int {
 	if len(nums) < 2 {
 		return nil
 	}
