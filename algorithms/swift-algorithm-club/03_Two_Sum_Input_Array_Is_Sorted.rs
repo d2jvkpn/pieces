@@ -8,9 +8,9 @@ fn main() {
     println!("{:?}", two_sum_sorted(&vec![1, 7, 8, 9], 16));
 }
 
-fn two_sum_sorted(nums: &Vec<usize>, target: usize) -> Vec<usize> {
+fn two_sum_sorted(nums: &Vec<usize>, target: usize) -> Result<Vec<usize>, String> {
     if nums.len() < 2 {
-        return vec![];
+        return Err("not found".to_string());
     }
 
     let (mut i, mut j) = (0, nums.len() - 1);
@@ -21,12 +21,12 @@ fn two_sum_sorted(nums: &Vec<usize>, target: usize) -> Vec<usize> {
 
         match sum {
             _ if sum == target => {
-                return vec![i, j];
+                return Ok(vec![i, j]);
             }
             _ if (sum < target) => i += 1,
             _ => j -= 1,
         }
     }
 
-    return vec![];
+    return Err("not found".to_string());
 }
