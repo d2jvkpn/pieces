@@ -8,10 +8,10 @@ import (
 )
 
 func main() {
-	fmt.Println(TwoSum([]int{1, 2, 3, 4, 5}, 6))
+	fmt.Println(twoSum([]int{1, 2, 3, 4, 5}, 6))
 }
 
-func TwoSum(nums []int, target int) []int {
+func twoSum(nums []int, target int) []int {
 	if len(nums) < 2 {
 		return nil
 	}

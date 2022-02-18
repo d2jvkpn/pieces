@@ -1,3 +1,3 @@
 module github.com/d2jvkpn/pieces/algorithms
 
-go 1.16
+go 1.17
