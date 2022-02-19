@@ -1,0 +1,19 @@
+- hosts: "{{host}}"
+  gather_facts: false
+  # any_errors_fatal: true
+
+  vars:
+    # work_path: "/root"
+    _wd: "{{lookup('env', 'PWD')}}"
+    _hd: "{{lookup('env', 'HOME')}}"
+
+  tasks:
+  - name: check if reboot required
+    register: reboot_required_file
+    stat:
+      path: /var/run/reboot-required
+
+  - name: reboot if required
+    become: yes
+    when: reboot_required_file.stat.exists == true
+    reboot:
