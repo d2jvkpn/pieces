@@ -97,15 +97,10 @@ func (list *LinkedList) Drop(n int) (value int64, ok bool) {
 
 	for i, node := 0, list.Head; i < list.Len; i, node = i+1, node.Next {
 		if i == n {
-			prev, next := node.Prev, node.Next
-			if prev == next {
+			if prev, next := node.Prev, node.Next; prev == next {
 				list.Head, list.Tail, list.Len = nil, nil, 0
-				return node.Value, true
-			}
-
-			prev.Next, next.Prev, list.Len = next, prev, list.Len-1
-			if list.Len == 0 {
-				list.Head, list.Tail = nil, nil
+			} else {
+				prev.Next, next.Prev, list.Len = next, prev, list.Len-1
 			}
 			return node.Value, true
 		}
