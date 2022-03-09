@@ -1,7 +1,7 @@
 package explore
 
 import (
-// "fmt"
+	"fmt"
 )
 
 type LinkedListNode struct {
@@ -22,6 +22,14 @@ func NewLinkedListNode(value int64) LinkedListNode {
 
 func NewLinkedList() LinkedList {
 	return LinkedList{}
+}
+
+func (list LinkedList) String() string {
+	head, tail := list.Head, list.Tail
+	if head == nil {
+		return fmt.Sprintf("head=0, tail=0, len=0")
+	}
+	return fmt.Sprintf("head=%d, tail=%d, len=%d", head.Value, tail.Value, list.Len)
 }
 
 func (list *LinkedList) Append(value int64) *LinkedList {
@@ -73,11 +81,34 @@ func (list *LinkedList) Index(n int) (value int64, ok bool) {
 		return 0, false
 	}
 
-	for i, node := 0, list.Head; i < list.Len; i++ {
+	for i, node := 0, list.Head; i < list.Len; i, node = i+1, node.Next {
 		if i == n {
 			return node.Value, true
 		}
-		node = node.Next
+	}
+
+	return
+}
+
+func (list *LinkedList) Drop(n int) (value int64, ok bool) {
+	if n > list.Len-1 {
+		return 0, false
+	}
+
+	for i, node := 0, list.Head; i < list.Len; i, node = i+1, node.Next {
+		if i == n {
+			prev, next := node.Prev, node.Next
+			if prev == next {
+				list.Head, list.Tail, list.Len = nil, nil, 0
+				return node.Value, true
+			}
+
+			prev.Next, next.Prev, list.Len = next, prev, list.Len-1
+			if list.Len == 0 {
+				list.Head, list.Tail = nil, nil
+			}
+			return node.Value, true
+		}
 	}
 
 	return
