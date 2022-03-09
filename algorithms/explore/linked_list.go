@@ -24,7 +24,7 @@ func NewLinkedList() LinkedList {
 	return LinkedList{}
 }
 
-func (list *LinkedList) Append(value int64) {
+func (list *LinkedList) Append(value int64) *LinkedList {
 	node := NewLinkedListNode(value)
 	// fmt.Println(node)
 
@@ -37,11 +37,12 @@ func (list *LinkedList) Append(value int64) {
 		list.Head = &node
 	}
 	list.Len++
+	return list
 }
 
-func (list *LinkedList) Pop() (ok bool, value int64) {
+func (list *LinkedList) Pop() (value int64, ok bool) {
 	if list.Tail == nil {
-		return false, 0
+		return 0, false
 	}
 
 	ok, value = true, list.Tail.Value
@@ -62,7 +63,22 @@ func (list *LinkedList) ToSlice() (slice []int64) {
 	for node := list.Head; node != nil && node != node.Next; node = node.Next {
 		// fmt.Println("~~~", node.Value)
 		slice = append(slice, node.Value)
-		
+
 	}
+	return
+}
+
+func (list *LinkedList) Index(n int) (value int64, ok bool) {
+	if n > list.Len-1 {
+		return 0, false
+	}
+
+	for i, node := 0, list.Head; i < list.Len; i++ {
+		if i == n {
+			return node.Value, true
+		}
+		node = node.Next
+	}
+
 	return
 }
