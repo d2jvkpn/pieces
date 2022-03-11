@@ -1,6 +1,7 @@
 package rate_limit
 
 import (
+	"context"
 	"fmt"
 	"time"
 )
@@ -62,12 +63,29 @@ func (limiter *LimiterV2) Allow(now time.Time) (ok bool) {
 	limiter.last = now
 
 	select {
-	case _, ok = <-limiter.ch:
+	case <-limiter.exit:
+		return false
+	case _, ok = <-limiter.ch: // ?? will limiter.ch be closed
+		return ok
 	default:
-		ok = false
+		return false // return immediately
 	}
+}
 
-	return
+func (limiter *LimiterV2) AllowWithContext(ctx context.Context, now time.Time) (ok bool) {
+	if limiter.last.After(now) { // now.IsZero()
+		now = time.Now()
+	}
+	limiter.last = now
+
+	select {
+	case <-limiter.exit:
+		return false
+	case <-ctx.Done():
+		return false
+	case _, ok = <-limiter.ch: // ?? will limiter.ch be closed
+		return ok
+	}
 }
 
 func (limiter *LimiterV2) Stop() {
