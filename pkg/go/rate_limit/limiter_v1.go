@@ -58,9 +58,8 @@ func (limiter *LimiterV1) Allow() (ok bool) {
 	defer func() { <-limiter.ch }()
 
 	now := time.Now()
-	old := limiter.next(now)
+	ok = now.Sub(limiter.next(now)) > limiter.interval
 
-	ok = now.Sub(old) > limiter.interval
 	if limiter.strong || ok {
 		limiter.vec[limiter.p] = now
 	}
