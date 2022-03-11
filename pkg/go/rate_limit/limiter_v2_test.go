@@ -7,7 +7,7 @@ import (
 )
 
 func TestLimiterV2_t1(t *testing.T) {
-	limiter, _ := NewLimiterV2(10*time.Second, 2)
+	limiter, _ := NewLimiterV2(10*time.Second, 3)
 
 	for i := 0; i < 20; i++ {
 		now := time.Now()

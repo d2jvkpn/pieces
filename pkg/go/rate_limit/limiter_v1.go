@@ -9,7 +9,7 @@ import (
 type LimiterV1 struct {
 	interval time.Duration
 	vec      []time.Time
-	strong   bool
+	strong   bool // count event get bucket failed
 	p        int
 	ch       chan struct{}
 	exit     chan bool
@@ -31,22 +31,28 @@ func NewLimiterV1(interval time.Duration, b int, strong bool) (limiter *LimiterV
 	return
 }
 
-func (limiter *LimiterV1) next(now time.Time) (old time.Time) {
-	// fmt.Println("-->", limiter.p, limiter.vec)
+func (limiter *LimiterV1) next(now time.Time) (oldest time.Time) {
 	switch {
 	case limiter.p == 0 && limiter.vec[limiter.p].IsZero():
-		// the first value
-		// fmt.Println("...0")
 	case limiter.p < len(limiter.vec)-1:
-		// fmt.Println("...1")
 		limiter.p++
 	default:
-		// fmt.Println("...-1")
 		limiter.p = 0
 	}
-	old = limiter.vec[limiter.p] // extract old value
 
-	return old
+	oldest = limiter.vec[limiter.p] // extract oldest value
+
+	return oldest
+}
+
+func (limiter *LimiterV1) back() {
+	switch {
+	case limiter.p == 0 && limiter.vec[limiter.p].IsZero():
+	case limiter.p > 0:
+		limiter.p--
+	default:
+		limiter.p = len(limiter.vec) - 1
+	}
 }
 
 func (limiter *LimiterV1) Allow() (ok bool) {
@@ -62,6 +68,8 @@ func (limiter *LimiterV1) Allow() (ok bool) {
 
 	if limiter.strong || ok {
 		limiter.vec[limiter.p] = now
+	} else {
+		limiter.back()
 	}
 
 	return

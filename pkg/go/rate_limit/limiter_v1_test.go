@@ -7,7 +7,7 @@ import (
 )
 
 func TestLimiterV1_t1(t *testing.T) {
-	limiter, _ := NewLimiterV1(10*time.Second, 2, false)
+	limiter, _ := NewLimiterV1(10*time.Second, 3, false)
 
 	for i := 0; i < 20; i++ {
 		now := time.Now()
@@ -17,7 +17,7 @@ func TestLimiterV1_t1(t *testing.T) {
 }
 
 func TestLimiterV1_t2(t *testing.T) {
-	limiter, _ := NewLimiterV1(10*time.Second, 2, true)
+	limiter, _ := NewLimiterV1(10*time.Second, 3, true)
 
 	for i := 0; i < 20; i++ {
 		now := time.Now()
