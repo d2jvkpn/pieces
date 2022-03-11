@@ -31,7 +31,7 @@ func NewLimiterV1(interval time.Duration, b int, strong bool) (limiter *LimiterV
 	return
 }
 
-func (limiter *LimiterV1) next(now time.Time) (oldest time.Time) {
+func (limiter *LimiterV1) pNext(now time.Time) (oldest time.Time) {
 	switch {
 	case limiter.p == 0 && limiter.vec[limiter.p].IsZero():
 	case limiter.p < len(limiter.vec)-1:
@@ -45,7 +45,7 @@ func (limiter *LimiterV1) next(now time.Time) (oldest time.Time) {
 	return oldest
 }
 
-func (limiter *LimiterV1) back() {
+func (limiter *LimiterV1) pBack() {
 	switch {
 	case limiter.p == 0 && limiter.vec[limiter.p].IsZero():
 	case limiter.p > 0:
@@ -64,12 +64,12 @@ func (limiter *LimiterV1) Allow() (ok bool) {
 	defer func() { <-limiter.ch }()
 
 	now := time.Now()
-	ok = now.Sub(limiter.next(now)) > limiter.interval
+	ok = now.Sub(limiter.pNext(now)) > limiter.interval
 
 	if limiter.strong || ok {
 		limiter.vec[limiter.p] = now
 	} else {
-		limiter.back()
+		limiter.pBack()
 	}
 
 	return
