@@ -43,6 +43,8 @@ func NewLimiterV2(interval time.Duration, b int) (limiter *LimiterV2, err error)
 		loop:
 			for i := 0; i < b; i++ {
 				select {
+				case <-limiter.exit:
+					return
 				case limiter.ch <- true:
 					// fmt.Println(rfc3339now(), "add token to bucket")
 				default:
