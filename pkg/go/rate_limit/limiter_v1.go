@@ -32,6 +32,11 @@ func NewLimiterV1(interval time.Duration, b int, strong bool) (limiter *LimiterV
 	return
 }
 
+// (intf) New(time.Duration, int, bool) (intf, error), as golang 1.17 doesn't support generics
+func (limiter *LimiterV1) New(interval time.Duration, b int, strong bool) (*LimiterV1, error) {
+	return NewLimiterV1(interval, b, strong)
+}
+
 func (limiter *LimiterV1) pNext(now time.Time) (oldest time.Time) {
 	switch {
 	case limiter.p == 0 && limiter.vec[limiter.p].IsZero():

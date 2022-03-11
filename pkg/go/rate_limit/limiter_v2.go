@@ -58,6 +58,10 @@ func NewLimiterV2(interval time.Duration, b int) (limiter *LimiterV2, err error)
 	return
 }
 
+func (limiter *LimiterV2) New(interval time.Duration, b int) (*LimiterV2, error) {
+	return NewLimiterV2(interval, b)
+}
+
 func (limiter *LimiterV2) Allow(now time.Time) (ok bool) {
 	if limiter.last.After(now) { // now.IsZero()
 		now = time.Now()
