@@ -5,6 +5,6 @@ _path=$(dirname $0 | xargs -i readlink -f {})
 
 
 ## crontab -e
-# @reboot bash -c /opt/bin/DockerCleanup.sh
+# @reboot bash /opt/bin/DockerCleanup.sh
 
 docker ps -f status=exited -q | xargs -i docker rm {}
