@@ -45,7 +45,7 @@ func NewRateLimiterV2(secs int64, b int) (rl *RateLimiterV2, err error) {
 			now := time.Now()
 			rl.mu.Lock()
 			for key, limiter := range rl.mp {
-				dur := now.Sub(limiter.last)
+				dur := now.Sub(limiter.Last())
 				if dur > RATELIMITER_ClearEveryN*rl.interval {
 					// fmt.Println(rfc3339now(), "RateLimiter drop key:", key, dur)
 					limiter.Stop()

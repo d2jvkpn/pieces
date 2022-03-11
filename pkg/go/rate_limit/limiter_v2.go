@@ -94,6 +94,10 @@ func (limiter *LimiterV2) AllowWithContext(ctx context.Context, now time.Time) (
 	}
 }
 
+func (limiter *LimiterV2) Last() time.Time {
+	return limiter.last
+}
+
 func (limiter *LimiterV2) Stop() {
 	limiter.ticker.Stop()
 	close(limiter.exit)

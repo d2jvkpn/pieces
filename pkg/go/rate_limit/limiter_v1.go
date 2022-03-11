@@ -103,6 +103,10 @@ func (limiter *LimiterV1) AllowWithContext(ctx context.Context, now time.Time) (
 	return
 }
 
+func (limiter *LimiterV1) Last() time.Time {
+	return limiter.vec[limiter.p]
+}
+
 func (limiter *LimiterV1) Stop() {
 	close(limiter.exit)
 }
