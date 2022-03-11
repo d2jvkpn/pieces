@@ -15,7 +15,7 @@ type LimiterV2 struct {
 }
 
 func NewLimiterV2(interval time.Duration, b int) (limiter *LimiterV2, err error) {
-	if interval < time.Millisecond || b < 1 {
+	if interval < time.Second || b < 1 {
 		return limiter, fmt.Errorf("invlaid parameter for NewLimiter")
 	}
 

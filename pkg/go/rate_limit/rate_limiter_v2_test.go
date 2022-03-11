@@ -7,7 +7,7 @@ import (
 )
 
 func TestRateLimiterV2(t *testing.T) {
-	rl, _ := NewRateLimiterV2(5, 2)
+	rl, _ := NewRateLimiterV2(5, 3)
 	addr := "127.0.0.1"
 
 	task := func() {
