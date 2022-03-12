@@ -37,28 +37,41 @@ func (limiter *LimiterV1) New(interval time.Duration, b int, strong bool) (*Limi
 	return NewLimiterV1(interval, b, strong)
 }
 
-func (limiter *LimiterV1) pNext(now time.Time) (oldest time.Time) {
+//func (limiter *LimiterV1) pNext(now time.Time) (oldest time.Time) {
+//	switch {
+//	case limiter.p == 0 && limiter.vec[0].IsZero():
+//	case limiter.p < len(limiter.vec)-1:
+//		limiter.p++
+//	default:
+//		limiter.p = 0
+//	}
+
+//	oldest = limiter.vec[limiter.p] // extract oldest value
+
+//	return oldest
+//}
+
+//func (limiter *LimiterV1) pBack() {
+//	switch {
+//	case limiter.p == 0 && limiter.vec[0].IsZero():
+//	case limiter.p > 0:
+//		limiter.p--
+//	default:
+//		limiter.p = len(limiter.vec) - 1
+//	}
+//}
+
+func (limiter *LimiterV1) next(now time.Time) (next int) {
 	switch {
-	case limiter.p == 0 && limiter.vec[limiter.p].IsZero():
+	case limiter.p == 0 && limiter.vec[0].IsZero():
+		next = 0
 	case limiter.p < len(limiter.vec)-1:
-		limiter.p++
+		next = limiter.p + 1
 	default:
-		limiter.p = 0
+		next = 0
 	}
 
-	oldest = limiter.vec[limiter.p] // extract oldest value
-
-	return oldest
-}
-
-func (limiter *LimiterV1) pBack() {
-	switch {
-	case limiter.p == 0 && limiter.vec[limiter.p].IsZero():
-	case limiter.p > 0:
-		limiter.p--
-	default:
-		limiter.p = len(limiter.vec) - 1
-	}
+	return next
 }
 
 func (limiter *LimiterV1) allow(now time.Time) (ok bool) {
@@ -66,12 +79,18 @@ func (limiter *LimiterV1) allow(now time.Time) (ok bool) {
 		now = time.Now()
 	}
 
-	ok = now.Sub(limiter.pNext(now)) > limiter.interval
+	//	ok = now.Sub(limiter.pNext(now)) > limiter.interval
 
+	//	if limiter.strong || ok {
+	//		limiter.vec[limiter.p] = now
+	//	} else {
+	//		limiter.pBack()
+	//	}
+
+	next := limiter.next(now)
+	ok = now.Sub(limiter.vec[next]) > limiter.interval
 	if limiter.strong || ok {
-		limiter.vec[limiter.p] = now
-	} else {
-		limiter.pBack()
+		limiter.p, limiter.vec[next] = next, now
 	}
 
 	return ok
