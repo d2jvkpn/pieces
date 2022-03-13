@@ -12,7 +12,7 @@ type LimiterV3 struct {
 	interval time.Duration
 	vec      []time.Time
 	strong   bool // count event get bucket failed
-	p        int
+	p        int  // index of last updated
 	mu       sync.RWMutex
 	exit     chan struct{}
 }
