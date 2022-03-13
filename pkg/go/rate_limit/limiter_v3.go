@@ -13,7 +13,7 @@ type LimiterV3 struct {
 	vec      []time.Time
 	strong   bool // count event get bucket failed
 	p        int
-	mu       sync.Mutex
+	mu       sync.RWMutex
 	exit     chan struct{}
 }
 
@@ -55,18 +55,18 @@ func (limiter *LimiterV3) allow(now time.Time) (ok bool) {
 		now = time.Now()
 	}
 
-	//	ok = now.Sub(limiter.pNext(now)) > limiter.interval
-
-	//	if limiter.strong || ok {
-	//		limiter.vec[limiter.p] = now
-	//	} else {
-	//		limiter.pBack()
-	//	}
+	limiter.mu.RLock()
 
 	next := limiter.next(now)
 	ok = now.Sub(limiter.vec[next]) > limiter.interval
+
 	if limiter.strong || ok {
+		limiter.mu.RUnlock()
+		limiter.mu.Lock()
 		limiter.p, limiter.vec[next] = next, now
+		limiter.mu.Unlock()
+	} else {
+		limiter.mu.RUnlock()
 	}
 
 	return ok
@@ -79,10 +79,7 @@ func (limiter *LimiterV3) Allow(now time.Time) (ok bool) {
 	default:
 	}
 
-	limiter.mu.Lock()
-	ok = limiter.allow(now)
-	limiter.mu.Unlock()
-	return
+	return limiter.allow(now)
 }
 
 func (limiter *LimiterV3) AllowWithContext(ctx context.Context, now time.Time) (ok bool) {
@@ -94,10 +91,7 @@ func (limiter *LimiterV3) AllowWithContext(ctx context.Context, now time.Time) (
 	default:
 	}
 
-	limiter.mu.Lock()
-	ok = limiter.allow(now)
-	limiter.mu.Unlock()
-	return
+	return limiter.allow(now)
 }
 
 func (limiter *LimiterV3) Last() time.Time {

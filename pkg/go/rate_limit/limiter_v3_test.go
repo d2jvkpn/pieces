@@ -6,7 +6,7 @@ import (
 )
 
 // go test  -run none  -bench ^BenchmarkLimiterV3_b1$
-// # 88.72 ns/op
+// # sync.Mutex 88.72 ns/op, sync.RWMutex 30.87 ns/op
 func BenchmarkLimiterV3_b1(b *testing.B) {
 	limiter, _ := NewLimiterV3(1*time.Second, 1, false)
 
