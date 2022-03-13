@@ -9,12 +9,12 @@ import (
 // go test -run none -bench ^BenchmarkRateLimiterV1$ -count 5
 // # 6417 ns/op
 func BenchmarkRateLimiterV1(b *testing.B) {
-	newLimiter := func(dur time.Duration, b int) Limiter {
+	newLim := func(dur time.Duration, b int) Lim {
 		limiter, _ := NewLimiterV1(dur, b, true)
 		return limiter
 	}
 
-	rl, _ := NewRateLimiter(1, 1000, newLimiter)
+	rl, _ := NewRL(1, 1000, newLim)
 	addr := "127.0.0.1"
 
 	b.ReportAllocs()
@@ -28,12 +28,12 @@ func BenchmarkRateLimiterV1(b *testing.B) {
 }
 
 func TestRateLimiterV2(t *testing.T) {
-	newLimiter := func(dur time.Duration, b int) Limiter {
-		limiter, _ := NewLimiterV2(dur, b)
-		return limiter
+	newLim := func(dur time.Duration, b int) Lim {
+		lim, _ := NewLimiterV2(dur, b)
+		return lim
 	}
 
-	rl, _ := NewRateLimiter(5, 3, newLimiter)
+	rl, _ := NewRL(5, 3, newLim)
 	addr := "127.0.0.1"
 
 	task := func() {
@@ -61,12 +61,12 @@ func TestRateLimiterV2(t *testing.T) {
 // go test -run none -bench ^BenchmarkRateLimiterV2$ -count 5
 // # 349.0 ns/op
 func BenchmarkRateLimiterV2(b *testing.B) {
-	newLimiter := func(dur time.Duration, b int) Limiter {
-		limiter, _ := NewLimiterV2(dur, b)
-		return limiter
+	newLim := func(dur time.Duration, b int) Lim {
+		lim, _ := NewLimiterV2(dur, b)
+		return lim
 	}
 
-	rl, _ := NewRateLimiter(1, 1000, newLimiter)
+	rl, _ := NewRL(1, 1000, newLim)
 	addr := "127.0.0.1"
 
 	b.ReportAllocs()
@@ -82,12 +82,12 @@ func BenchmarkRateLimiterV2(b *testing.B) {
 // go test -run none -bench ^BenchmarkRateLimiterV3$ -count 5
 // # 1725 ns/op
 func BenchmarkRateLimiterV3(b *testing.B) {
-	newLimiter := func(dur time.Duration, b int) Limiter {
-		limiter, _ := NewLimiterV3(dur, b, true)
-		return limiter
+	newLim := func(dur time.Duration, b int) Lim {
+		lim, _ := NewLimiterV3(dur, b, true)
+		return lim
 	}
 
-	rl, _ := NewRateLimiter(1, 1000, newLimiter)
+	rl, _ := NewRL(1, 1000, newLim)
 	addr := "127.0.0.1"
 
 	b.ReportAllocs()
