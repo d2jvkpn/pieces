@@ -1,12 +1,30 @@
 package rate_limit
 
 import (
+	"fmt"
 	"testing"
 	"time"
 )
 
-// go test  -run none  -bench ^BenchmarkLimiterV3_b1$
-// # sync.Mutex 88.72 ns/op, sync.RWMutex 30.87 ns/op
+func TestLimiterV3_t1(t *testing.T) {
+	limiter, _ := NewLimiterV3(time.Second, 3, false)
+
+	task := func() {
+		now := time.Now()
+		fmt.Printf("~~~ %s get token: %t\n", now.Format(time.RFC3339), limiter.Allow(now))
+	}
+
+	for i := 0; i < 10; i++ {
+		for j := 0; j < 10; j++ {
+			go task()
+		}
+		time.Sleep(2 * time.Second)
+		fmt.Println("")
+	}
+}
+
+// go test  -run none  -bench ^BenchmarkLimiterV3_b1$ -count 10
+// # sync.Mutex 88.72 ns/op, sync.RWMutex 34.20
 func BenchmarkLimiterV3_b1(b *testing.B) {
 	limiter, _ := NewLimiterV3(1*time.Second, 1, false)
 

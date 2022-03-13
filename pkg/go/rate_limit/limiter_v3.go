@@ -37,7 +37,8 @@ func (limiter *LimiterV3) New(interval time.Duration, b int, strong bool) (*Limi
 	return NewLimiterV3(interval, b, strong)
 }
 
-func (limiter *LimiterV3) next(now time.Time) (next int) {
+func (limiter *LimiterV3) next(now time.Time) (p, next int) {
+	p = limiter.p
 	switch {
 	case limiter.p == 0 && limiter.vec[0].IsZero():
 		next = 0
@@ -47,7 +48,26 @@ func (limiter *LimiterV3) next(now time.Time) (next int) {
 		next = 0
 	}
 
-	return next
+	return p, next
+}
+
+func (limiter *LimiterV3) update(p, next int, now time.Time) (ok bool) {
+	limiter.mu.Lock()
+	defer limiter.mu.Unlock()
+
+	if limiter.p == p { // not changed by other concurrent routines
+		limiter.p, limiter.vec[next] = next, now
+		return true
+	}
+
+	// check again as limiter.p changed by other concurrent routines already
+	_, next2 := limiter.next(now)
+	if ok = now.Sub(limiter.vec[next2]) > limiter.interval; !ok {
+		return false
+	}
+
+	limiter.p, limiter.vec[next2] = next2, now
+	return true
 }
 
 func (limiter *LimiterV3) allow(now time.Time) (ok bool) {
@@ -56,17 +76,14 @@ func (limiter *LimiterV3) allow(now time.Time) (ok bool) {
 	}
 
 	limiter.mu.RLock()
+	p, next := limiter.next(now)
+	limiter.mu.RUnlock()
 
-	next := limiter.next(now)
 	ok = now.Sub(limiter.vec[next]) > limiter.interval
 
 	if limiter.strong || ok {
-		limiter.mu.RUnlock()
-		limiter.mu.Lock()
-		limiter.p, limiter.vec[next] = next, now
-		limiter.mu.Unlock()
-	} else {
-		limiter.mu.RUnlock()
+		// limiter.p, limiter.vec[next] = next, now
+		ok = limiter.update(p, next, now)
 	}
 
 	return ok
