@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-// go test -run none -bench ^BenchmarkRateLimiterV1$ -count 10
+// go test -run none -bench ^BenchmarkRateLimiterV1$ -count 5
 // # 6417 ns/op
 func BenchmarkRateLimiterV1(b *testing.B) {
 	newLimiter := func(dur time.Duration, b int) Limiter {
@@ -14,7 +14,7 @@ func BenchmarkRateLimiterV1(b *testing.B) {
 		return limiter
 	}
 
-	rl, _ := NewRateLimiter(5, 3, newLimiter)
+	rl, _ := NewRateLimiter(1, 1000, newLimiter)
 	addr := "127.0.0.1"
 
 	b.ReportAllocs()
@@ -66,7 +66,7 @@ func BenchmarkRateLimiterV2(b *testing.B) {
 		return limiter
 	}
 
-	rl, _ := NewRateLimiter(5, 3, newLimiter)
+	rl, _ := NewRateLimiter(1, 1000, newLimiter)
 	addr := "127.0.0.1"
 
 	b.ReportAllocs()
@@ -87,7 +87,7 @@ func BenchmarkRateLimiterV3(b *testing.B) {
 		return limiter
 	}
 
-	rl, _ := NewRateLimiter(5, 3, newLimiter)
+	rl, _ := NewRateLimiter(1, 1000, newLimiter)
 	addr := "127.0.0.1"
 
 	b.ReportAllocs()

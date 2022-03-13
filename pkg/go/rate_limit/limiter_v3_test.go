@@ -40,8 +40,8 @@ func TestLimiterV3_t2(t *testing.T) {
 	}
 }
 
-// go test  -run none  -bench ^BenchmarkLimiterV3_b1$ -count 10
-// # sync.Mutex 88.72 ns/op, sync.RWMutex 34.20
+// go test  -run none  -bench ^BenchmarkLimiterV3_b1$ -count 5
+// # 34 ns/op, sync.Mutex 88.72 ns/op,
 func BenchmarkLimiterV3_b1(b *testing.B) {
 	limiter, _ := NewLimiterV3(1*time.Second, 1, false)
 
@@ -56,7 +56,7 @@ func BenchmarkLimiterV3_b1(b *testing.B) {
 	})
 }
 
-// go test  -run none  -bench ^BenchmarkLimiterV3_b2$ -count 10
+// go test  -run none  -bench ^BenchmarkLimiterV3_b2$ -count 5
 // # 63.45 ns/op
 func BenchmarkLimiterV3_b2(b *testing.B) {
 	limiter, _ := NewLimiterV3(time.Second, 1000, false)

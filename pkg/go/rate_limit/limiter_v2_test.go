@@ -16,8 +16,8 @@ func TestLimiterV2_t1(t *testing.T) {
 	}
 }
 
-// go test  -run none  -bench ^BenchmarkLimiterV2_b1$
-// # 224.8 ns/op
+// go test  -run none  -bench ^BenchmarkLimiterV2_b1$ -count 5
+// # 312 ns/op
 func BenchmarkLimiterV2_b1(b *testing.B) {
 	limiter, _ := NewLimiterV2(1*time.Second, 1)
 
@@ -32,9 +32,10 @@ func BenchmarkLimiterV2_b1(b *testing.B) {
 	})
 }
 
-// go test  -run none  -bench ^BenchmarkLimiterV2_b2$
+// go test  -run none  -bench ^BenchmarkLimiterV2_b2$ -count 5
+// # 313 ns/op
 func BenchmarkLimiterV2_b2(b *testing.B) {
-	limiter, _ := NewLimiterV2(60*time.Second, 3)
+	limiter, _ := NewLimiterV2(time.Second, 1000)
 
 	now := time.Now()
 	b.ReportAllocs()
