@@ -32,5 +32,5 @@ func NewRateLimiter(secs int64, b int) (rl *RateLimiter, err error) {
 		return limiter
 	}
 
-	return NewRL(1, 1000, newLimi) // 1000 tokens every seconds
+	return NewRL(secs, b, newLimi)
 }
