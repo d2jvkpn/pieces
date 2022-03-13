@@ -48,6 +48,7 @@ func TestLimiterV1_t2(t *testing.T) {
 }
 
 // go test  -run none  -bench ^BenchmarkLimiterV1_b1$
+// # 938.6 ns/op
 func BenchmarkLimiterV1_b1(b *testing.B) {
 	limiter, _ := NewLimiterV1(1*time.Second, 1, false)
 
