@@ -22,7 +22,6 @@ type Lim interface {
 
 type NewLim = func(time.Duration, int) Lim
 
-///
 func NewLimiter(interval time.Duration, b int) (lim Lim, err error) {
 	return NewLimiterV3(interval, b, false)
 }
@@ -33,5 +32,5 @@ func NewRateLimiter(secs int64, b int) (rl *RateLimiter, err error) {
 		return limiter
 	}
 
-	return NewRL(1, 1000, newLimi)
+	return NewRL(1, 1000, newLimi) // 1000 tokens every seconds
 }
