@@ -58,7 +58,7 @@ func TestRateLimiterV2(t *testing.T) {
 	}
 }
 
-// go test -run none -bench ^BenchmarkRateLimiterV2$ -count 10
+// go test -run none -bench ^BenchmarkRateLimiterV2$ -count 5
 // # 349.0 ns/op
 func BenchmarkRateLimiterV2(b *testing.B) {
 	newLimiter := func(dur time.Duration, b int) Limiter {
@@ -79,7 +79,7 @@ func BenchmarkRateLimiterV2(b *testing.B) {
 	})
 }
 
-// go test -run none -bench ^BenchmarkRateLimiterV3$ -count 10
+// go test -run none -bench ^BenchmarkRateLimiterV3$ -count 5
 // # 1725 ns/op
 func BenchmarkRateLimiterV3(b *testing.B) {
 	newLimiter := func(dur time.Duration, b int) Limiter {
