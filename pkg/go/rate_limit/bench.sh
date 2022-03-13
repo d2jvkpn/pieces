@@ -3,17 +3,13 @@ set -eu -o pipefail
 _wd=$(pwd)
 _path=$(dirname $0 | xargs -i readlink -f {})
 
-mkdir -p wk_v1 wk_v2 wk_v3
+for i in {1..3}; do
+    mkdir -p wk_v$i
 
-go test  -run none  -bench ^BenchmarkLimiterV1_b1$ -outputdir wk_v1 \
-  -cpuprofile=cpu.out -memprofile=mem.out -blockprofile=block.out
+    go test  -run none -bench ^BenchmarkLimiterV${i}_b1$ -outputdir wk_v$i \
+      -cpuprofile=cpu.out -memprofile=mem.out -blockprofile=block.out
 
-go test  -run none  -bench ^BenchmarkLimiterV2_b1$ -outputdir wk_v2 \
-  -cpuprofile=cpu.out -memprofile=mem.out -blockprofile=block.out
-
-go test  -run none  -bench ^BenchmarkLimiterV3_b1$ -outputdir wk_v3 \
-  -cpuprofile=cpu.out -memprofile=mem.out -blockprofile=block.out
-
-for f in wk*/*.out; do
-    go tool pprof -svg $f > ${f%.out}.svg
+    for f in wk_v$i/*.out; do
+        go tool pprof -svg $f > ${f%.out}.svg
+    done
 done
