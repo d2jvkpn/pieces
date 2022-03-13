@@ -15,3 +15,33 @@ func TestLimiterV2_t1(t *testing.T) {
 		time.Sleep(time.Second)
 	}
 }
+
+// go test  -run none  -bench ^BenchmarkLimiterV2_b1$
+func BenchmarkLimiterV2_b1(b *testing.B) {
+	limiter, _ := NewLimiterV2(1*time.Second, 1)
+
+	now := time.Now()
+	b.ReportAllocs()
+	b.ResetTimer()
+
+	b.RunParallel(func(pb *testing.PB) {
+		for pb.Next() {
+			limiter.Allow(now)
+		}
+	})
+}
+
+// go test  -run none  -bench ^BenchmarkLimiterV2_b2$
+func BenchmarkLimiterV2_b2(b *testing.B) {
+	limiter, _ := NewLimiterV2(60*time.Second, 3)
+
+	now := time.Now()
+	b.ReportAllocs()
+	b.ResetTimer()
+
+	b.RunParallel(func(pb *testing.PB) {
+		for pb.Next() {
+			limiter.Allow(now)
+		}
+	})
+}

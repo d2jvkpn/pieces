@@ -17,7 +17,7 @@ type LimiterV1 struct {
 }
 
 func NewLimiterV1(interval time.Duration, b int, strong bool) (limiter *LimiterV1, err error) {
-	if interval <= time.Second || b <= 0 {
+	if interval < time.Second || b <= 0 {
 		return nil, fmt.Errorf("invalid parameter for NewLimiter")
 	}
 
