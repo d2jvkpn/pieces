@@ -56,9 +56,10 @@ func BenchmarkLimiterV3_b1(b *testing.B) {
 	})
 }
 
-// go test  -run none  -bench ^BenchmarkLimiterV3_b2$
+// go test  -run none  -bench ^BenchmarkLimiterV3_b2$ -count 10
+// # 63.45 ns/op
 func BenchmarkLimiterV3_b2(b *testing.B) {
-	limiter, _ := NewLimiterV3(60*time.Second, 3, false)
+	limiter, _ := NewLimiterV3(time.Second, 1000, false)
 
 	now := time.Now()
 	b.ReportAllocs()

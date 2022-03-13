@@ -6,30 +6,41 @@ import (
 	"time"
 )
 
-type RateLimiterV2 struct {
-	b int
-	// dur      time.Duration // clear key durarion
-	interval time.Duration // rate limit durarion
-	mu       *sync.RWMutex
-	ticker   *time.Ticker
-	mp       map[string]*LimiterV2
-	exit     chan struct{}
+type Limiter interface {
+	Allow(time.Time) bool
+	// AllowWithContext(context.Context, time.Time) bool
+	Stop()
+	Last() time.Time
 }
 
-func NewRateLimiterV2(secs int64, b int) (rl *RateLimiterV2, err error) {
-	if secs < 1 || b < 1 {
+type NewLimiter = func(time.Duration, int) Limiter
+
+type RateLimiter struct {
+	b int
+	// dur      time.Duration // clear key durarion
+	interval   time.Duration // rate limit durarion
+	newLimiter NewLimiter
+	mu         *sync.RWMutex
+	ticker     *time.Ticker
+	mp         map[string]Limiter
+	exit       chan struct{}
+}
+
+func NewRateLimiter(secs int64, b int, newLimiter NewLimiter) (rl *RateLimiter, err error) {
+	if secs < 1 || b < 1 || newLimiter == nil {
 		return nil, fmt.Errorf("invlaid parameter for RateLimiter")
 	}
 
 	interval := time.Second * time.Duration(secs)
 
-	rl = &RateLimiterV2{
-		b:        b,
-		interval: interval,
-		mu:       new(sync.RWMutex),
-		ticker:   time.NewTicker(RATELIMITER_ClearEveryN * interval),
-		mp:       make(map[string]*LimiterV2, 100),
-		exit:     make(chan struct{}),
+	rl = &RateLimiter{
+		b:          b,
+		interval:   interval,
+		newLimiter: newLimiter,
+		mu:         new(sync.RWMutex),
+		ticker:     time.NewTicker(RATELIMITER_ClearEveryN * interval),
+		mp:         make(map[string]Limiter, 100),
+		exit:       make(chan struct{}),
 	}
 
 	go func() {
@@ -59,7 +70,7 @@ func NewRateLimiterV2(secs int64, b int) (rl *RateLimiterV2, err error) {
 	return
 }
 
-func (rl *RateLimiterV2) GetLimiter(key string) (limiter *LimiterV2) {
+func (rl *RateLimiter) GetLimiter(key string) (limiter Limiter) {
 	var ok bool
 	rl.mu.RLock()
 
@@ -72,7 +83,7 @@ func (rl *RateLimiterV2) GetLimiter(key string) (limiter *LimiterV2) {
 	rl.mu.Lock()
 
 	if limiter, ok = rl.mp[key]; !ok {
-		limiter, _ = NewLimiterV2(rl.interval, rl.b)
+		limiter = rl.newLimiter(rl.interval, rl.b)
 		rl.mp[key] = limiter
 	}
 	rl.mu.Unlock()
@@ -80,15 +91,15 @@ func (rl *RateLimiterV2) GetLimiter(key string) (limiter *LimiterV2) {
 	return limiter
 }
 
-func (rl *RateLimiterV2) Metrics() (time.Duration, int, int) {
+func (rl *RateLimiter) Metrics() (time.Duration, int, int) {
 	return rl.interval, rl.b, len(rl.mp)
 }
 
-func (rl *RateLimiterV2) Allow(key string) (ok bool) {
+func (rl *RateLimiter) Allow(key string) (ok bool) {
 	return rl.GetLimiter(key).Allow(time.Now())
 }
 
-func (rl *RateLimiterV2) Stop() {
+func (rl *RateLimiter) Stop() {
 	rl.ticker.Stop()
 	close(rl.exit)
 
