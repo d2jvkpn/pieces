@@ -83,7 +83,7 @@ impl Iterator for ListIterator {
 
 fn main() {
     let mut list = List::new();
-    list.append(1).append(2).append(3).append(4).append(5).append(6);
+    list.append(1).append(2).append(3).append(4).append(5).append(6).append(7);
     // println!("{:?}", list.head.unwrap().borrow().value);
 
     let xx = ListIterator::new(list.head);
