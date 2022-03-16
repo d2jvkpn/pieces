@@ -20,6 +20,7 @@ func GetBuildInfo(buildVersion string) (info map[string]string) {
 	parseFlags := func(str string) {
 		for _, v := range strings.Fields(str) {
 			k, v, _ := strings.Cut(v, "=")
+			println("~~~", k, v)
 			if strings.HasPrefix(k, "main.") && v != "" {
 				info[k[5:]] = v
 			}
