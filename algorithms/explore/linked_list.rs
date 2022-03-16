@@ -81,6 +81,23 @@ impl Iterator for ListIterator {
     }
 }
 
+impl DoubleEndedIterator for ListIterator {
+    fn next_back(&mut self) -> Option<i32> {
+        let current = &self.current;
+        let mut result = None;
+
+        self.current = match current {
+            Some(ref current) => {
+                let current = current.borrow();
+                result = Some(current.value.clone());
+                current.prev.clone()
+            }
+            None => None,
+        };
+        result
+    }
+}
+
 fn main() {
     let mut list = List::new();
     list.append(1).append(2).append(3).append(4).append(5).append(6).append(7);
@@ -95,5 +112,6 @@ fn main() {
     // println!("{:?}", xx.map(|v| v*2).collect::<Vec<i32>>());
     // println!("{:?}", xx.collect::<Vec<i32>>());
 
-    println!("{:?}", xx.reduce(|x: i32, y: i32| x * y));
+    // println!("{:?}", xx.reduce(|x: i32, y: i32| x * y));
+    println!("{:?}", xx.rev().collect::<Vec<i32>>());
 }
