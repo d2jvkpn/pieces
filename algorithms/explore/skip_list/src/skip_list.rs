@@ -1,4 +1,4 @@
-use std::cell::{Ref, RefCell};
+use std::cell::RefCell;
 use std::fmt;
 use std::rc::Rc;
 
@@ -6,7 +6,7 @@ type Link = Option<Rc<RefCell<Node>>>;
 
 #[derive(Clone)]
 struct Node {
-    next: Vec<Link>,
+    pub next: Vec<Link>,
     pub offset: u64,
     pub command: String,
 }
@@ -19,8 +19,8 @@ impl Node {
 
 #[derive(Clone)]
 pub struct BestTransactionLog {
-    head: Link,
-    tails: Vec<Link>,
+    head: Link,       // first element of each level, length = max_level + 1
+    tails: Vec<Link>, // last add node at each level, length = max_level + 1
     max_level: usize,
     pub length: u64,
 }
@@ -44,6 +44,11 @@ impl BestTransactionLog {
         n
     }
 
+    pub fn describe(&self) -> String {
+        format!("len = {}, max_level = {}", self.tails.len(), self.max_level)
+    }
+
+    // https://pic2.zhimg.com/v2-406ac352da4f3c45da01ba5e2c168d9d_b.jpg
     pub fn append(&mut self, offset: u64, value: String) {
         let level = 1 + if self.head.is_none() {
             self.max_level // use the maximum level for the first node
@@ -55,9 +60,15 @@ impl BestTransactionLog {
 
         // update the tails for each level
         for i in 0..level {
+            print!("--> level = {}/{}, offset = {}", i, level, offset);
             if let Some(old) = self.tails[i].take() {
+                // linke last added element with new node at current level (index of vec .next)
+                let offset = old.borrow().offset; // clone offset value
                 let next = &mut old.borrow_mut().next;
                 next[i] = Some(new.clone());
+                println!(", old offset = {}", offset);
+            } else {
+                println!("");
             }
             self.tails[i] = Some(new.clone());
         }
@@ -67,7 +78,7 @@ impl BestTransactionLog {
             self.head = Some(new.clone());
         }
         self.length += 1;
-        // println!("~~~ level = {}\n{:?}", level, self);
+        println!("{:?}", self);
     }
 
     pub fn find(&self, offset: u64) -> Option<String> {
@@ -90,6 +101,12 @@ impl BestTransactionLog {
         for level in (0..=start_level).rev() {
             loop {
                 let next = n.clone();
+                println!(
+                    "---> search {}, level = {}, offset = {}",
+                    offset,
+                    level,
+                    next.borrow().offset,
+                );
                 match next.borrow().next[level] {
                     Some(ref next) if next.borrow().offset <= offset => n = next.clone(),
                     _ => break,
