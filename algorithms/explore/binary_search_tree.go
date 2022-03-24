@@ -45,7 +45,7 @@ func (node *Node) String() (out string) {
 	if node.Parent != nil {
 		out = fmt.Sprintf("%s(%d)", out, node.Parent.Value)
 	}
-	
+
 	if node.Left == nil {
 		out = "nil-" + out
 	} else {
@@ -71,13 +71,14 @@ func (node *Node) search(value int64, np *int) (out *Node) {
 		return nil
 	}
 
-	*np++
 	switch {
 	case node.Value == value:
 		return node
 	case node.Value > value:
+		*np++
 		return node.Left.search(value, np)
 	default:
+		*np++
 		return node.Right.search(value, np)
 	}
 }
