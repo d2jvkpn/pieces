@@ -15,6 +15,10 @@ func NewNode(value int64) *Node {
 	return &Node{Value: value}
 }
 
+func (node *Node) IsRoot() bool {
+	return node.Parent == nil
+}
+
 func (node *Node) Add(value int64) *Node {
 	switch {
 	case value <= node.Value:
