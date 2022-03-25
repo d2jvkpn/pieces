@@ -21,20 +21,16 @@ func (node *Node) IsRoot() bool {
 
 func (node *Node) Add(value int64) *Node {
 	switch {
+	case value <= node.Value && node.Left == nil:
+		node.Left = NewNode(value)
+		node.Left.Parent = node
 	case value <= node.Value:
-		if node.Left == nil {
-			node.Left = NewNode(value)
-			node.Left.Parent = node
-		} else {
-			node.Left.Add(value)
-		}
+		node.Left.Add(value)
+	case value > node.Value && node.Right == nil:
+		node.Right = NewNode(value)
+		node.Right.Parent = node
 	default:
-		if node.Right == nil {
-			node.Right = NewNode(value)
-			node.Right.Parent = node
-		} else {
-			node.Right.Add(value)
-		}
+		node.Right.Add(value)
 	}
 
 	return node
