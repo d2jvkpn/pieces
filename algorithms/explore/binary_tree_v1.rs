@@ -41,6 +41,7 @@ impl Node {
                 // let x = node.borrow();
                 // println!("x {:?}", type_name_of(&x));
                 (*node).borrow_mut().add(value); // !!! not *node.borrow_mut().add(value)
+                self.left = Some(node); // must return self.left
             } else {
                 println!("<+ new left {}.left = {}", self.value, value);
                 let tree = new_tree(value);
@@ -51,6 +52,7 @@ impl Node {
             if let Some(node) = self.right.take() {
                 println!("=> walk right ({}, {})", self.value, node.borrow().value);
                 (*node).borrow_mut().add(value);
+                self.right = Some(node); // must return to self.right
             } else {
                 println!("+> add right {}.right = {}", self.value, value);
                 self.right = new_tree(value);
