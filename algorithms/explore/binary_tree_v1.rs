@@ -66,8 +66,9 @@ impl BinaryTree {
         BinaryTree { root: Node::new(value) }
     }
     // left.borrow_mut().add(value);
-    fn add(&mut self, value: u64) {
+    fn add(&mut self, value: u64) -> &mut Self {
         self.root.add(value);
+        self
     }
 }
 
@@ -75,7 +76,8 @@ fn main() {
     let mut bt = BinaryTree::new(10);
     println!("{:?}", bt);
 
-    bt.add(5);
-    bt.add(1);
+    bt.add(5).add(1);
+    bt.add(12);
+
     println!("{:?}", bt.root);
 }
