@@ -85,5 +85,8 @@ fn main() {
     println!("~~~");
     bt.add(12);
 
+    println!("~~~");
+    bt.add(4).add(6);
+
     println!("{:?}", bt.root);
 }
