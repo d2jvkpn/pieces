@@ -37,7 +37,7 @@ impl Node {
     fn add(&mut self, value: u64) {
         if value <= self.value {
             if let Some(node) = self.left.take() {
-                println!("<= walk left ({}, {})", self.value, node.borrow().value);
+                println!("    <== walk left ({}, {})", self.value, node.borrow().value);
                 // alloc::rc::Rc<core::cell::RefCell<binary_tree::Node>>
                 // println!("~~~ node {:?}", type_name_of(&node));
                 // let x = node.borrow();
@@ -45,18 +45,18 @@ impl Node {
                 (*node).borrow_mut().add(value); // !!! not *node.borrow_mut().add(value)
                 self.left = Some(node); // must return self.left
             } else {
-                println!("<+ new left {}.left = {}", self.value, value);
+                println!("    <++ new left {}.left = {}\n", self.value, value);
                 let node = Node::new(value);
                 self.left = Some(Rc::new(RefCell::new(node)));
                 // println!("{} {:?}", self.value, self.left);
             }
         } else {
             if let Some(node) = self.right.take() {
-                println!("=> walk right ({}, {})", self.value, node.borrow().value);
+                println!("    ==> walk right ({}, {})", self.value, node.borrow().value);
                 (*node).borrow_mut().add(value);
                 self.right = Some(node); // must return to self.right
             } else {
-                println!("+> add right {}.right = {}", self.value, value);
+                println!("    ++> add right {}.right = {}\n", self.value, value);
                 self.right = new_tree(value);
             }
         }
