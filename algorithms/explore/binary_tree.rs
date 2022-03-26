@@ -99,6 +99,7 @@ impl BinaryTree {
     fn find(&self, value: u64) -> Option<Vec<bool>> {
         let mut steps = Vec::with_capacity(10);
         steps.push(false); // root node
+
         self.root.find(value, &mut steps);
 
         if steps.len() == 0 {
@@ -124,8 +125,8 @@ fn main() {
 
     println!("{:?}", bt.root);
 
-    println!("{:?}", bt.find(10)); // Some([])
-    println!("{:?}", bt.find(1)); // Some([false, false])
-    println!("{:?}", bt.find(8)); // Some([false, true, true])
-    println!("{:?}", bt.find(100)); // None
+    println!("find\t{}\t{:?}", 10, bt.find(10)); // Some([])
+    println!("find\t{}\t{:?}", 1, bt.find(1)); // Some([false, false])
+    println!("find\t{}\t{:?}", 8, bt.find(8)); // Some([false, true, true])
+    println!("find\t{}\t{:?}", 100, bt.find(100)); // None
 }
