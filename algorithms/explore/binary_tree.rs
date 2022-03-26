@@ -62,23 +62,24 @@ impl Node {
         }
     }
 
-    fn find(&self, value: u64, n: &mut usize) {
+    fn find(&self, value: u64, steps: &mut Vec<bool>) {
         if self.value == value {
             return;
         }
 
-        *n += 1;
         if value < self.value {
             if let Some(node) = &self.left {
-                node.borrow().find(value, n);
+                steps.push(false);
+                node.borrow().find(value, steps);
             } else {
-                *n = 0;
+                *steps = vec![];
             }
         } else {
             if let Some(node) = &self.right {
-                node.borrow().find(value, n);
+                steps.push(true);
+                node.borrow().find(value, steps);
             } else {
-                *n = 0;
+                *steps = vec![];
             }
         }
     }
@@ -95,10 +96,16 @@ impl BinaryTree {
         self
     }
 
-    fn find(&self, value: u64) -> usize {
-        let mut n = 0;
-        self.root.find(value, &mut n);
-        n
+    fn find(&self, value: u64) -> Option<Vec<bool>> {
+        let mut steps = Vec::with_capacity(10);
+        steps.push(false); // root node
+        self.root.find(value, &mut steps);
+
+        if steps.len() == 0 {
+            None
+        } else {
+            Some(steps[1..].to_vec())
+        }
     }
 }
 
@@ -113,10 +120,12 @@ fn main() {
     bt.add(12);
 
     println!("~~~");
-    bt.add(4).add(6);
+    bt.add(4).add(6).add(8);
 
     println!("{:?}", bt.root);
 
-    println!("{}", bt.find(1));
-    println!("{}", bt.find(100));
+    println!("{:?}", bt.find(10)); // Some([])
+    println!("{:?}", bt.find(1)); // Some([false, false])
+    println!("{:?}", bt.find(8)); // Some([false, true, true])
+    println!("{:?}", bt.find(100)); // None
 }
