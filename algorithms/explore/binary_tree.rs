@@ -7,6 +7,7 @@ use std::rc::Rc;
 #[derive(Debug)]
 struct Node {
     value: u64,
+    // parent: Tree,
     left: Tree,
     right: Tree,
 }
@@ -45,8 +46,8 @@ impl Node {
                 self.left = Some(node); // must return self.left
             } else {
                 println!("<+ new left {}.left = {}", self.value, value);
-                let tree = new_tree(value);
-                self.left = tree;
+                let node = Node::new(value);
+                self.left = Some(Rc::new(RefCell::new(node)));
                 // println!("{} {:?}", self.value, self.left);
             }
         } else {
