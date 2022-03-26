@@ -16,6 +16,7 @@ type Tree = Option<Rc<RefCell<Node>>>;
 #[derive(Debug)]
 struct BinaryTree {
     root: Node,
+    size: u64,
 }
 
 fn type_name_of<T>(_: &T) -> &str {
@@ -63,11 +64,12 @@ impl Node {
 
 impl BinaryTree {
     fn new(value: u64) -> BinaryTree {
-        BinaryTree { root: Node::new(value) }
+        BinaryTree { root: Node::new(value), size: 1 }
     }
     // left.borrow_mut().add(value);
     fn add(&mut self, value: u64) -> &mut Self {
         self.root.add(value);
+        self.size += 1;
         self
     }
 }
@@ -76,7 +78,10 @@ fn main() {
     let mut bt = BinaryTree::new(10);
     println!("{:?}", bt);
 
+    println!("~~~");
     bt.add(5).add(1);
+
+    println!("~~~");
     bt.add(12);
 
     println!("{:?}", bt.root);
