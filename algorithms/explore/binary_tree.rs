@@ -61,6 +61,27 @@ impl Node {
             }
         }
     }
+
+    fn find(&self, value: u64, n: &mut usize) {
+        if self.value == value {
+            return;
+        }
+
+        *n += 1;
+        if value < self.value {
+            if let Some(node) = &self.left {
+                node.borrow().find(value, n);
+            } else {
+                *n = 0;
+            }
+        } else {
+            if let Some(node) = &self.right {
+                node.borrow().find(value, n);
+            } else {
+                *n = 0;
+            }
+        }
+    }
 }
 
 impl BinaryTree {
@@ -72,6 +93,12 @@ impl BinaryTree {
         self.root.add(value);
         self.size += 1;
         self
+    }
+
+    fn find(&self, value: u64) -> usize {
+        let mut n = 0;
+        self.root.find(value, &mut n);
+        n
     }
 }
 
@@ -89,4 +116,7 @@ fn main() {
     bt.add(4).add(6);
 
     println!("{:?}", bt.root);
+
+    println!("{}", bt.find(1));
+    println!("{}", bt.find(100));
 }
