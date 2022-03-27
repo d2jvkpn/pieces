@@ -6,7 +6,7 @@ use std::rc::Rc;
 
 #[derive(Debug)]
 struct Node {
-    value: u64,
+    value: i64,
     // parent: Tree,
     left: Tree,
     right: Tree,
@@ -17,24 +17,24 @@ type Tree = Option<Rc<RefCell<Node>>>;
 #[derive(Debug)]
 struct BinaryTree {
     root: Node,
-    size: u64,
+    size: i64,
 }
 
 fn type_name_of<T>(_: &T) -> &str {
     any::type_name::<T>()
 }
 
-fn new_tree(value: u64) -> Tree {
+fn new_tree(value: i64) -> Tree {
     let node = Node::new(value);
     Some(Rc::new(RefCell::new(node)))
 }
 
 impl Node {
-    fn new(value: u64) -> Node {
+    fn new(value: i64) -> Node {
         Node { value, left: None, right: None }
     }
 
-    fn add(&mut self, value: u64) {
+    fn add(&mut self, value: i64) {
         if value <= self.value {
             if let Some(node) = self.left.take() {
                 println!("    <== walk left ({}, {})", self.value, node.borrow().value);
@@ -62,7 +62,7 @@ impl Node {
         }
     }
 
-    fn find(&self, value: u64, steps: &mut Vec<bool>) {
+    fn find(&self, value: i64, steps: &mut Vec<bool>) {
         if self.value == value {
             return;
         }
@@ -83,20 +83,38 @@ impl Node {
             }
         }
     }
+
+    fn get(&self, steps: &[bool]) -> Option<i64> {
+        if steps.len() == 0 {
+            return Some(self.value);
+        }
+
+        if !steps[0] {
+            match &self.left {
+                Some(n) => n.borrow().get(&steps[1..]),
+                None => return None,
+            }
+        } else {
+            match &self.right {
+                Some(n) => n.borrow().get(&steps[1..]),
+                None => return None,
+            }
+        }
+    }
 }
 
 impl BinaryTree {
-    fn new(value: u64) -> BinaryTree {
+    fn new(value: i64) -> BinaryTree {
         BinaryTree { root: Node::new(value), size: 1 }
     }
     // left.borrow_mut().add(value);
-    fn add(&mut self, value: u64) -> &mut Self {
+    fn add(&mut self, value: i64) -> &mut Self {
         self.root.add(value);
         self.size += 1;
         self
     }
 
-    fn find(&self, value: u64) -> Option<Vec<bool>> {
+    fn find(&self, value: i64) -> Option<Vec<bool>> {
         let mut steps = Vec::with_capacity(10);
         steps.push(false); // root node
 
@@ -107,6 +125,10 @@ impl BinaryTree {
         } else {
             Some(steps[1..].to_vec())
         }
+    }
+
+    fn get(&self, steps: &Vec<bool>) -> Option<i64> {
+        self.root.get(&steps[0..])
     }
 }
 
@@ -127,6 +149,10 @@ fn main() {
 
     println!("find\t{}\t{:?}", 10, bt.find(10)); // Some([])
     println!("find\t{}\t{:?}", 1, bt.find(1)); // Some([false, false])
-    println!("find\t{}\t{:?}", 8, bt.find(8)); // Some([false, true, true])
     println!("find\t{}\t{:?}", 100, bt.find(100)); // None
+
+    let v1 = bt.find(8).unwrap();
+    println!("find\t{}\t{:?}", 8, v1); // Some([false, true, true])
+
+    println!("get\t{:?}\t{:?}", v1, bt.get(&v1));
 }
