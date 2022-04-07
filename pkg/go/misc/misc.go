@@ -135,7 +135,7 @@ func FileSize2Str(n int64) string {
 	}
 }
 
-func ListIndex[T constraints.Ordered](list []T, v T) int {
+func VectorIndex[T constraints.Ordered](list []T, v T) int {
 	for i := range list {
 		if list[i] == v {
 			return i
@@ -145,7 +145,7 @@ func ListIndex[T constraints.Ordered](list []T, v T) int {
 	return -1
 }
 
-func EqualList[T constraints.Ordered](arr1, arr2 []T) (ok bool) {
+func EqualVector[T constraints.Ordered](arr1, arr2 []T) (ok bool) {
 	if len(arr1) != len(arr2) {
 		return false
 	}
@@ -159,7 +159,7 @@ func EqualList[T constraints.Ordered](arr1, arr2 []T) (ok bool) {
 	return true
 }
 
-func UniqList[T constraints.Ordered](arr []T) (list []T) {
+func UniqVector[T constraints.Ordered](arr []T) (list []T) {
 	n := len(arr)
 	list = make([]T, 0, n)
 

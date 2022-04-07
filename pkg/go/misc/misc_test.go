@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-func TestListIndex(t *testing.T) {
+func TestVectorIndex(t *testing.T) {
 	tt := []struct {
 		Name     string
 		List     []string
@@ -20,7 +20,7 @@ func TestListIndex(t *testing.T) {
 		tf := func(t *testing.T) {
 			t.Parallel()
 
-			out := ListIndex(tt[i].List, tt[i].Item)
+			out := VectorIndex(tt[i].List, tt[i].Item)
 			if out != tt[i].Expected {
 				t.Fatalf("exp: %d, got: %d\n", tt[i].Expected, out)
 			}
@@ -30,7 +30,7 @@ func TestListIndex(t *testing.T) {
 	}
 }
 
-func TestUniqList(t *testing.T) {
+func TestUniqVector(t *testing.T) {
 	tt := []struct {
 		Name     string
 		List     []byte
@@ -45,8 +45,8 @@ func TestUniqList(t *testing.T) {
 		tf := func(t *testing.T) {
 			t.Parallel()
 
-			out := UniqList(tt[i].List)
-			if !EqualList(out, tt[i].Expected) {
+			out := UniqVector(tt[i].List)
+			if !EqualVector(out, tt[i].Expected) {
 				t.Fatalf("unepected: %v, %d\n", tt[i].Expected, out)
 			}
 		}
