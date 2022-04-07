@@ -10,6 +10,8 @@ import (
 	"strings"
 	"syscall"
 	"time"
+
+	"golang.org/x/exp/constraints"
 )
 
 ///
@@ -131,4 +133,47 @@ func FileSize2Str(n int64) string {
 	default:
 		return fmt.Sprintf("%dG", n>>30)
 	}
+}
+
+func ListIndex[T constraints.Ordered](list []T, v T) int {
+	for i := range list {
+		if list[i] == v {
+			return i
+		}
+	}
+
+	return -1
+}
+
+func EqualList[T constraints.Ordered](arr1, arr2 []T) (ok bool) {
+	if len(arr1) != len(arr2) {
+		return false
+	}
+
+	for i := range arr1 {
+		if arr1[i] != arr2[i] {
+			return false
+		}
+	}
+
+	return true
+}
+
+func UniqList[T constraints.Ordered](arr []T) (list []T) {
+	n := len(arr)
+	list = make([]T, 0, n)
+
+	if len(arr) == 0 {
+		return list
+	}
+
+	mp := make(map[T]bool, n)
+	for _, v := range arr {
+		if !mp[v] {
+			list = append(list, v)
+			mp[v] = true
+		}
+	}
+
+	return list
 }

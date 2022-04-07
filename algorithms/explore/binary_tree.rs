@@ -100,6 +100,7 @@ impl Node {
                 None => return None,
             }
         }
+        // use a for loop instead??
     }
 }
 
@@ -153,6 +154,5 @@ fn main() {
 
     let v1 = bt.find(8).unwrap();
     println!("find\t{}\t{:?}", 8, v1); // Some([false, true, true])
-
-    println!("get\t{:?}\t{:?}", v1, bt.get(&v1));
+    println!("get\t{:?}\t{:?}", v1, bt.get(&v1)); // Some(8)
 }
