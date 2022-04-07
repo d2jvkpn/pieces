@@ -16,10 +16,12 @@ func init() {
 	_base64Encoding = base64.NewEncoding(_Encoder)
 }
 
+// replace +/ with -_
 func Base64Encode(src []byte) string {
 	return _base64Encoding.EncodeToString(src)
 }
 
+// replace +/ with -_
 func Base64Decode(src string) ([]byte, error) {
 	return _base64Encoding.DecodeString(src)
 }
