@@ -1,6 +1,8 @@
 package misc
 
 import (
+	"fmt"
+	"path/filepath"
 	"testing"
 )
 
@@ -53,4 +55,13 @@ func TestUniqVector(t *testing.T) {
 
 		t.Run(tt[i].Name, tf)
 	}
+}
+
+func TestFilepath(t *testing.T) {
+	p := "a/b/c.tar.gz"
+	fmt.Println(filepath.Base(p), filepath.Ext(p))
+}
+
+func TestFileSaveName(t *testing.T) {
+	fmt.Println(FileSaveName("misc.go"))
 }

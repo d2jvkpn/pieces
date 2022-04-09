@@ -2,11 +2,14 @@ package misc
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 	"math/rand"
 	"os"
 	"os/signal"
+	// "strconv"
+	"path/filepath"
 	"strings"
 	"syscall"
 	"time"
@@ -176,4 +179,26 @@ func UniqVector[T constraints.Ordered](arr []T) (list []T) {
 	}
 
 	return list
+}
+
+func FileSaveName(p string) (out string, err error) {
+	var (
+		i         int
+		base, ext string
+	)
+
+	ext = filepath.Ext(p)
+	base = p[0:(len(p) - len(ext))]
+	i, out = 1, p
+	for {
+		fmt.Println(i, out)
+		if _, err = os.Stat(out); err != nil {
+			if errors.Is(err, os.ErrNotExist) {
+				return out, nil
+			}
+			return "", err
+		}
+		i++
+		out = fmt.Sprintf("%s-%d%s", base, i, ext)
+	}
 }
