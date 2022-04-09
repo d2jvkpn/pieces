@@ -1,6 +1,7 @@
 package misc
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -19,7 +20,8 @@ import (
 
 ///
 var (
-	Rand *rand.Rand
+	Rand            *rand.Rand
+	_base64Encoding *base64.Encoding = base64.NewEncoding("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_")
 )
 
 const (
@@ -181,6 +183,16 @@ func UniqVector[T constraints.Ordered](arr []T) (list []T) {
 	return list
 }
 
+// replace +/ with -_
+func Base64Encode(src []byte) string {
+	return _base64Encoding.EncodeToString(src)
+}
+
+// replace +/ with -_
+func Base64Decode(src string) ([]byte, error) {
+	return _base64Encoding.DecodeString(src)
+}
+
 func FileSaveName(p string) (out string, err error) {
 	var (
 		i         int
@@ -191,7 +203,7 @@ func FileSaveName(p string) (out string, err error) {
 	base = p[0:(len(p) - len(ext))]
 	i, out = 1, p
 	for {
-		fmt.Println(i, out)
+		// fmt.Println(i, out)
 		if _, err = os.Stat(out); err != nil {
 			if errors.Is(err, os.ErrNotExist) {
 				return out, nil
