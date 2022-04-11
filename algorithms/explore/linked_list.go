@@ -53,7 +53,7 @@ func (list *LinkedList) Pop() (value int64, ok bool) {
 		return 0, false
 	}
 
-	 value, ok = list.Tail.Value, true
+	value, ok = list.Tail.Value, true
 	if list.Head.Next == nil {
 		list.Head, list.Tail, list.Len = nil, nil, 0
 		return
