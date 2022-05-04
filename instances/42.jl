@@ -1,6 +1,9 @@
+# 42.jl
+# $ julia 42.jl
+
 using Printf
 
-println("Hello, Julia!")
+println("Hello, world!")
 
 @printf("1/42 = %f, 1/24 = %f\n", 1/42, 1/24)
 
