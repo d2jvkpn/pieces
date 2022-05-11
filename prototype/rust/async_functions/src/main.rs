@@ -21,8 +21,7 @@ fn run0(number: i8) -> i8 {
 }
 
 async fn run1(number: i8) -> i8 {
-    //  DateTime<Local>
-    // let now = || chrono::Local::now().to_rfc3339_opts(chrono::SecondsFormat::Millis, true);
+    // let now = || Local::now().to_rfc3339_opts(SecondsFormat::Millis, true);
 
     println!(">>> {} Run1 number {} is running", now_string(), number);
     let two_seconds = time::Duration::new(2, 0);
