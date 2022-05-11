@@ -33,6 +33,7 @@ async fn run2(number: i8) -> i8 {
 }
 
 fn main() {
+    // ####
     // defines a future
     let now = time::Instant::now();
     println!("### {} future_1 is created", now_string());
@@ -55,6 +56,7 @@ fn main() {
     let results = block_on(batch2);
     println!("~~~ time elapsed {:?}, results: {:?}\n", now.elapsed(), results);
 
+    // ####
     let now = time::Instant::now();
     // defines the async block for multiple futures (just like an async function)
     let batch3 = async {
@@ -69,15 +71,10 @@ fn main() {
     let results = block_on(batch3);
     println!("~~~ time elapsed {:?}, results: {:?}\n", now.elapsed(), results);
 
+    // ####
     let now = time::Instant::now();
     let batch4 = async {
-        let mut futures_vec = Vec::new();
-        let future_8 = run1_async(8);
-        let future_9 = run1_async(9);
-        let future_10 = run1_async(10);
-        futures_vec.push(future_8);
-        futures_vec.push(future_9);
-        futures_vec.push(future_10);
+        let futures_vec = vec![run1_async(8), run1_async(9), run1_async(10)];
 
         // applies the spawn async tasks for all futures and collect them into a vector
         let handles: Vec<task::JoinHandle<i8>> = futures_vec.into_iter().map(task::spawn).collect();
@@ -89,6 +86,7 @@ fn main() {
     let results = block_on(batch4);
     println!("~~~ time elapsed {:?}, results: {:?}\n", now.elapsed(), results);
 
+    // ####
     // start the timer again
     let now = time::Instant::now();
     // spawn a few functions with the same function
