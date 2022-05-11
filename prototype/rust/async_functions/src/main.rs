@@ -9,25 +9,19 @@ fn now_string() -> String {
     Local::now().to_rfc3339_opts(SecondsFormat::Millis, true)
 }
 
-fn run0(number: i8) -> i8 {
+fn run1(number: i8) -> i8 {
     //  DateTime<Local>
     // let now = || chrono::Local::now().to_rfc3339_opts(chrono::SecondsFormat::Millis, true);
-
-    println!(">>> {} RUN0 number {} is running", now_string(), number);
-    let two_seconds = time::Duration::new(2, 0);
-    thread::sleep(two_seconds);
-    println!("    {} RUN0 number {} is done", now_string(), number);
-    return 2;
-}
-
-async fn run1(number: i8) -> i8 {
-    // let now = || Local::now().to_rfc3339_opts(SecondsFormat::Millis, true);
 
     println!(">>> {} Run1 number {} is running", now_string(), number);
     let two_seconds = time::Duration::new(2, 0);
     thread::sleep(two_seconds);
     println!("    {} Run1 number {} is done", now_string(), number);
     return 2;
+}
+
+async fn run1_async(number: i8) -> i8 {
+    run1(number)
 }
 
 async fn run2(number: i8) -> i8 {
@@ -42,7 +36,7 @@ fn main() {
     // defines a future
     let now = time::Instant::now();
     println!("### {} future_1 is created", now_string());
-    let future_1 = run1(1);
+    let future_1 = run1_async(1);
     // holds the program for the result of the first future
     let outcome = block_on(future_1);
     println!("~~~ time elapsed {:?}, result: {}\n", now.elapsed(), outcome);
@@ -51,9 +45,9 @@ fn main() {
     // defines the async block for multiple futures (just like an async function)
     let batch2 = async {
         // defines two futures
-        let future_2 = run1(2);
-        let future_3 = run1(3);
-        let future_4 = run1(4);
+        let future_2 = run1_async(2);
+        let future_3 = run1_async(3);
+        let future_4 = run1_async(4);
         // waits for both futures to complete in sequence
         return join!(future_2, future_3, future_4);
     };
@@ -78,9 +72,9 @@ fn main() {
     let now = time::Instant::now();
     let batch4 = async {
         let mut futures_vec = Vec::new();
-        let future_8 = run1(8);
-        let future_9 = run1(9);
-        let future_10 = run1(10);
+        let future_8 = run1_async(8);
+        let future_9 = run1_async(9);
+        let future_10 = run1_async(10);
         futures_vec.push(future_8);
         futures_vec.push(future_9);
         futures_vec.push(future_10);
@@ -99,7 +93,7 @@ fn main() {
     let now = time::Instant::now();
     // spawn a few functions with the same function
     let batch5: Vec<thread::JoinHandle<i8>> =
-        vec![11, 12, 13].into_iter().map(|v| thread::spawn(move || run0(v))).collect();
+        vec![11, 12, 13].into_iter().map(|v| thread::spawn(move || run1(v))).collect();
     // vec![thread::spawn(|| run(12)), thread::spawn(|| run(13)), thread::spawn(|| run(14))];
 
     let results: Vec<i8> = batch5.into_iter().map(|t| t.join().unwrap()).collect();
