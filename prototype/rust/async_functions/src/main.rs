@@ -20,10 +20,6 @@ fn run1(number: i8) -> i8 {
     return 2;
 }
 
-async fn run1_async(number: i8) -> i8 {
-    run1(number)
-}
-
 async fn run2(number: i8) -> i8 {
     println!(">>> {} Run2 number {} is running", now_string(), number);
     let two_seconds = time::Duration::new(2, 0);
@@ -33,6 +29,10 @@ async fn run2(number: i8) -> i8 {
 }
 
 fn main() {
+    async fn run1_async(number: i8) -> i8 {
+        run1(number)
+    }
+
     // ####
     // defines a future
     let now = time::Instant::now();
@@ -96,5 +96,5 @@ fn main() {
 
     let results: Vec<i8> = batch5.into_iter().map(|t| t.join().unwrap()).collect();
     // print the outcomes again from the threads
-    println!("~~~~ time elapsed {:?}, results: {:?}\n", now.elapsed(), results);
+    println!("~~~ time elapsed {:?}, results: {:?}\n", now.elapsed(), results);
 }
