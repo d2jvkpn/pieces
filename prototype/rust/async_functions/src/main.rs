@@ -1,5 +1,5 @@
 // Rust Web Programing 2021, Chapter03
-use std::{thread, time};
+use std::{any, thread, time};
 
 use async_std::task;
 use chrono::{Local, SecondsFormat};
@@ -13,7 +13,7 @@ fn run1(number: i8) -> i8 {
     //  DateTime<Local>
     // let now = || chrono::Local::now().to_rfc3339_opts(chrono::SecondsFormat::Millis, true);
 
-    println!(">>> {} Run1 number {} is running", now_string(), number);
+    println!(" => {} Run1 number {} is running", now_string(), number);
     let two_seconds = time::Duration::new(2, 0);
     thread::sleep(two_seconds);
     println!("    {} Run1 number {} is done", now_string(), number);
@@ -21,11 +21,15 @@ fn run1(number: i8) -> i8 {
 }
 
 async fn run2(number: i8) -> i8 {
-    println!(">>> {} Run2 number {} is running", now_string(), number);
+    println!(" => {} Run2 number {} is running", now_string(), number);
     let two_seconds = time::Duration::new(2, 0);
     task::sleep(two_seconds).await;
     println!("    {} Run2 number {} is done", now_string(), number);
     return 2;
+}
+
+fn type_name<T>(_v: &T) -> String {
+    format!("{}", any::type_name::<T>())
 }
 
 fn main() {
@@ -34,14 +38,15 @@ fn main() {
     }
 
     // ####
-    // defines a future
+    println!(">>> {} future_1 is created", now_string());
     let now = time::Instant::now();
-    println!("### {} future_1 is created", now_string());
+    // defines a future
     let future_1 = run1_async(1);
     // holds the program for the result of the first future
     let outcome = block_on(future_1);
     println!("~~~ time elapsed {:?}, result: {}\n", now.elapsed(), outcome);
 
+    println!(">>> {} batch2 join!(...)", now_string());
     let now = time::Instant::now();
     // defines the async block for multiple futures (just like an async function)
     let batch2 = async {
@@ -57,11 +62,16 @@ fn main() {
     println!("~~~ time elapsed {:?}, results: {:?}\n", now.elapsed(), results);
 
     // ####
+    println!(">>> {} batch3 join!(...)", now_string());
     let now = time::Instant::now();
     // defines the async block for multiple futures (just like an async function)
     let batch3 = async {
         // defines two futures
         let future_5 = run2(5);
+
+        // core::future::from_generator::GenFuture<async_functions::run2::{{closure}}>
+        println!("~~~ {}", type_name(&future_5));
+
         let future_6 = run2(6);
         let future_7 = run2(7);
         // waits for both futures to complete in sequence
@@ -72,6 +82,7 @@ fn main() {
     println!("~~~ time elapsed {:?}, results: {:?}\n", now.elapsed(), results);
 
     // ####
+    println!(">>> {} batch4 join_all(...)", now_string());
     let now = time::Instant::now();
     let batch4 = async {
         let futures_vec = vec![run1_async(8), run1_async(9), run1_async(10)];
@@ -87,6 +98,7 @@ fn main() {
     println!("~~~ time elapsed {:?}, results: {:?}\n", now.elapsed(), results);
 
     // ####
+    println!(">>> {} batch5 join threads", now_string());
     // start the timer again
     let now = time::Instant::now();
     // spawn a few functions with the same function
