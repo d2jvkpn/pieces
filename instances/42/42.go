@@ -1,3 +1,4 @@
+// $ go run 42.go
 package main
 
 import (

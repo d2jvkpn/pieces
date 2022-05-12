@@ -1,4 +1,3 @@
-# 42.jl
 # $ julia 42.jl
 
 using Printf
