@@ -13,18 +13,18 @@ fn run1(number: i8) -> i8 {
     //  DateTime<Local>
     // let now = || chrono::Local::now().to_rfc3339_opts(chrono::SecondsFormat::Millis, true);
 
-    println!(" => {} Run1 number {} is running", now_string(), number);
+    println!(" => {} Run1 number {:02} is running", now_string(), number);
     let two_seconds = time::Duration::new(2, 0);
     thread::sleep(two_seconds);
-    println!("    {} Run1 number {} is done", now_string(), number);
+    println!("    {} Run1 number {:02} is done", now_string(), number);
     return 2;
 }
 
 async fn run2(number: i8) -> i8 {
-    println!(" => {} Run2 number {} is running", now_string(), number);
+    println!(" => {} Run2 number {:02} is running", now_string(), number);
     let two_seconds = time::Duration::new(2, 0);
     task::sleep(two_seconds).await;
-    println!("    {} Run2 number {} is done", now_string(), number);
+    println!("    {} Run2 number {:02} is done", now_string(), number);
     return 2;
 }
 
