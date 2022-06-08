@@ -91,7 +91,7 @@ fn main() {
         let handles: Vec<task::JoinHandle<i8>> = futures_vec.into_iter().map(task::spawn).collect();
         // futures_vec.into_iter().map(task::spawn).collect::<Vec<_>>();
 
-        let results = join_all(handles).await;
+        let results = join_all(handles).await; // !!! in concurrent
         return results;
     };
     let results = block_on(batch4);
