@@ -37,6 +37,9 @@ fn main() {
         run1(number)
     }
 
+    let elapsed =
+        |t: time::Instant| time::Duration::from_millis(t.elapsed().as_millis().try_into().unwrap());
+
     // ####
     println!(">>> {} future_1 is created", now_string());
     let now = time::Instant::now();
@@ -44,7 +47,7 @@ fn main() {
     let future_1 = run1_async(1);
     // holds the program for the result of the first future
     let outcome = block_on(future_1);
-    println!("~~~ time elapsed {:?}, result: {}\n", now.elapsed(), outcome);
+    println!("~~~ time elapsed {:?}, result: {}\n", elapsed(now), outcome);
 
     println!(">>> {} batch2 join!(...)", now_string());
     let now = time::Instant::now();
@@ -59,7 +62,8 @@ fn main() {
     };
     // holds the program for the result from the async block
     let results = block_on(batch2);
-    println!("~~~ time elapsed {:?}, results: {:?}\n", now.elapsed(), results);
+    //println!("~~~ time elapsed {:?}, results: {:?}\n", now.elapsed(), results);
+    println!("~~~ time elapsed {:?}, results: {:?}\n", elapsed(now), results);
 
     // ####
     println!(">>> {} batch3 join!(...)", now_string());
@@ -79,7 +83,7 @@ fn main() {
     };
     // holds the program for the result from the async block
     let results = block_on(batch3);
-    println!("~~~ time elapsed {:?}, results: {:?}\n", now.elapsed(), results);
+    println!("~~~ time elapsed {:?}, results: {:?}\n", elapsed(now), results);
 
     // ####
     println!(">>> {} batch4 join_all(...)", now_string());
@@ -95,7 +99,7 @@ fn main() {
         return results;
     };
     let results = block_on(batch4);
-    println!("~~~ time elapsed {:?}, results: {:?}\n", now.elapsed(), results);
+    println!("~~~ time elapsed {:?}, results: {:?}\n", elapsed(now), results);
 
     // ####
     println!(">>> {} batch5 join threads", now_string());
@@ -108,5 +112,5 @@ fn main() {
 
     let results: Vec<i8> = batch5.into_iter().map(|t| t.join().unwrap()).collect();
     // print the outcomes again from the threads
-    println!("~~~ time elapsed {:?}, results: {:?}\n", now.elapsed(), results);
+    println!("~~~ time elapsed {:?}, results: {:?}\n", elapsed(now), results);
 }
