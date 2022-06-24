@@ -4,8 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"os"
-	"strings"
+	// "os"
+	// "strings"
+	"flag"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -18,12 +19,8 @@ func main() {
 		router *gin.RouterGroup
 	)
 
-	if addr = ":8080"; len(os.Args) > 1 {
-		addr = os.Args[1]
-	}
-	if !strings.HasPrefix(addr, ":") {
-		addr = ":" + addr
-	}
+	flag.StringVar(&addr, "addr", ":8080", "http server address")
+	flag.Parse()
 
 	engine = gin.Default()
 	// gin.SetMode(gin.ReleaseMode)
@@ -38,6 +35,8 @@ func main() {
 
 	irouters := router.Use(inspect)
 	irouters.GET("/", hello)
+
+	fmt.Printf(">>> Http service listen on %s\n", addr)
 	engine.Run(addr)
 }
 
@@ -48,7 +47,7 @@ func hello(ctx *gin.Context) {
 
 func inspect(ctx *gin.Context) {
 	fmt.Printf(
-		">>> %s ClientIP: %q, RemoteAddr: %q, Method: %q\n    Path: %q, Query: %q\n",
+		"~~~ %s ClientIP: %q, RemoteAddr: %q, Method: %q\n    Path: %q, Query: %q\n",
 		time.Now().Format(time.RFC3339), ctx.ClientIP(), ctx.Request.RemoteAddr,
 		ctx.Request.Method, ctx.Request.URL.Path, ctx.Request.URL.RawQuery,
 	)
