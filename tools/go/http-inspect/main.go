@@ -1,5 +1,7 @@
 package main
 
+//go:generate bash go_build.sh
+
 import (
 	"encoding/json"
 	"fmt"
@@ -51,18 +53,19 @@ func hello(ctx *gin.Context) {
 }
 
 func inspect(ctx *gin.Context) {
-	now := time.Now()
+	start := time.Now()
 	bts, _ := json.Marshal(ctx.Request.Header)
 
 	record := fmt.Sprintf(
-		"<=> %s ClientIP: %q, RemoteAddr: %q, Method: %q, Path: %q, Query: %q, Headers: %s",
-		now.Format(time.RFC3339), ctx.ClientIP(), ctx.Request.RemoteAddr,
-		ctx.Request.Method, ctx.Request.URL.Path, ctx.Request.URL.RawQuery, bts,
+		"ClientIP: %q, RemoteAddr: %q, Method: %q, Path: %q, Query: %q, Headers: %s",
+		ctx.ClientIP(), ctx.Request.RemoteAddr, ctx.Request.Method,
+		ctx.Request.URL.Path, ctx.Request.URL.RawQuery, bts,
 	)
 
 	ctx.Next()
 	fmt.Printf(
-		"%s, Status: %d, Elapsed: %v\n",
-		record, ctx.Writer.Status(), time.Since(now),
+		"<=> %s %s, Status: %d, Elapsed: %v\n",
+		start.Format(time.RFC3339), record,
+		ctx.Writer.Status(), time.Since(start),
 	)
 }
