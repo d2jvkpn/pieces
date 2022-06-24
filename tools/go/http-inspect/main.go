@@ -48,25 +48,22 @@ func runServe(flagSet *flag.FlagSet, args []string) (err error) {
 		addr           string
 		proxies        string
 		trustedProxies []string
-		release        bool
-		engine         *gin.Engine
-		router         *gin.RouterGroup
+		// release        bool
+		engine *gin.Engine
+		router *gin.RouterGroup
 	)
 
 	flagSet.StringVar(&addr, "addr", ":8080", "http server address")
 	flagSet.StringVar(&proxies, "proxies", "", "trusted proxies, separated by comma")
-	flagSet.BoolVar(&release, "release", false, "run in release mode")
+	// flagSet.BoolVar(&release, "release", false, "run in release mode")
 
 	if err = flagSet.Parse(args); err != nil {
 		return err
 	}
 
-	if release {
-		gin.SetMode(gin.ReleaseMode)
-		engine = gin.New()
-	} else {
-		engine = gin.Default()
-	}
+	gin.SetMode(gin.ReleaseMode)
+	engine = gin.New()
+	// engine = gin.Default()
 
 	trustedProxies = strings.Fields(strings.Replace(proxies, ",", " ", -1))
 	if len(trustedProxies) > 0 {
@@ -111,7 +108,7 @@ func runClient(flagSet *flag.FlagSet, args []string) (err error) {
 	bts, _ := json.Marshal(resp.Header)
 	body, _ := ioutil.ReadAll(resp.Body)
 	fmt.Printf(
-		"<=> Status: %d, Elapsed: %v\n    Headers: %s\n    Body: %q\n",
+		"==> Status: %d, Elapsed: %v\n    Headers: %s\n    Body: %q\n",
 		resp.StatusCode, time.Since(start), bts, body,
 	)
 
@@ -123,7 +120,7 @@ func inspect(ctx *gin.Context) {
 	bts, _ := json.Marshal(ctx.Request.Header)
 
 	record := fmt.Sprintf(
-		"ClientIP: %q, RemoteAddr: %q, Method: %q, Path: %q, Query: %q, Headers: %s",
+		"ClientIP: %q, RemoteAddr: %q, Method: %q\n    Path: %q, Query: %q\n    Headers: %s",
 		ctx.ClientIP(), ctx.Request.RemoteAddr, ctx.Request.Method,
 		ctx.Request.URL.Path, ctx.Request.URL.RawQuery, bts,
 	)
@@ -131,7 +128,7 @@ func inspect(ctx *gin.Context) {
 	ctx.Next()
 
 	fmt.Printf(
-		"<=> %s %s, Status: %d, Elapsed: %v\n",
+		"<== %s %s\n    Status: %d, Elapsed: %s\n",
 		start.Format(time.RFC3339), record,
 		ctx.Writer.Status(), time.Since(start),
 	)
