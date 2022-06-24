@@ -24,7 +24,7 @@ func main() {
 	)
 
 	if len(os.Args) < 2 {
-		log.Fatalln("subcommands: serve, client")
+		log.Fatalln("commands: serve, client")
 	}
 	command = os.Args[1]
 	flagSet = flag.NewFlagSet(command, 1)
@@ -35,7 +35,7 @@ func main() {
 	case "client":
 		err = runClient(flagSet, os.Args[1:])
 	default:
-		log.Fatalf("unknown commands: %s\n", command)
+		log.Fatalf("unknown command: %s\n", command)
 	}
 
 	if err != nil {
