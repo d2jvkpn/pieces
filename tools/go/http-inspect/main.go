@@ -150,7 +150,7 @@ func inspect(ctx *gin.Context) {
 	ctx.Next()
 
 	fmt.Printf(
-		"<== %s %s\n    Status: %d, Elapsed: %s\n",
+		"<== %s %s\n    Status: %d\n    Elapsed: %s\n",
 		start.Format(time.RFC3339), record,
 		ctx.Writer.Status(), time.Since(start),
 	)
