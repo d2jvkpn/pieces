@@ -103,6 +103,7 @@ func runClient(flagSet *flag.FlagSet, args []string) (err error) {
 	if err = flagSet.Parse(args); err != nil {
 		return err
 	}
+	// flagSet.Usage: func()
 	if flagSet.NArg() > 0 {
 		fmt.Fprintf(os.Stderr, "Usage of %s:\n", flagSet.Name())
 		flagSet.PrintDefaults()
