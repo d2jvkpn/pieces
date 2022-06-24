@@ -120,8 +120,8 @@ func inspect(ctx *gin.Context) {
 	bts, _ := json.Marshal(ctx.Request.Header)
 
 	record := fmt.Sprintf(
-		"ClientIP: %q, RemoteAddr: %q, Method: %q\n    Path: %q, Query: %q\n    Headers: %s",
-		ctx.ClientIP(), ctx.Request.RemoteAddr, ctx.Request.Method,
+		"RemoteAddr: %q, ClientIP: %q, Method: %q\n    Path: %q, Query: %q\n    Headers: %s",
+		ctx.Request.RemoteAddr, ctx.ClientIP(), ctx.Request.Method,
 		ctx.Request.URL.Path, ctx.Request.URL.RawQuery, bts,
 	)
 
