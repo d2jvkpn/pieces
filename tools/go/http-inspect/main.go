@@ -127,7 +127,7 @@ func runClient(flagSet *flag.FlagSet, args []string) (showHelp bool, err error) 
 
 	body, _ := ioutil.ReadAll(resp.Body)
 	fmt.Printf(
-		"==> Status: %d, Proto: %q\n    %s\n    Body: %q\n",
+		"<== Status: %d, Proto: %q\n    %s\n    Body: %q\n",
 		resp.StatusCode, resp.Proto,
 		strings.Join(headers(resp.Header), "\n    "),
 		body,
