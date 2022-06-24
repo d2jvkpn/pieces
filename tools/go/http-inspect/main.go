@@ -96,11 +96,20 @@ func runServe(flagSet *flag.FlagSet, args []string) (showHelp bool, err error) {
 	return false, err
 }
 
+func headers(h http.Header) (strs []string) {
+	strs = make([]string, 0, len(h))
+	for k, v := range h {
+		bts, _ := json.Marshal(v)
+		strs = append(strs, fmt.Sprintf("HEAD::%s: %s", k, bts))
+	}
+
+	return
+}
+
 func runClient(flagSet *flag.FlagSet, args []string) (showHelp bool, err error) {
 	var (
-		addr  string
-		start time.Time
-		resp  *http.Response
+		addr string
+		resp *http.Response
 	)
 
 	flagSet.StringVar(&addr, "addr", "http://localhost:8080", "request http address")
@@ -111,20 +120,17 @@ func runClient(flagSet *flag.FlagSet, args []string) (showHelp bool, err error) 
 		return true, nil
 	}
 
-	start = time.Now()
 	if resp, err = http.Get(addr); err != nil {
 		return false, err
 	}
 	defer resp.Body.Close()
 
-	bts, _ := json.Marshal(resp.Header)
 	body, _ := ioutil.ReadAll(resp.Body)
 	fmt.Printf(
-		`==> Status: %d, Proto: %q
-    Headers: %s
-    Body: %q
-    Elapsed: %v`+"\n",
-		resp.StatusCode, resp.Proto, bts, body, time.Since(start),
+		"==> Status: %d, Proto: %q\n%s\nBody: %q\n",
+		resp.StatusCode, resp.Proto,
+		strings.Join(headers(resp.Header), "    \n"),
+		body,
 	)
 
 	return false, nil
@@ -132,16 +138,13 @@ func runClient(flagSet *flag.FlagSet, args []string) (showHelp bool, err error) 
 
 func inspect(ctx *gin.Context) {
 	start := time.Now()
-	bts, _ := json.Marshal(ctx.Request.Header)
 	req := ctx.Request
 
 	record := fmt.Sprintf(
-		`ClientIP: %q, RemoteAddr: %q, Method: %q
-    Path: %q, Query: %q, Proto: %q
-    Headers: %s`,
+		"ClientIP: %q, RemoteAddr: %q\n    Method: %q, Path: %q, Query: %q, Proto: %q\n    %s",
 		ctx.ClientIP(), req.RemoteAddr, req.Method,
 		req.URL.Path, req.URL.RawQuery, req.Proto,
-		bts,
+		strings.Join(headers(ctx.Request.Header), "\n    "),
 	)
 
 	ctx.Next()
