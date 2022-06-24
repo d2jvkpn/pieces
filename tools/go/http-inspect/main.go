@@ -111,8 +111,9 @@ func headers(h http.Header) (strs []string) {
 
 func runClient(flagSet *flag.FlagSet, args []string) (showHelp bool, err error) {
 	var (
-		addr string
-		resp *http.Response
+		addr  string
+		start time.Time
+		resp  *http.Response
 	)
 
 	flagSet.StringVar(&addr, "addr", "http://localhost:8080", "request http address")
@@ -123,6 +124,7 @@ func runClient(flagSet *flag.FlagSet, args []string) (showHelp bool, err error) 
 		return true, nil
 	}
 
+	start = time.Now()
 	if resp, err = http.Get(addr); err != nil {
 		return false, err
 	}
@@ -130,8 +132,8 @@ func runClient(flagSet *flag.FlagSet, args []string) (showHelp bool, err error) 
 
 	body, _ := ioutil.ReadAll(resp.Body)
 	fmt.Printf(
-		"<== Status: %d, Proto: %q\n    %s\n    Body: %q\n",
-		resp.StatusCode, resp.Proto,
+		"<== %s\n    Status: %d, Proto: %q\n    %s\n    Body: %q\n",
+		start.Format(time.RFC3339), resp.StatusCode, resp.Proto,
 		strings.Join(headers(resp.Header), "\n    "),
 		body,
 	)
@@ -153,7 +155,7 @@ func inspect(ctx *gin.Context) {
 	ctx.Next()
 
 	fmt.Printf(
-		"<== %s %s\n    Status: %d, Elapsed: %s\n",
+		"<== %s\n    %s\n    Status: %d, Elapsed: %s\n",
 		start.Format(time.RFC3339), record,
 		ctx.Writer.Status(), time.Since(start),
 	)
