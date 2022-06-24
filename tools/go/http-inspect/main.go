@@ -72,7 +72,7 @@ func runServe(flagSet *flag.FlagSet, args []string) (showHelp bool, err error) {
 
 	gin.SetMode(gin.ReleaseMode)
 	engine = gin.New()
-	engine = gin.Default()
+	// engine = gin.Default()
 
 	trustedProxies = strings.Fields(strings.Replace(proxies, ",", " ", -1))
 	if err = engine.SetTrustedProxies(trustedProxies); err != nil {
@@ -150,7 +150,7 @@ func inspect(ctx *gin.Context) {
 	ctx.Next()
 
 	fmt.Printf(
-		"<== %s %s\n    Status: %d\n    Elapsed: %s\n",
+		"<== %s %s\n    Status: %d, Elapsed: %s\n",
 		start.Format(time.RFC3339), record,
 		ctx.Writer.Status(), time.Since(start),
 	)
