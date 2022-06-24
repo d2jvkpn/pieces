@@ -60,10 +60,15 @@ func runServe(flagSet *flag.FlagSet, args []string) (err error) {
 	if err = flagSet.Parse(args); err != nil {
 		return err
 	}
+	if flagSet.NArg() > 0 {
+		fmt.Fprintf(os.Stderr, "Usage of %s:\n", flagSet.Name())
+		flagSet.PrintDefaults()
+		return nil
+	}
 
 	gin.SetMode(gin.ReleaseMode)
 	engine = gin.New()
-	// engine = gin.Default()
+	engine = gin.Default()
 
 	trustedProxies = strings.Fields(strings.Replace(proxies, ",", " ", -1))
 	if len(trustedProxies) > 0 {
@@ -97,6 +102,11 @@ func runClient(flagSet *flag.FlagSet, args []string) (err error) {
 	flagSet.StringVar(&addr, "addr", "http://localhost:8080", "request http address")
 	if err = flagSet.Parse(args); err != nil {
 		return err
+	}
+	if flagSet.NArg() > 0 {
+		fmt.Fprintf(os.Stderr, "Usage of %s:\n", flagSet.Name())
+		flagSet.PrintDefaults()
+		return nil
 	}
 
 	start = time.Now()
