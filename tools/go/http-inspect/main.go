@@ -108,8 +108,11 @@ func runClient(flagSet *flag.FlagSet, args []string) (err error) {
 	bts, _ := json.Marshal(resp.Header)
 	body, _ := ioutil.ReadAll(resp.Body)
 	fmt.Printf(
-		"==> Status: %d, Elapsed: %v\n    Headers: %s\n    Body: %q\n",
-		resp.StatusCode, time.Since(start), bts, body,
+		`==> Status: %d, Proto: %q
+    Headers: %s
+    Body: %q
+    Elapsed: %v`+"\n",
+		resp.StatusCode, resp.Proto, bts, body, time.Since(start),
 	)
 
 	return nil
@@ -118,11 +121,15 @@ func runClient(flagSet *flag.FlagSet, args []string) (err error) {
 func inspect(ctx *gin.Context) {
 	start := time.Now()
 	bts, _ := json.Marshal(ctx.Request.Header)
+	req := ctx.Request
 
 	record := fmt.Sprintf(
-		"RemoteAddr: %q, ClientIP: %q, Method: %q\n    Path: %q, Query: %q\n    Headers: %s",
-		ctx.Request.RemoteAddr, ctx.ClientIP(), ctx.Request.Method,
-		ctx.Request.URL.Path, ctx.Request.URL.RawQuery, bts,
+		`ClientIP: %q, RemoteAddr: %q, Method: %q
+    Path: %q, Query: %q, Proto: %q
+    Headers: %s`,
+		ctx.ClientIP(), req.RemoteAddr, req.Method,
+		req.URL.Path, req.URL.RawQuery, req.Proto,
+		bts,
 	)
 
 	ctx.Next()
