@@ -1,5 +1,4 @@
-// $ rustc -O -o 42.out 42.rs
-// $ ./42.out
+// $ rustc -O -o 42.out 42.rs && ./42.out
 fn main() {
     println!("Hello, world!");
     println!("1/42 = {:.8}, 1/24 = {:.8}", 1.0 / 42.0, 1.0 / 24.0);

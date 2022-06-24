@@ -37,8 +37,8 @@ func NewNetworkTimeServer(addr string, delay int64) (ser *NetworkTimeServer, err
 	ser.Server = &http.Server{
 		Addr:              addr,
 		Handler:           mux,
-		ReadHeaderTimeout: 10 * time.Second,
-		ReadTimeout:       5 * time.Second,
+		ReadHeaderTimeout: 5 * time.Second,
+		ReadTimeout:       10 * time.Second,
 		WriteTimeout:      10 * time.Second,
 		MaxHeaderBytes:    1 << 10, // 8M
 	}
