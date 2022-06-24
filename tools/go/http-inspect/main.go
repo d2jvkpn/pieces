@@ -18,9 +18,10 @@ import (
 
 func main() {
 	var (
-		command string
-		err     error
-		flagSet *flag.FlagSet
+		showHelp bool
+		command  string
+		err      error
+		flagSet  *flag.FlagSet
 	)
 
 	if len(os.Args) < 2 {
@@ -31,22 +32,22 @@ func main() {
 
 	switch command {
 	case "serve":
-		err = runServe(flagSet, os.Args[1:])
+		showHelp, err = runServe(flagSet, os.Args[2:])
 	case "client":
-		err = runClient(flagSet, os.Args[1:])
+		showHelp, err = runClient(flagSet, os.Args[2:])
 	default:
 		log.Fatalf("unknown command: %s\n", command)
 	}
 
 	if err != nil {
 		log.Fatalln(err)
-	} else {
+	} else if showHelp {
 		fmt.Fprintf(os.Stderr, "Usage of %s:\n", flagSet.Name())
 		flagSet.PrintDefaults()
 	}
 }
 
-func runServe(flagSet *flag.FlagSet, args []string) (err error) {
+func runServe(flagSet *flag.FlagSet, args []string) (showHelp bool, err error) {
 	var (
 		addr           string
 		proxies        string
@@ -61,11 +62,12 @@ func runServe(flagSet *flag.FlagSet, args []string) (err error) {
 	// flagSet.BoolVar(&release, "release", false, "run in release mode")
 
 	if err = flagSet.Parse(args); err != nil {
-		return err
+		return false, err
 	}
 	// flagSet.Usage: func()
+	// fmt.Println("~~~", flagSet.NArg(), flagSet.Args())
 	if flagSet.NArg() > 1 {
-		return nil
+		return true, nil
 	}
 
 	gin.SetMode(gin.ReleaseMode)
@@ -73,9 +75,9 @@ func runServe(flagSet *flag.FlagSet, args []string) (err error) {
 	engine = gin.Default()
 
 	trustedProxies = strings.Fields(strings.Replace(proxies, ",", " ", -1))
-	if len(trustedProxies) > 0 {
-		fmt.Println("~~~ Trusted Proxies:", trustedProxies)
-		engine.SetTrustedProxies(trustedProxies)
+	if err = engine.SetTrustedProxies(trustedProxies); err != nil {
+		fmt.Println("!!!", err)
+		return false, err
 	}
 	router = &engine.RouterGroup
 
@@ -91,10 +93,11 @@ func runServe(flagSet *flag.FlagSet, args []string) (err error) {
 	})
 
 	fmt.Printf(">>> Http service listen on %s\n", addr)
-	return engine.Run(addr)
+	err = engine.Run(addr)
+	return false, err
 }
 
-func runClient(flagSet *flag.FlagSet, args []string) (err error) {
+func runClient(flagSet *flag.FlagSet, args []string) (showHelp bool, err error) {
 	var (
 		addr  string
 		start time.Time
@@ -103,15 +106,15 @@ func runClient(flagSet *flag.FlagSet, args []string) (err error) {
 
 	flagSet.StringVar(&addr, "addr", "http://localhost:8080", "request http address")
 	if err = flagSet.Parse(args); err != nil {
-		return err
+		return false, err
 	}
 	if flagSet.NArg() > 1 {
-		return nil
+		return true, nil
 	}
 
 	start = time.Now()
 	if resp, err = http.Get(addr); err != nil {
-		return err
+		return false, err
 	}
 	defer resp.Body.Close()
 
@@ -125,7 +128,7 @@ func runClient(flagSet *flag.FlagSet, args []string) (err error) {
 		resp.StatusCode, resp.Proto, bts, body, time.Since(start),
 	)
 
-	return nil
+	return false, nil
 }
 
 func inspect(ctx *gin.Context) {
