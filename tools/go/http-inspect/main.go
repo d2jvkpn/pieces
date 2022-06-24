@@ -76,7 +76,6 @@ func runServe(flagSet *flag.FlagSet, args []string) (showHelp bool, err error) {
 
 	trustedProxies = strings.Fields(strings.Replace(proxies, ",", " ", -1))
 	if err = engine.SetTrustedProxies(trustedProxies); err != nil {
-		fmt.Println("!!!", err)
 		return false, err
 	}
 	router = &engine.RouterGroup
