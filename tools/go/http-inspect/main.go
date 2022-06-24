@@ -4,11 +4,13 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
-	"net/http"
-	// "os"
-	// "strings"
 	"flag"
+	"fmt"
+	"io/ioutil"
+	"log"
+	"net/http"
+	"os"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -16,15 +18,48 @@ import (
 
 func main() {
 	var (
-		addr    string
-		release bool
-		engine  *gin.Engine
-		router  *gin.RouterGroup
+		command string
+		err     error
+		flagSet *flag.FlagSet
 	)
 
-	flag.StringVar(&addr, "addr", ":8080", "http server address")
-	flag.BoolVar(&release, "release", false, "run in release mode")
-	flag.Parse()
+	if len(os.Args) < 2 {
+		log.Fatalln("subcommands: serve, client")
+	}
+	command = os.Args[1]
+	flagSet = flag.NewFlagSet(command, 1)
+
+	switch command {
+	case "serve":
+		err = runServe(flagSet, os.Args[1:])
+	case "client":
+		err = runClient(flagSet, os.Args[1:])
+	default:
+		log.Fatalf("unknown commands: %s\n", command)
+	}
+
+	if err != nil {
+		log.Fatalln(err)
+	}
+}
+
+func runServe(flagSet *flag.FlagSet, args []string) (err error) {
+	var (
+		addr           string
+		proxies        string
+		trustedProxies []string
+		release        bool
+		engine         *gin.Engine
+		router         *gin.RouterGroup
+	)
+
+	flagSet.StringVar(&addr, "addr", ":8080", "http server address")
+	flagSet.StringVar(&proxies, "proxies", "", "trusted proxies, separated by comma")
+	flagSet.BoolVar(&release, "release", false, "run in release mode")
+
+	if err = flagSet.Parse(args); err != nil {
+		return err
+	}
 
 	if release {
 		gin.SetMode(gin.ReleaseMode)
@@ -32,7 +67,12 @@ func main() {
 	} else {
 		engine = gin.Default()
 	}
-	// engine.SetTrustedProxies([]string{"192.168.1.2"})
+
+	trustedProxies = strings.Fields(strings.Replace(proxies, ",", " ", -1))
+	if len(trustedProxies) > 0 {
+		fmt.Println("~~~ Trusted Proxies:", trustedProxies)
+		engine.SetTrustedProxies(trustedProxies)
+	}
 	router = &engine.RouterGroup
 
 	engine.NoRoute(inspect, func(ctx *gin.Context) {
@@ -41,15 +81,41 @@ func main() {
 	})
 
 	irouters := router.Use(inspect)
-	irouters.GET("/", hello)
+
+	irouters.GET("/", func(ctx *gin.Context) {
+		ctx.String(http.StatusOK, "Hello, world!\n")
+	})
 
 	fmt.Printf(">>> Http service listen on %s\n", addr)
-	engine.Run(addr)
+	return engine.Run(addr)
 }
 
-func hello(ctx *gin.Context) {
-	ctx.String(http.StatusOK, "Hello, world!\n")
-	return
+func runClient(flagSet *flag.FlagSet, args []string) (err error) {
+	var (
+		addr  string
+		start time.Time
+		resp  *http.Response
+	)
+
+	flagSet.StringVar(&addr, "addr", "http://localhost:8080", "request http address")
+	if err = flagSet.Parse(args); err != nil {
+		return err
+	}
+
+	start = time.Now()
+	if resp, err = http.Get(addr); err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	bts, _ := json.Marshal(resp.Header)
+	body, _ := ioutil.ReadAll(resp.Body)
+	fmt.Printf(
+		"<=> Status: %d, Elapsed: %v\n    Headers: %s\n    Body: %q\n",
+		resp.StatusCode, time.Since(start), bts, body,
+	)
+
+	return nil
 }
 
 func inspect(ctx *gin.Context) {
@@ -63,9 +129,28 @@ func inspect(ctx *gin.Context) {
 	)
 
 	ctx.Next()
+
 	fmt.Printf(
 		"<=> %s %s, Status: %d, Elapsed: %v\n",
 		start.Format(time.RFC3339), record,
 		ctx.Writer.Status(), time.Since(start),
 	)
 }
+
+//type arrayFlags []string
+
+//func (i *arrayFlags) String() string {
+//    return "my string representation"
+//}
+
+//func (i *arrayFlags) Set(value string) error {
+//    *i = append(*i, value)
+//    return nil
+//}
+
+//var myFlags arrayFlags
+
+//func main() {
+//    flag.Var(&myFlags, "list1", "Some description for this param.")
+//    flag.Parse()
+//}
