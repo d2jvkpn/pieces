@@ -52,14 +52,14 @@ func runServe(flagSet *flag.FlagSet, args []string) (showHelp bool, err error) {
 		addr           string
 		proxies        string
 		trustedProxies []string
-		// release        bool
-		engine *gin.Engine
-		router *gin.RouterGroup
+		debug          bool
+		engine         *gin.Engine
+		router         *gin.RouterGroup
 	)
 
 	flagSet.StringVar(&addr, "addr", ":8080", "http server address")
 	flagSet.StringVar(&proxies, "proxies", "", "trusted proxies, separated by comma")
-	// flagSet.BoolVar(&release, "release", false, "run in release mode")
+	flagSet.BoolVar(&debug, "debug", false, "run in debug mode")
 
 	if err = flagSet.Parse(args); err != nil {
 		return false, err
@@ -70,9 +70,12 @@ func runServe(flagSet *flag.FlagSet, args []string) (showHelp bool, err error) {
 		return true, nil
 	}
 
-	gin.SetMode(gin.ReleaseMode)
-	engine = gin.New()
-	// engine = gin.Default()
+	if debug {
+		engine = gin.Default()
+	} else {
+		gin.SetMode(gin.ReleaseMode)
+		engine = gin.New()
+	}
 
 	trustedProxies = strings.Fields(strings.Replace(proxies, ",", " ", -1))
 	if err = engine.SetTrustedProxies(trustedProxies); err != nil {
