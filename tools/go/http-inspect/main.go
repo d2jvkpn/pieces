@@ -14,18 +14,23 @@ import (
 
 func main() {
 	var (
-		addr   string
-		engine *gin.Engine
-		router *gin.RouterGroup
+		addr    string
+		release bool
+		engine  *gin.Engine
+		router  *gin.RouterGroup
 	)
 
 	flag.StringVar(&addr, "addr", ":8080", "http server address")
+	flag.BoolVar(&release, "release", false, "run in release mode")
 	flag.Parse()
 
-	engine = gin.Default()
-	// gin.SetMode(gin.ReleaseMode)
-	// engine = gin.New()
-	// router.SetTrustedProxies([]string{"192.168.1.2"})
+	if release {
+		gin.SetMode(gin.ReleaseMode)
+		engine = gin.New()
+	} else {
+		engine = gin.Default()
+	}
+	// engine.SetTrustedProxies([]string{"192.168.1.2"})
 	router = &engine.RouterGroup
 
 	engine.NoRoute(inspect, func(ctx *gin.Context) {
@@ -46,14 +51,18 @@ func hello(ctx *gin.Context) {
 }
 
 func inspect(ctx *gin.Context) {
-	fmt.Printf(
-		"~~~ %s ClientIP: %q, RemoteAddr: %q, Method: %q\n    Path: %q, Query: %q\n",
-		time.Now().Format(time.RFC3339), ctx.ClientIP(), ctx.Request.RemoteAddr,
-		ctx.Request.Method, ctx.Request.URL.Path, ctx.Request.URL.RawQuery,
-	)
+	now := time.Now()
 	bts, _ := json.Marshal(ctx.Request.Header)
-	fmt.Printf("    Headers: %s\n", bts)
+
+	record := fmt.Sprintf(
+		"<=> %s ClientIP: %q, RemoteAddr: %q, Method: %q, Path: %q, Query: %q, Headers: %s",
+		now.Format(time.RFC3339), ctx.ClientIP(), ctx.Request.RemoteAddr,
+		ctx.Request.Method, ctx.Request.URL.Path, ctx.Request.URL.RawQuery, bts,
+	)
 
 	ctx.Next()
-	fmt.Printf("    Status: %d\n", ctx.Writer.Status())
+	fmt.Printf(
+		"%s, Status: %d, Elapsed: %v\n",
+		record, ctx.Writer.Status(), time.Since(now),
+	)
 }
