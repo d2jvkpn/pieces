@@ -40,6 +40,9 @@ func main() {
 
 	if err != nil {
 		log.Fatalln(err)
+	} else {
+		fmt.Fprintf(os.Stderr, "Usage of %s:\n", flagSet.Name())
+		flagSet.PrintDefaults()
 	}
 }
 
@@ -62,8 +65,6 @@ func runServe(flagSet *flag.FlagSet, args []string) (err error) {
 	}
 	// flagSet.Usage: func()
 	if flagSet.NArg() > 1 {
-		fmt.Fprintf(os.Stderr, "Usage of %s:\n", flagSet.Name())
-		flagSet.PrintDefaults()
 		return nil
 	}
 
@@ -105,8 +106,6 @@ func runClient(flagSet *flag.FlagSet, args []string) (err error) {
 		return err
 	}
 	if flagSet.NArg() > 1 {
-		fmt.Fprintf(os.Stderr, "Usage of %s:\n", flagSet.Name())
-		flagSet.PrintDefaults()
 		return nil
 	}
 
