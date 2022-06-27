@@ -30,7 +30,7 @@ func main() {
 	}
 
 	fmt.Printf(
-		"Sizes: d -> %d, d.Id -> %d, d.Name -> %d, d.Tags -> %d, d.At -> %d, d.mutex -> %d, *d.mutex -> %d\n",
+		"d: %d, d.Id: %d, d.Name: %d, d.Tags: %d, d.At: %d, d.mutex: %d, *d.mutex: %d\n",
 		unsafe.Sizeof(d),
 		unsafe.Sizeof(d.Id),
 		unsafe.Sizeof(d.Name),
