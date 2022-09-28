@@ -1,0 +1,16 @@
+# "Practical Rust Projects 2020", chapter 2
+[package]
+name = "catsay"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+colored = "2.0.0"
+predicates = "2.1.1"
+structopt = "0.3.26"
+
+[dev-dependencies]
+assert_cmd = "2.0.4"
+predicates = "2.1.1"
