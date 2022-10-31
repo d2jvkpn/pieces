@@ -1,6 +1,8 @@
 #![allow(clippy::needless_return)]
 
-use actix_web::{http::header::ContentType, web, App, HttpResponse, HttpServer};
+use actix_web::{
+    get, http::header::ContentType, web, App, HttpResponse, HttpServer, Responder, Result,
+};
 use futures::future;
 use serde_derive::{Deserialize, Serialize};
 
@@ -19,17 +21,19 @@ async fn main() -> io::Result<()> {
         println!(">>> Http server is listening on {}", addr1);
         let app: App<_> = App::new();
 
-        let scope = web::scope("/api/v1");
+        let scope = web::scope("/api");
         let one = web::get().to(v1::utils_one);
         let greet1 = web::get().to(v1::greet);
         let greet2 = web::get().to(v1::greet);
 
         let router = scope
             .route("/one", one)
+            .service(healthy)
             .route("/greet", greet1)
             .route("/greet/{name}", greet2)
             .route("/index", web::get().to(index))
-            .route("/index2", web::post().to(index2));
+            .route("/index2", web::post().to(index2))
+            .route("/index3", web::post().to(index3));
 
         return app.configure(load_auth).service(router).service(v1::hello);
     })
@@ -66,14 +70,19 @@ async fn index() -> HttpResponse {
         .body("indx-data")
 }
 
-#[derive(Deserialize)]
-struct Info {
-    username: String,
-}
-
 #[derive(Deserialize, Serialize)]
 struct User {
     name: Option<String>,
+}
+
+#[derive(Deserialize, Serialize)]
+struct Info {
+    name: String,
+}
+
+#[get("/healthy")]
+async fn healthy() -> impl Responder {
+    HttpResponse::Ok().body("")
 }
 
 /// deserialize `Info` from request's body
@@ -83,4 +92,14 @@ async fn index2(user: web::Json<User>) -> String {
         None => "",
     };
     format!("Welcome {}!\n", name)
+}
+
+/// deserialize `Info` from request's body
+async fn index3(user: web::Json<User>) -> Result<impl Responder> {
+    let name = match user.name {
+        Some(ref v) => v,
+        None => "",
+    };
+
+    Ok(web::Json(Info { name: name.to_string() }))
 }
