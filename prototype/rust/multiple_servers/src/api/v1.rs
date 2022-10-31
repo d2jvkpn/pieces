@@ -1,5 +1,8 @@
-use actix_web::web::{self, Query};
-use actix_web::{get, HttpRequest, Responder};
+use actix_web::{
+    get,
+    web::{self, Query},
+    HttpRequest, Responder,
+};
 
 use std::collections::HashMap;
 

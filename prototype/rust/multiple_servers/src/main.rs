@@ -1,7 +1,6 @@
 #![allow(clippy::needless_return)]
 
-use actix_web::web;
-use actix_web::{App, HttpServer};
+use actix_web::{http::header::ContentType, web, App, HttpResponse, HttpServer};
 use futures::future;
 
 use std::io;
@@ -24,8 +23,11 @@ async fn main() -> io::Result<()> {
         let greet1 = web::get().to(v1::greet);
         let greet2 = web::get().to(v1::greet);
 
-        let router =
-            scope.route("/one", one).route("/greet", greet1).route("/greet/{name}", greet2);
+        let router = scope
+            .route("/one", one)
+            .route("/greet", greet1)
+            .route("/greet/{name}", greet2)
+            .route("/index", web::get().to(index));
 
         return app.configure(load_auth).service(router).service(v1::hello);
     })
@@ -54,3 +56,10 @@ async fn main() -> io::Result<()> {
 // assert_eq!(numbers.get("one"), Some(&1));
 // assert_eq!(numbers.get("two"), Some(&2));
 // assert!(numbers.get("three").is_none());
+
+async fn index() -> HttpResponse {
+    HttpResponse::Ok()
+        .content_type(ContentType::plaintext())
+        .insert_header(("X-Hdr", "sample"))
+        .body("data")
+}

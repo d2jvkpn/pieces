@@ -1,5 +1,4 @@
-use actix_web::web::Query;
-use actix_web::{HttpRequest, Responder};
+use actix_web::{web::Query, HttpRequest, Responder};
 
 use std::collections::HashMap;
 
