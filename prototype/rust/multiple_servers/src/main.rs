@@ -2,6 +2,7 @@
 
 use actix_web::{http::header::ContentType, web, App, HttpResponse, HttpServer};
 use futures::future;
+use serde_derive::{Deserialize, Serialize};
 
 use std::io;
 
@@ -9,7 +10,7 @@ mod api;
 use crate::api::v1;
 use multiple_servers::load_auth;
 
-#[actix_rt::main]
+#[actix_web::main]
 async fn main() -> io::Result<()> {
     let (addr1, addr2) = ("0.0.0.0:8080", "0.0.0.0:8081");
 
@@ -27,7 +28,8 @@ async fn main() -> io::Result<()> {
             .route("/one", one)
             .route("/greet", greet1)
             .route("/greet/{name}", greet2)
-            .route("/index", web::get().to(index));
+            .route("/index", web::get().to(index))
+            .route("/index2", web::post().to(index2));
 
         return app.configure(load_auth).service(router).service(v1::hello);
     })
@@ -61,5 +63,24 @@ async fn index() -> HttpResponse {
     HttpResponse::Ok()
         .content_type(ContentType::plaintext())
         .insert_header(("X-Hdr", "sample"))
-        .body("data")
+        .body("indx-data")
+}
+
+#[derive(Deserialize)]
+struct Info {
+    username: String,
+}
+
+#[derive(Deserialize, Serialize)]
+struct User {
+    name: Option<String>,
+}
+
+/// deserialize `Info` from request's body
+async fn index2(user: web::Json<User>) -> String {
+    let name = match user.name {
+        Some(ref v) => v,
+        None => "",
+    };
+    format!("Welcome {}!\n", name)
 }
