@@ -1,7 +1,7 @@
 #![allow(clippy::needless_return)]
 
 use actix_web::{
-    get, http::header::ContentType, web, App, HttpResponse, HttpServer, Responder, Result,
+    get, http::header::ContentType, web, App, HttpResponse, HttpServer, Responder, Result, Error,
 };
 use futures::future;
 use serde_derive::{Deserialize, Serialize};

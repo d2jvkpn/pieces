@@ -9,11 +9,11 @@ homepage = "https://github.com/d2jvkpn/pieces/tree/main/tools/rust/random_accoun
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-chrono = "0.4.19"
+chrono = "0.4"
 clap = "2.33"
 rand = "0.8"
-serde = { version = "1.0.130", features = ["derive"] }
-serde_derive = "1.0.130"
-serde_json = "1.0.68"
+serde = { version = "1.0", features = ["derive"] }
+serde_derive = "1.0"
+serde_json = "1.0"
 toml = "0.5"
-serde_yaml = "0.8.13"
+serde_yaml = "0.8"

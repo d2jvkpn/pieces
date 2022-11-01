@@ -130,8 +130,20 @@ impl Account {
             prefix
         };
 
-        let password: String =
-            thread_rng().sample_iter(&Alphanumeric).take(password_len).map(char::from).collect();
+        // let password: String =
+        //    thread_rng().sample_iter(&Alphanumeric).take(password_len).map(char::from).collect();
+
+        const CHARSET: &[u8] =
+            b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789()*&^%$#@!~_+-=[]{}|";
+
+        let mut rng = rand::thread_rng();
+
+        let password: String = (0..password_len)
+            .map(|_| {
+                let idx = rng.gen_range(0..CHARSET.len());
+                CHARSET[idx] as char
+            })
+            .collect();
 
         // Account { time: time, username: username, password: password }
         Account { username, password, time, ..Default::default() }
