@@ -343,7 +343,6 @@ dependencies = [
  "clap",
  "rand",
  "serde",
- "serde_derive",
  "serde_json",
  "serde_yaml",
  "toml",

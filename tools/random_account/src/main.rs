@@ -1,14 +1,10 @@
-use std::process;
-
 use random_account::run;
 
+use std::process;
+
 fn main() {
-    match run() {
-        Ok(_) => process::exit(0),
-        Err(msg) => {
-            // eprintln!("{:?}", err);
-            eprintln!("{:}", msg);
-            process::exit(1);
-        }
+    if let Err(msg) = run() {
+        eprintln!("{:}", msg);
+        process::exit(1);
     }
 }

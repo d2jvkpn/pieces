@@ -1,14 +1,10 @@
-#[macro_use]
-extern crate serde_derive;
-
 use chrono::prelude::{DateTime, Local, SecondsFormat};
 use clap::{App, Arg};
-use rand::distributions::Alphanumeric;
-use rand::{thread_rng, Rng}; // Values
+use rand::{distributions::Alphanumeric, thread_rng, Rng}; // Values
+use serde::{Deserialize, Serialize};
 use toml;
 
-#[allow(unused_imports)]
-use std::{error, fmt, fs};
+use std::{fmt, fs};
 
 #[derive(Default, Debug, Serialize, Deserialize, PartialEq)]
 #[serde(rename_all = "camelCase")]
@@ -134,7 +130,12 @@ impl Account {
         //    thread_rng().sample_iter(&Alphanumeric).take(password_len).map(char::from).collect();
 
         const CHARSET: &[u8] =
-            b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789()*&^%$#@!~_+-=[]{}|";
+            b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|";
+
+        // Minimum password length is 8 characters
+        // Include a minimum of three of the following mix of character types: uppercase, lowercase,
+        // numbers, and ! @ # $ % ^ & * ( ) _ + - = [ ] { } | '
+        // ~ / " , ; < > ? \ `
 
         let mut rng = rand::thread_rng();
 
