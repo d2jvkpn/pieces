@@ -23,5 +23,6 @@ domain_home=$acme_home/$domain
         date +"    %F%T%:z renew ssl and reload nginx"
         rsync ${domain_home}/$domain.{key,cer} $target/
         nginx -s reload
+        # sudo nginx -s reload
     fi
 } >> ${_path}/acme.$(date +"%Y").log 2>&1
