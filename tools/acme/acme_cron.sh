@@ -13,14 +13,14 @@ acme_home=$HOME/.acme.sh # directory
 domain_home=$acme_home/$domain
 
 {
-    date +">>> %F%T%:z run acme.sh"
+    date +">>> %FT%T%:z run acme.sh"
     ${acme_home}/acme.sh --cron --home $acme_home --server letsencrypt
 
     s1=$(md5sum $domain_home/$domain.cer | awk '{print $1}')
     s2=$(md5sum $target/$domain.cer | awk '{print $1}')
 
     if [[ "$s1" != "$s2" ]]; then
-        date +"    %F%T%:z renew ssl and reload nginx"
+        date +"    %FT%T%:z renew ssl and reload nginx"
         rsync ${domain_home}/$domain.{key,cer} $target/
         nginx -s reload
         # sudo nginx -s reload
