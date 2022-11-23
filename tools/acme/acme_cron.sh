@@ -14,10 +14,10 @@ domain_home=$acme_home/$domain
 
 {
     date +">>> %FT%T%:z run acme.sh"
-    ${acme_home}/acme.sh --cron --home $acme_home --server letsencrypt
-
     s1=$(md5sum $domain_home/$domain.cer | awk '{print $1}')
-    s2=$(md5sum $target/$domain.cer | awk '{print $1}')
+
+    ${acme_home}/acme.sh --cron --home $acme_home --server letsencrypt
+    s2=$(md5sum $domain_home/$domain.cer | awk '{print $1}')
 
     if [[ "$s1" != "$s2" ]]; then
         date +"    %FT%T%:z renew ssl and reload nginx"
