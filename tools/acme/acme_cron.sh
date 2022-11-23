@@ -4,7 +4,7 @@ _wd=$(pwd)
 _path=$(dirname $0 | xargs -i readlink -f {} )
 
 # cron: 0 0 * * *
-# location: /${HOME}/.acme.sh/${DOMAIN}
+# location: ${HOME}/.acme.sh/${DOMAIN}
 
 domain=YOUR_Domain.xyz
 target=$HOME/nginx/cert
