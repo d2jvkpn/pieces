@@ -38,15 +38,16 @@ func main() {
 
 	fmt.Println("=== accepted", conn.RemoteAddr())
 	wg.Add(2)
+
 	go func() {
 		conn.Write([]byte("Hello, This is Bob!\n"))
-
 		for {
 			text, err := bufio.NewReader(os.Stdin).ReadString('\n')
 			if err != nil {
 				log.Println("!!!", err)
 				break
 			}
+			fmt.Println("=>>", text)
 			conn.Write([]byte(text))
 		}
 
@@ -60,7 +61,7 @@ func main() {
 				log.Println("!!!", err)
 				break
 			}
-			fmt.Println(">>>", strings.TrimSpace(msg))
+			fmt.Println("<<=", strings.TrimSpace(msg))
 		}
 
 		wg.Done()

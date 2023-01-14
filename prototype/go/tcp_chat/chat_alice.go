@@ -35,16 +35,19 @@ func main() {
 	defer conn.Close()
 
 	fmt.Println("=== Alice is online, connected to", conn.RemoteAddr())
+	if _, err = conn.Write([]byte("Hello Bob, I'm Alice!\n")); err != nil {
+		log.Fatalln(err)
+	}
+
 	wg.Add(2)
 	go func() { // alice input
-		conn.Write([]byte("Hello, I'm Alice!\n"))
-
 		for {
 			text, err := bufio.NewReader(os.Stdin).ReadString('\n')
 			if err != nil {
 				log.Println("!!!", err)
 				break
 			}
+			fmt.Println("=>>", text)
 			conn.Write([]byte(text))
 		}
 
@@ -58,7 +61,7 @@ func main() {
 				log.Println("!!!", err)
 				break
 			}
-			fmt.Println(">>>", strings.TrimSpace(msg))
+			fmt.Println("<<=", strings.TrimSpace(msg))
 		}
 
 		wg.Done()
