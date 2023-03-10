@@ -3,7 +3,7 @@ set -eu -o pipefail
 _wd=$(pwd)
 _path=$(dirname $0 | xargs -i readlink -f {})
 
-# cron: */1 * * * *   bash ~/Apps/docker_monitor/docker_monitor.sh
+# crontab: */1 * * * *   bash ~/Apps/docker_monitor/docker_monitor.sh
 
 # command jq || { >&2 echo "jq not found"; exit 1; }
 
