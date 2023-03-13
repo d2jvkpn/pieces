@@ -10,5 +10,5 @@ timestamp=$(date +%FT%T:%:z)
 
 {
     echo -e "\n#### $timestamp"
-    docker stats --no-stream
+    docker stats -a --no-stream
 } >> $outfile
