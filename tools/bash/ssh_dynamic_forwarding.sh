@@ -5,7 +5,7 @@ _self=$(readlink -f $0)
 _path=$(dirname ${_self})
 
 ## crontab -l
-# @reboot bash /path/to/autossh_socks5_proxy.sh
+# @reboot bash /path/to/ssh_dynamic_forwarding.sh
 
 # export AUTOSSH_LOGFILE="${_self}.$(date +%F_%s).log"
 export AUTOSSH_LOGFILE=$(readlink -f $0).$(date +%Y-%m).log
