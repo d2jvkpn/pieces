@@ -5,9 +5,10 @@ _path=$(dirname $0 | xargs -i readlink -f {})
 
 # https://www.xmodulo.com/add-bookmarks-pdf-document-linux.html
 
-gs -sDEVICE=pdfwrite -q -dBATCH -dNOPAUSE -sOutputFile=output.pdf \
+gs -sDEVICE=pdfwrite -q -dBATCH -dNOPAUSE \
+  -sOutputFile="Data Structures And Algorithmic Thinking With Go (Narasimha Karumanchi) 2021.pdf" \
   -dPDFSETTINGS=/prepress index.info \
-  -f "Data Structures And Algorithmic Thinking With Go (Narasimha Karumanchi) 2021.pdf"
+  -f input.pdf
 
 exit
 
