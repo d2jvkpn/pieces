@@ -7,6 +7,6 @@ addr=http://127.0.0.1:7860
 
 echo "==> Waiting service $addr to launch..."
 while ! curl --output /dev/null --silent --head --fail $addr; do
-    sleep 1 && echo -n .;
+    sleep 1 && echo -n .
 done
 echo "==> Service $addr launched"

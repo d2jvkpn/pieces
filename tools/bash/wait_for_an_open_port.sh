@@ -3,8 +3,11 @@ set -eu -o pipefail
 _wd=$(pwd)
 _path=$(dirname $0 | xargs -i readlink -f {})
 
-echo "Waiting port 7860 to open ..."
-while ! nc -z localhost 7860; do   
-  sleep 0.1 # wait for 1/10 of the second before check again
+port=7860
+
+echo "==> Waiting port $port to open ..."
+while ! nc -z localhost 7860; do
+    # wait for 1/10 of the second before check again
+    sleep 0.1 && echo -n .
 done
-echo "Port 7860"
+echo "==> Port $port is open"
