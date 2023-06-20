@@ -1,5 +1,6 @@
 var target = document.querySelectorAll(".AnswerCard")[0];
-// .MoreAnswers
+
+// var target = document.querySelectorAll(".MoreAnswers")[0];
 
 var data = `${document.URL}\n\n${target.innerText}`;
 
