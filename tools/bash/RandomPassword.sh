@@ -6,7 +6,7 @@ _path=$(dirname $0 | xargs -i readlink -f {})
 len=32
 [ $# -gt 1 ] && len=$1
 
-tr -dc '0-9a-zA-Z!@#$%^&*()' < /dev/urandom |
+tr -dc '0-9a-zA-Z!@#$%^&*()._\-' < /dev/urandom |
   fold -w ${1:-$len} |
   head -n 5 || true
 
