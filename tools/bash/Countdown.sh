@@ -5,12 +5,15 @@ _path=$(dirname $0 | xargs -i readlink -f {})
 
 if [[ $# -gt 0 && "$1" == *"-h"* ]]; then
     echo "$(basename $0) [timeout] [command] [arg...]"
-    echo -e "e.g.\n    timeout: 5, 1m, deault: 15"
+    echo -e "e.g.\n    timeout: 5, 1m, deault: 15\n    Countdown.sh 15 mpv ~/Downloads/sounds/01.wav"
     exit 0
 fi
 
 secs=15
 [ $# -gt 0 ] && secs=$1
+shift
+cmd="$*"
+
 if [[ "$secs" == *"m" ]]; then
     secs=$((${secs%m} * 60))
 fi
@@ -20,14 +23,11 @@ for i in $(seq 1 $secs | tac); do
     sleep 1
 done
 
-shift
-
-if [ $# -le 1 ]; then
+if [ -z "$cmd" ]; then
     echo -en "\r=== $(date +%FT%T:%:z) END\n"
 else
     echo ""
     set -x
-    $*
+    $cmd
 fi
-
 # mpv 01.wav
