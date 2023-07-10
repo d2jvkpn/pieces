@@ -10,13 +10,13 @@ if [[ $# -gt 0 && "$1" == *"-h"* ]]; then
 fi
 
 secs=15
-[ $# -gt 0 ] && secs=$1
+[ $# -gt 0 ] && secs="$1"
 shift
 cmd="$*"
 
 if [[ "$secs" == *"s" ]]; then
     secs=${secs%s}
-else if [[ "$secs" == *"m" ]]; then
+elif [[ "$secs" == *"m" ]]; then
     secs=$((${secs%m} * 60))
 fi
 
@@ -32,4 +32,3 @@ else
     set -x
     $cmd
 fi
-# mpv 01.wav
