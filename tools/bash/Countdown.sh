@@ -14,7 +14,9 @@ secs=15
 shift
 cmd="$*"
 
-if [[ "$secs" == *"m" ]]; then
+if [[ "$secs" == *"s" ]]; then
+    secs=${secs%s}
+else if [[ "$secs" == *"m" ]]; then
     secs=$((${secs%m} * 60))
 fi
 
