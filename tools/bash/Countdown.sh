@@ -10,10 +10,7 @@ if [[ $# -gt 0 && "$1" == *"-h"* ]]; then
     exit 0
 fi
 
-secs=15s
-[ $# -gt 0 ] && secs="$1"
-shift
-cmd="$*"
+secs=15s; [ $# -gt 0 ] && secs="$1"; shift; cmd="$*"
 
 if [[ ! "$secs" =~ ^[0-9]+(m|s)$ ]]; then
     echo "invalid time interval" >&2
@@ -27,14 +24,17 @@ elif [[ "$secs" == *"m" ]]; then
 fi
 
 sp="-\|/"; j=1
-
 for i in $(seq 1 $secs | tac); do
-    echo -en "\r==> $(date +%FT%T%:z) $(printf "%03d" $i) ${sp:j++%${#sp}:1}"
+    c=${sp:j++%${#sp}:1}
+    echo -en "\r$c $c $c $(date +%FT%T%:z) $(printf "%03d" $i)"
     sleep 1
 done
 
-if [ -z "$cmd" ]; then
+if [[ -z "$cmd" && ! -f ${_path}/Countdown.default.sh ]]; then
     echo -en "\r=== $(date +%FT%T:%:z) END\n"
+elif [[ -z "$cmd" && -f ${_path}/Countdown.default.sh ]]; then
+    echo ""
+    bash ${_path}/Countdown.default.sh
 else
     echo ""
     set -x
