@@ -16,5 +16,4 @@ for pdf in $@; do
     fi
 
     gs -q -o $png -sDEVICE=pngalpha -dLastPage=1 -r144 $pdf 2
-
 done
